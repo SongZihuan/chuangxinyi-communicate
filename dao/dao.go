@@ -2,16 +2,15 @@ package dao
 
 import (
 	"fmt"
-	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/spf13/viper"
+	"time"
 
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 )
 
 var (
@@ -19,22 +18,12 @@ var (
 )
 
 const DRIVER_MYSQL = "mysql"
-const DRIVER_SQLITE = "sqlite"
 
 // Setup : Connect to mysql database
 func Setup() error {
 	var err error
 
 	switch viper.GetString("database.driver") {
-	case DRIVER_SQLITE:
-		path := viper.GetString("database.sqlite.path")
-		db, err = gorm.Open("sqlite3", path)
-		if err != nil {
-			log.Fatal(fmt.Sprintf("Failed to connect sqlite %s", err.Error()))
-		} else {
-			log.Info("Successfully connect to sqlite3, path: %s.", path)
-			db.LogMode(true)
-		}
 	case DRIVER_MYSQL:
 		host := viper.GetString("database.mysql.host")
 		user := viper.GetString("database.mysql.user")
@@ -45,15 +34,15 @@ func Setup() error {
 		dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=True&loc=Local", user, password, host, name, charset)
 		db, err = gorm.Open("mysql", dsn)
 		if err != nil {
-			log.Fatal(fmt.Sprintf("Failed to connect mysql %s", err.Error()))
-		} else {
-			log.Info("Successfully connect to MySQL, database: %s.", name)
-			db.DB().SetMaxIdleConns(viper.GetInt("database.mysql.pool.min"))
-			db.DB().SetMaxOpenConns(viper.GetInt("database.mysql.pool.max"))
-			db.DB().SetConnMaxLifetime(time.Minute)
-			if gin.Mode() != gin.ReleaseMode {
-				db.LogMode(true)
-			}
+			return err
+		}
+
+		logger.Logger.Info("Successfully connect to MySQL, database: %s.", name)
+		db.DB().SetMaxIdleConns(viper.GetInt("database.mysql.pool.min"))
+		db.DB().SetMaxOpenConns(viper.GetInt("database.mysql.pool.max"))
+		db.DB().SetConnMaxLifetime(time.Minute)
+		if gin.Mode() != gin.ReleaseMode {
+			db.LogMode(true)
 		}
 	default:
 		return fmt.Errorf("we do not support this kind of storage system yet")
@@ -69,7 +58,7 @@ func Setup() error {
 
 // Shutdown - close database connection
 func Shutdown() error {
-	log.Info("Closing database's connections")
+	logger.Logger.Info("Closing database's connections")
 	return db.Close()
 }
 

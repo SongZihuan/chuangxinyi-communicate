@@ -2,8 +2,6 @@ package sqlcnd
 
 import (
 	"github.com/jinzhu/gorm"
-
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 )
 
 type SqlCnd struct {
@@ -140,9 +138,7 @@ func (s *SqlCnd) Build(db *gorm.DB) *gorm.DB {
 }
 
 func (s *SqlCnd) Find(db *gorm.DB, out interface{}) {
-	if err := s.Build(db).Find(out).Error; err != nil {
-		log.Error(err.Error())
-	}
+	_ = s.Build(db).Find(out)
 }
 
 func (s *SqlCnd) FindOne(db *gorm.DB, out interface{}) error {
@@ -163,8 +159,6 @@ func (s *SqlCnd) Count(db *gorm.DB, model interface{}) int {
 	}
 
 	var count int
-	if err := ret.Count(&count).Error; err != nil {
-		log.Error(err.Error())
-	}
+	_ = ret.Count(&count)
 	return count
 }

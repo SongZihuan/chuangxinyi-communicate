@@ -7,7 +7,6 @@ import (
 	initall "gitee.com/wuntsong/chuangxinyi-communicate/init"
 	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/router"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/spf13/viper"
@@ -30,13 +29,15 @@ func main() {
 
 	err = viper.ReadInConfig()
 	if err != nil {
-		log.Fatal(fmt.Sprintf("Parse conf file fail: %s", err.Error()))
+		logger.Logger.Error(fmt.Sprintf("Parse conf file fail: %s", err.Error()))
+		return
 	}
 
 	serviceName := viper.GetString("serviceName")
 	err = initall.Init("COMMUNITY_", serviceName)
 	if err != nil {
-		log.Fatal(fmt.Sprintf("Fail to init: %s", err.Error()))
+		logger.Logger.Error(fmt.Sprintf("Fail to init: %s", err.Error()))
+		return
 	}
 
 	_, err = login.ConnectWebSocket()

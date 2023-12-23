@@ -9,9 +9,9 @@ import (
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
@@ -126,27 +126,27 @@ func (s *settingService) GetSetting() *model.ConfigData {
 
 	var siteKeywordsArr []string
 	if err := utils.ParseJson(siteKeywords, &siteKeywordsArr); err != nil {
-		log.Warn("站点关键词数据错误")
+		logger.Logger.Info("站点关键词数据错误")
 	}
 
 	var siteNavsArr []model.SiteNav
 	if err := utils.ParseJson(siteNavs, &siteNavsArr); err != nil {
-		log.Warn("站点导航数据错误")
+		logger.Logger.Info("站点导航数据错误")
 	}
 
 	var siteTipsArr []model.SiteTip
 	if err := utils.ParseJson(siteTips, &siteTipsArr); err != nil {
-		log.Warn("小贴士数据错误")
+		logger.Logger.Info("小贴士数据错误")
 	}
 
 	var recommendTagsArr []string
 	if err := utils.ParseJson(recommendTags, &recommendTagsArr); err != nil {
-		log.Warn("推荐标签数据错误")
+		logger.Logger.Info("推荐标签数据错误")
 	}
 
 	var scoreConfig model.ScoreConfig
 	if err := utils.ParseJson(scoreConfigStr, &scoreConfig); err != nil {
-		log.Warn("积分配置错误")
+		logger.Logger.Info("积分配置错误")
 	}
 
 	var defaultNodeId, _ = strconv.ParseInt(defaultNodeIdStr, 10, 64)

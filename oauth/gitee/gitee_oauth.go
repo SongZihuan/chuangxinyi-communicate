@@ -9,8 +9,8 @@ import (
 	"github.com/spf13/viper"
 	"golang.org/x/oauth2"
 
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 )
 
 var ctxCache = cache.New(cache.WithMaximumSize(1000), cache.WithExpireAfterAccess(10*time.Minute))
@@ -74,7 +74,7 @@ func GetUserInfoByCode(code, state string) (*UserInfo, error) {
 func GetUserInfo(accessToken string) (*UserInfo, error) {
 	response, err := resty.New().R().SetQueryParam("access_token", accessToken).Get("https://gitee.com/api/v5/user")
 	if err != nil {
-		log.Error("Get user info error %s", err.Error())
+		logger.Logger.Error("Get user info error %s", err.Error())
 		return nil, err
 	}
 	content := string(response.Body())

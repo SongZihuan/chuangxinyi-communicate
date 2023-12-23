@@ -12,8 +12,8 @@ import (
 	"github.com/spf13/viper"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 )
 
 // login type
@@ -88,7 +88,7 @@ func JwtAuth(LoginType int) *jwt.GinJWTMiddleware {
 		TimeFunc:      time.Now,
 	})
 	if err != nil {
-		log.Error(err.Error())
+		logger.Logger.Error(err.Error())
 	}
 	return jwtMiddleware
 }

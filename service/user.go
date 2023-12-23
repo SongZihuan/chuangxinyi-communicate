@@ -5,9 +5,9 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -110,7 +110,7 @@ func (s *userService) IncrTopicCount(userId int64) int {
 	}
 	topicCount := t.TopicCount + 1
 	if err := dao.UserDao.UpdateColumn(userId, "topic_count", topicCount); err != nil {
-		log.Error(err.Error())
+		logger.Logger.Error(err.Error())
 	} else {
 		cache.UserCache.Invalidate(userId)
 	}
@@ -125,7 +125,7 @@ func (s *userService) IncrCommentCount(userId int64) int {
 	}
 	commentCount := t.CommentCount + 1
 	if err := dao.UserDao.UpdateColumn(userId, "comment_count", commentCount); err != nil {
-		log.Error(err.Error())
+		logger.Logger.Error(err.Error())
 	} else {
 		cache.UserCache.Invalidate(userId)
 	}

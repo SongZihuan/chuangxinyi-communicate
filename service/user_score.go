@@ -6,9 +6,9 @@ import (
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
@@ -77,13 +77,13 @@ func (s *userScoreService) CreateOrUpdate(t *model.UserScore) error {
 func (s *userScoreService) IncrementPostTopicScore(topic *model.Topic) {
 	config := SettingService.GetSetting()
 	if config.ScoreConfig.PostTopicScore <= 0 {
-		log.Info("请配置发帖积分")
+		logger.Logger.Info("请配置发帖积分")
 		return
 	}
 	err := s.addScore(topic.UserId, config.ScoreConfig.PostTopicScore, model.EntityTypeTopic,
 		strconv.FormatInt(topic.ID, 10), "发表话题")
 	if err != nil {
-		log.Error(err.Error())
+		logger.Logger.Error(err.Error())
 	}
 }
 
@@ -95,13 +95,13 @@ func (s *userScoreService) IncrementPostCommentScore(comment *model.Comment) {
 	}
 	config := SettingService.GetSetting()
 	if config.ScoreConfig.PostCommentScore <= 0 {
-		log.Info("请配置跟帖积分")
+		logger.Logger.Info("请配置跟帖积分")
 		return
 	}
 	err := s.addScore(comment.UserId, config.ScoreConfig.PostCommentScore, model.EntityTypeComment,
 		strconv.FormatInt(comment.ID, 10), "发表跟帖")
 	if err != nil {
-		log.Error(err.Error())
+		logger.Logger.Error(err.Error())
 	}
 }
 

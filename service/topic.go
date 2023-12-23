@@ -15,9 +15,9 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/urls"
 )
@@ -259,14 +259,14 @@ func (s *topicService) GenerateRss() {
 	}
 	atom, err := feed.ToAtom()
 	if err != nil {
-		log.Error(err.Error())
+		logger.Logger.Error(err.Error())
 	} else {
 		_ = utils.WriteString(path.Join(viper.GetString("base.static_path"), "topic_atom.xml"), atom, false)
 	}
 
 	rss, err := feed.ToRss()
 	if err != nil {
-		log.Error(err.Error())
+		logger.Logger.Error(err.Error())
 	} else {
 		_ = utils.WriteString(path.Join(viper.GetString("base.static_path"), "topic_rss.xml"), rss, false)
 	}

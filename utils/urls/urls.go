@@ -5,8 +5,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 )
 
 var BaseUrl = viper.GetString("base.url")
@@ -18,7 +16,6 @@ func IsInternalUrl(href string) bool {
 	}
 	u, err := url.Parse(BaseUrl)
 	if err != nil {
-		log.Error(err.Error())
 		return false
 	}
 	return strings.Contains(href, u.Host)

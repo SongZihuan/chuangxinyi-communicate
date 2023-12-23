@@ -12,8 +12,8 @@ import (
 	"github.com/spf13/viper"
 	"github.com/tidwall/gjson"
 
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 )
 
 type UserInfo struct {
@@ -103,13 +103,13 @@ func GetOpenid(accessToken string) (string, string, error) {
 		SetQueryParam("unionid", "1"). // 申请unionId，0：不申请，1：申请
 		Get("https://graph.qq.com/oauth2.0/me")
 	if err != nil {
-		log.Error("QQ: Get openid error", err.Error())
+		logger.Logger.Error("QQ: Get openid error", err.Error())
 		return "", "", err
 	}
 	content := string(resp.Body())
 	content = removeCallback(content)
 
-	log.Info("me:%s" + content)
+	logger.Logger.Info("me:%s" + content)
 
 	return gjson.Get(content, "openid").String(), gjson.Get(content, "unionid").String(), nil
 }
@@ -132,7 +132,7 @@ func GetUserInfo(accessToken string) (*UserInfo, error) {
 	}
 	content := string(resp.Body())
 
-	log.Info("get_user_info:%s", content)
+	logger.Logger.Info("get_user_info:%s", content)
 
 	ret := gjson.Get(content, "ret").Int()
 	msg := gjson.Get(content, "msg").String()

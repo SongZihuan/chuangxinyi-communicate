@@ -6,8 +6,8 @@ import (
 	"github.com/goburrow/cache"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 )
 
 type tagCache struct {
@@ -32,7 +32,7 @@ func newTagCache() *tagCache {
 func (c *tagCache) Get(tagId int64) *model.Tag {
 	val, err := c.cache.Get(tagId)
 	if err != nil {
-		log.Error(err.Error())
+		logger.Logger.Error(err.Error())
 		return nil
 	}
 	if val != nil {

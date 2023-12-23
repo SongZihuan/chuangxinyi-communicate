@@ -1,16 +1,16 @@
 package service
 
 import (
+	"fmt"
+	"gitee.com/wuntsong/chuangxinyi-communicate/auth/msg"
 	"sync"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/email"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/urls"
 )
 
 var NotificationService = newNotificationService()
@@ -213,7 +213,7 @@ func (s *notificationService) Produce(fromId, toId int64, content, quoteContent 
 		err       error
 	)
 	if extraData, err = utils.FormatJson(extraDataMap); err != nil {
-		log.Error("格式化extraData错误")
+		logger.Logger.Error("格式化extraData错误")
 	}
 	s.notificationsChan <- &model.Notification{
 		FromId:       fromId,
@@ -231,13 +231,13 @@ func (s *notificationService) Produce(fromId, toId int64, content, quoteContent 
 func (s *notificationService) Consume() {
 	s.notificationsConsumeOnce.Do(func() {
 		go func() {
-			log.Info("开始消费系统消息...")
+			logger.Logger.Info("开始消费系统消息...")
 			for {
 				msg := <-s.notificationsChan
-				log.Info("处理消息：from=%s to=%s", msg.FromId, msg.UserId)
+				logger.Logger.Info("处理消息：from=%s to=%s", msg.FromId, msg.UserId)
 
 				if err := s.Create(msg); err != nil {
-					log.Info("创建消息发生异常...")
+					logger.Logger.Info("创建消息发生异常...")
 				} else {
 					s.SendEmailNotice(msg)
 				}
@@ -249,14 +249,13 @@ func (s *notificationService) Consume() {
 // 发送邮件通知
 func (s *notificationService) SendEmailNotice(notification *model.Notification) {
 	user := cache.UserCache.Get(notification.UserId)
-	if user != nil && len(user.Email.String) > 0 {
-		siteTitle := cache.SettingCache.GetValue(model.SettingSiteTitle)
-		emailTitle := siteTitle + " 新消息提醒"
+	siteTitle := cache.SettingCache.GetValue(model.SettingSiteTitle)
 
-		email.SendTemplateEmail(user.Email.String, emailTitle, emailTitle, notification.Content,
-			notification.QuoteContent, urls.AbsUrl("/user/notifications"))
-		log.Info("发送邮件...email=%s", user.Email)
-	} else {
-		log.Info("邮件未发送，没设置邮箱...")
+	title := siteTitle + " 新消息提醒"
+	content := notification.Content
+	if len(notification.QuoteContent) != 0 {
+		content += fmt.Sprintf("\n引用：%s", notification.QuoteContent)
 	}
+
+	_, _ = msg.SendMsg(user, title, content)
 }

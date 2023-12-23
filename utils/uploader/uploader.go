@@ -3,7 +3,6 @@ package uploader
 import (
 	"bytes"
 	"fmt"
-	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
 	"path/filepath"
 	"sync"
@@ -84,10 +83,9 @@ func (aliyun *aliyunOssUploader) putObject(key string, data []byte) (string, err
 
 func (aliyun *aliyunOssUploader) getBucket() *oss.Bucket {
 	aliyun.once.Do(func() {
-		if client, err := oss.New(viper.GetString("aliyun.endpoint"), viper.GetString("aliyun.accessKeyId"), viper.GetString("aliyun.accessKeySecret")); err != nil {
-			logger.Logger.Error(err.Error())
-		} else if aliyun.bucket, err = client.Bucket(viper.GetString("aliyun.bucket")); err != nil {
-			logger.Logger.Error(err.Error())
+		client, err := oss.New(viper.GetString("aliyun.endpoint"), viper.GetString("aliyun.accessKeyId"), viper.GetString("aliyun.accessKeySecret"))
+		if err == nil {
+			aliyun.bucket, err = client.Bucket(viper.GetString("aliyun.bucket"))
 		}
 	})
 	return aliyun.bucket

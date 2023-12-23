@@ -9,7 +9,6 @@ import (
 	"github.com/russross/blackfriday/v2"
 	"github.com/vinta/pangu"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/strtrim"
 )
 
@@ -105,9 +104,7 @@ func (md *SimpleMd) Run(mdText string) *MdResult {
 
 	doc.Find("code").Each(func(i int, ele *goquery.Selection) {
 		code, err := ele.Html()
-		if nil != err {
-			log.Error("get element HTML failed")
-		} else {
+		if err == nil {
 			code = strings.Replace(code, "<", "&lt;", -1)
 			code = strings.Replace(code, ">", "&gt;", -1)
 			ele.SetHtml(code)

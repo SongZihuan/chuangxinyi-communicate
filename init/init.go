@@ -33,6 +33,11 @@ func Init(envPrefix string, serviceName string) error {
 	mode := viper.GetString("mode")
 	gin.SetMode(mode)
 
+	err = logger.InitLogger(serviceName)
+	if err != nil {
+		return err
+	}
+
 	err = global.InitPeerName(envPrefix)
 	if err != nil {
 		return err
@@ -59,11 +64,6 @@ func Init(envPrefix string, serviceName string) error {
 	}
 
 	err = rand.InitRander()
-	if err != nil {
-		return err
-	}
-
-	err = logger.InitLogger(serviceName)
 	if err != nil {
 		return err
 	}

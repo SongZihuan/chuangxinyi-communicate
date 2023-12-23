@@ -6,8 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/uploader"
 )
 
@@ -36,7 +36,7 @@ func (c *UploadController) Upload(ctx *gin.Context) {
 		return
 	}
 
-	log.Info("上传文件：%s, size: %s", header.Filename, header.Size)
+	logger.Logger.Info("上传文件：%s, size: %s", header.Filename, header.Size)
 
 	url, err := uploader.PutImage(fileBytes)
 	if err != nil {
@@ -71,19 +71,19 @@ func (c *UploadController) UploadFromEditor(ctx *gin.Context) {
 	for _, file := range files {
 		f, err := file.Open()
 		if err != nil {
-			log.Error(err.Error())
+			logger.Logger.Error(err.Error())
 			errFiles = append(errFiles, file.Filename)
 			continue
 		}
 		fileBytes, err := ioutil.ReadAll(f)
 		if err != nil {
-			log.Error(err.Error())
+			logger.Logger.Error(err.Error())
 			errFiles = append(errFiles, file.Filename)
 			continue
 		}
 		url, err := uploader.PutImage(fileBytes)
 		if err != nil {
-			log.Error(err.Error())
+			logger.Logger.Error(err.Error())
 			errFiles = append(errFiles, file.Filename)
 			continue
 		}

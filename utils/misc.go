@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"log"
 	"reflect"
 	"strings"
 
@@ -133,7 +132,6 @@ func MD5Bytes(data []byte) string {
 func StructFields(s interface{}) []reflect.StructField {
 	t := StructTypeOf(s)
 	if t.Kind() != reflect.Struct {
-		log.Println("Check type error not Struct")
 		return nil
 	}
 

@@ -10,7 +10,6 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/redis"
 	"gitee.com/wuntsong/chuangxinyi-communicate/signalexit"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 	"github.com/gorilla/websocket"
 	"github.com/spf13/viper"
 	"io"
@@ -73,7 +72,7 @@ func RestartGetUserInfo() error {
 
 		err = StartGetUserInfo(tmp[2], tmp[3])
 		if err != nil {
-			log.Error("restart get user info resp: %s", err.Error())
+			logger.Logger.Error("restart get user info resp: %s", err.Error())
 		}
 	}
 
@@ -130,7 +129,7 @@ func ConnectWebSocket() (chan WSWebsiteMessage, error) {
 
 				u, jsonErr := auth.SendGetRequests(websocketURL, v)
 				if jsonErr != nil {
-					log.Error("websocket resp: %s", jsonErr)
+					logger.Logger.Error("websocket resp: %s", jsonErr)
 					return
 				}
 
@@ -144,7 +143,7 @@ func ConnectWebSocket() (chan WSWebsiteMessage, error) {
 				utils.OnceFunc(func() {
 					err = RestartGetUserInfo() // 只需要执行一次
 					if err != nil {
-						log.Error("restart get user info resp: %s", err.Error())
+						logger.Logger.Error("restart get user info resp: %s", err.Error())
 					}
 				})()
 

@@ -4,10 +4,10 @@ import (
 	"html/template"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/markdown"
 )
 
@@ -42,7 +42,7 @@ func ToTopic(topic *model.Topic) *model.TopicResponse {
 
 	if len(topic.ImageList) > 0 {
 		if err := utils.ParseJson(topic.ImageList, &rsp.ImageList); err != nil {
-			log.Error(err.Error())
+			logger.Logger.Error(err.Error())
 		}
 	}
 
@@ -69,7 +69,7 @@ func ToSimpleTopic(topic *model.Topic) *model.TopicSimpleResponse {
 
 	if len(topic.ImageList) > 0 {
 		if err := utils.ParseJson(topic.ImageList, &rsp.ImageList); err != nil {
-			log.Error(err.Error())
+			logger.Logger.Error(err.Error())
 		}
 	}
 
