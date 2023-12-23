@@ -1,12 +1,14 @@
 package service
 
 import (
+	"fmt"
+	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
 	"strings"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 type ScanTagCallback func(tags []model.Tag) bool
@@ -41,10 +43,24 @@ func (s *tagService) List(cnd *sqlcnd.SqlCnd) (list []model.Tag, paging *sqlcnd.
 }
 
 func (s *tagService) Create(t *model.Tag) error {
+	ok, err := yundun.CheckText(fmt.Sprintf("标签：%s", t.Name))
+	if err != nil {
+		return err
+	} else if !ok {
+		return fmt.Errorf("bad content")
+	}
+
 	return dao.TagDao.Create(t)
 }
 
 func (s *tagService) Update(t *model.Tag) error {
+	ok, err := yundun.CheckText(fmt.Sprintf("标签：%s", t.Name))
+	if err != nil {
+		return err
+	} else if !ok {
+		return fmt.Errorf("bad content")
+	}
+
 	if err := dao.TagDao.Update(t); err != nil {
 		return err
 	}

@@ -12,8 +12,8 @@ import (
 	"github.com/spf13/viper"
 	"github.com/tidwall/gjson"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/log"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 )
 
 type UserInfo struct {
@@ -43,11 +43,11 @@ var ctxCache = cache.New(cache.WithMaximumSize(1000), cache.WithExpireAfterAcces
 // 接口：https://graph.qq.com/oauth2.0/authorize
 func AuthorizeUrl(params map[string]string) string {
 	// 将跳转地址写入上线文
-	state := util.Uuid()
+	state := utils.Uuid()
 	redirectUrl := getRedirectUrl(params)
 	ctxCache.Put(state, redirectUrl)
 
-	return util.ParseUrl("https://graph.qq.com/oauth2.0/authorize").
+	return utils.ParseUrl("https://graph.qq.com/oauth2.0/authorize").
 		AddQuery("response_type", "code").
 		AddQuery("client_id", viper.GetString("qq.client_id")).
 		AddQuery("redirect_uri", redirectUrl).
@@ -83,7 +83,7 @@ func AuthorizationCode(code, state string) (*AccessToken, error) {
 
 	// qq返回的数据格式如下：
 	// access_token=BC6A85A56265EEA32A12DA61AD8C6154&expires_in=7776000&refresh_token=55CD278593E6519ACEE403C4A0A8AB22
-	ub := util.ParseUrl("?" + content)
+	ub := utils.ParseUrl("?" + content)
 	accessToken := ub.GetQuery().Get("access_token")
 	refreshToken := ub.GetQuery().Get("refresh_token")
 	expiresIn, _ := strconv.Atoi(ub.GetQuery().Get("expires_in"))
@@ -142,7 +142,7 @@ func GetUserInfo(accessToken string) (*UserInfo, error) {
 	}
 
 	userInfo := &UserInfo{}
-	err = util.ParseJson(content, userInfo)
+	err = utils.ParseJson(content, userInfo)
 	if err != nil {
 		return nil, err
 	} else {
@@ -166,7 +166,7 @@ func GetUserInfoByCode(code, state string) (*UserInfo, error) {
 func getRedirectUrl(params map[string]string) string {
 	redirectUrl := viper.GetString("base.url") + "/oauth/qq/callback"
 	if len(params) > 0 {
-		ub := util.ParseUrl(redirectUrl)
+		ub := utils.ParseUrl(redirectUrl)
 		for k, v := range params {
 			ub.AddQuery(k, v)
 		}

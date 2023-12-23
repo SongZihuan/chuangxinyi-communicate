@@ -6,9 +6,9 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/log"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/markdown"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/markdown"
 )
 
 func ToTopic(topic *model.Topic) *model.TopicResponse {
@@ -41,7 +41,7 @@ func ToTopic(topic *model.Topic) *model.TopicResponse {
 	rsp.Toc = template.HTML(mr.TocHtml)
 
 	if len(topic.ImageList) > 0 {
-		if err := util.ParseJson(topic.ImageList, &rsp.ImageList); err != nil {
+		if err := utils.ParseJson(topic.ImageList, &rsp.ImageList); err != nil {
 			log.Error(err.Error())
 		}
 	}
@@ -68,7 +68,7 @@ func ToSimpleTopic(topic *model.Topic) *model.TopicSimpleResponse {
 	rsp.LikeCount = topic.LikeCount
 
 	if len(topic.ImageList) > 0 {
-		if err := util.ParseJson(topic.ImageList, &rsp.ImageList); err != nil {
+		if err := utils.ParseJson(topic.ImageList, &rsp.ImageList); err != nil {
 			log.Error(err.Error())
 		}
 	}

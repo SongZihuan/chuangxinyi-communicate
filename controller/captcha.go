@@ -4,7 +4,7 @@ import (
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/urls"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/urls"
 )
 
 // CaptchaController captcha controller

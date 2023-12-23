@@ -5,8 +5,8 @@ import (
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/markdown"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/strtrim"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/markdown"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/strtrim"
 )
 
 func ToArticle(article *model.Article) *model.ArticleResponse {

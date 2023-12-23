@@ -8,8 +8,8 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 type ArticleController struct {
@@ -22,7 +22,7 @@ func (c *ArticleController) Show(ctx *gin.Context) {
 	if c.BindAndValidate(ctx, &gDto) {
 		article := service.ArticleService.Get(gDto.ID)
 		if article == nil || article.Status != model.StatusOk {
-			c.Fail(ctx, util.ErrorArticleNotFound)
+			c.Fail(ctx, utils.ErrorArticleNotFound)
 			return
 		}
 		c.Success(ctx, convert.ToArticle(article))
@@ -33,7 +33,7 @@ func (c *ArticleController) Show(ctx *gin.Context) {
 func (c *ArticleController) Store(ctx *gin.Context) {
 	user := c.GetCurrentUser(ctx)
 	if user == nil {
-		c.Fail(ctx, util.ErrorNotLogin)
+		c.Fail(ctx, utils.ErrorNotLogin)
 		return
 	}
 	var articleForm form.ArticleCreateForm
@@ -41,7 +41,7 @@ func (c *ArticleController) Store(ctx *gin.Context) {
 		articleForm.UserID = user.ID
 		article, err := service.ArticleService.Create(articleForm)
 		if err != nil {
-			c.Fail(ctx, util.FromError(err))
+			c.Fail(ctx, utils.FromError(err))
 			return
 		}
 		c.Success(ctx, convert.ToArticle(article))
@@ -52,7 +52,7 @@ func (c *ArticleController) Store(ctx *gin.Context) {
 func (c *ArticleController) Edit(ctx *gin.Context) {
 	user := c.GetCurrentUser(ctx)
 	if user == nil {
-		c.Fail(ctx, util.ErrorNotLogin)
+		c.Fail(ctx, utils.ErrorNotLogin)
 		return
 	}
 
@@ -61,11 +61,11 @@ func (c *ArticleController) Edit(ctx *gin.Context) {
 		article := service.ArticleService.Get(gDto.ID)
 
 		if article == nil || article.Status != model.StatusOk {
-			c.Fail(ctx, util.NewErrorMsg("话题不存在或已被删除"))
+			c.Fail(ctx, utils.NewErrorMsg("话题不存在或已被删除"))
 			return
 		}
 		if article.UserId != user.ID {
-			c.Fail(ctx, util.NewErrorMsg("无权限"))
+			c.Fail(ctx, utils.NewErrorMsg("无权限"))
 			return
 		}
 
@@ -90,23 +90,23 @@ func (c *ArticleController) Edit(ctx *gin.Context) {
 func (c *ArticleController) Update(ctx *gin.Context) {
 	user := c.GetCurrentUser(ctx)
 	if user == nil {
-		c.Fail(ctx, util.ErrorNotLogin)
+		c.Fail(ctx, utils.ErrorNotLogin)
 		return
 	}
 	var gDto form.GeneralGetDto
 	if !c.BindAndValidate(ctx, &gDto) {
-		c.Fail(ctx, util.ErrorArticleNotFound)
+		c.Fail(ctx, utils.ErrorArticleNotFound)
 		return
 	}
 
 	article := service.ArticleService.Get(gDto.ID)
 	if article == nil || article.Status == model.StatusDeleted {
-		c.Fail(ctx, util.ErrorArticleNotFound)
+		c.Fail(ctx, utils.ErrorArticleNotFound)
 		return
 	}
 
 	if article.UserId != user.ID {
-		c.Fail(ctx, util.NewErrorMsg("无权限"))
+		c.Fail(ctx, utils.NewErrorMsg("无权限"))
 		return
 	}
 
@@ -115,7 +115,7 @@ func (c *ArticleController) Update(ctx *gin.Context) {
 		articleForm.ID = article.ID
 		err := service.ArticleService.Update(articleForm)
 		if err != nil {
-			c.Fail(ctx, util.FromError(err))
+			c.Fail(ctx, utils.FromError(err))
 			return
 		}
 		c.Success(ctx, gin.H{
@@ -204,12 +204,12 @@ func (c *ArticleController) Favorite(ctx *gin.Context) {
 	user := c.GetCurrentUser(ctx)
 	var gDto form.GeneralGetDto
 	if !c.BindAndValidate(ctx, &gDto) {
-		c.Fail(ctx, util.ErrorArticleNotFound)
+		c.Fail(ctx, utils.ErrorArticleNotFound)
 		return
 	}
 	err := service.FavoriteService.AddArticleFavorite(user.ID, gDto.ID)
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 	c.Success(ctx, nil)

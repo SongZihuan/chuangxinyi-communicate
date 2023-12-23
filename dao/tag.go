@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 var TagDao = newTagDao()
@@ -110,8 +110,8 @@ func (d *tagDao) GetOrCreate(name string) (*model.Tag, error) {
 		tag = &model.Tag{
 			Name:       name,
 			Status:     model.StatusOk,
-			CreateTime: util.NowTimestamp(),
-			UpdateTime: util.NowTimestamp(),
+			CreateTime: utils.NowTimestamp(),
+			UpdateTime: utils.NowTimestamp(),
 		}
 		err := d.Create(tag)
 		if err != nil {

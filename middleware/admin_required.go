@@ -3,7 +3,7 @@ package middleware
 import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -13,7 +13,7 @@ func AdminRequired() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		user := service.UserService.GetCurrent(ctx)
 		if user == nil {
-			err := util.ErrorNotLogin
+			err := utils.ErrorNotLogin
 			ctx.AbortWithStatusJSON(http.StatusOK, gin.H{
 				"code":    err.Code,
 				"message": err.Message,
@@ -21,7 +21,7 @@ func AdminRequired() gin.HandlerFunc {
 			return
 		}
 		if user.Level != model.UserLevelAdmin {
-			err := util.ErrorPermissionDenied
+			err := utils.ErrorPermissionDenied
 			ctx.AbortWithStatusJSON(http.StatusOK, gin.H{
 				"code":    err.Code,
 				"message": err.Message,

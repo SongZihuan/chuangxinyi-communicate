@@ -7,7 +7,7 @@ import (
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/config"
 	"gitee.com/wuntsong/chuangxinyi-communicate/controller"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 )
 
 // initTime is the time when the application was initialized.
@@ -22,7 +22,7 @@ type DashboardController struct {
 func (c *DashboardController) Systeminfo(ctx *gin.Context) {
 	c.Success(ctx, gin.H{
 		"appName":   config.AppName,
-		"upTime":    util.TimeSincePro(initTime),
+		"upTime":    utils.TimeSincePro(initTime),
 		"os":        runtime.GOOS,
 		"arch":      runtime.GOARCH,
 		"numCpu":    runtime.NumCPU(),

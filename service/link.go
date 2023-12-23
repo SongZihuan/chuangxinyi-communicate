@@ -9,8 +9,8 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 var LinkService = newLinkService()
@@ -40,7 +40,7 @@ func (s *linkService) Create(dto form.LinkCreateForm) (*model.Link, error) {
 		Url:        dto.URL,
 		Summary:    dto.Summary,
 		Logo:       dto.Logo,
-		CreateTime: util.NowTimestamp(),
+		CreateTime: utils.NowTimestamp(),
 	}
 	err := dao.Tx(dao.DB(), func(tx *gorm.DB) error {
 		err := dao.LinkDao.Create(link)
@@ -59,7 +59,7 @@ func (s *linkService) Update(dto form.LinkUpdateForm) error {
 		"summary":     dto.Summary,
 		"logo":        dto.Logo,
 		"status":      dto.Status,
-		"update_time": util.NowTimestamp(),
+		"update_time": utils.NowTimestamp(),
 	})
 
 	return err
@@ -89,7 +89,7 @@ func (s *linkService) Submit(url, title, summary, logo string) (link *model.Link
 		Summary:    summary,
 		Logo:       logo,
 		Status:     model.StatusPending,
-		CreateTime: util.NowTimestamp(),
+		CreateTime: utils.NowTimestamp(),
 	}
 
 	err = dao.Tx(dao.DB(), func(tx *gorm.DB) error {

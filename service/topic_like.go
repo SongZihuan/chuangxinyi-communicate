@@ -7,8 +7,8 @@ import (
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 var TopicLikeService = newTopicLikeService()
@@ -89,7 +89,7 @@ func (s *topicLikeService) Like(userId int64, topicId int64) error {
 		topicLike := &model.TopicLike{
 			UserId:     userId,
 			TopicId:    topicId,
-			CreateTime: util.NowTimestamp(),
+			CreateTime: utils.NowTimestamp(),
 		}
 		err := dao.TopicLikeDao.Create(topicLike)
 		if err != nil {

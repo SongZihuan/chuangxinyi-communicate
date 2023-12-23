@@ -8,10 +8,9 @@ import (
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/avatar"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/strtrim"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/urls"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/strtrim"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/urls"
 )
 
 func ToFavorites(favorites []model.Favorite) []model.FavoriteResponse {
@@ -53,7 +52,7 @@ func ToNotification(notification *model.Notification) *model.NotificationRespons
 	from := ToUserDefaultIfNull(notification.FromId)
 	if notification.FromId <= 0 {
 		from.Nickname = "系统通知"
-		from.Avatar = avatar.DefaultAvatar
+		from.Header = ""
 	}
 
 	return &model.NotificationResponse{
@@ -86,7 +85,7 @@ func ToFavorite(favorite *model.Favorite) *model.FavoriteResponse {
 			rsp.User = ToUserById(article.UserId)
 			rsp.Title = article.Title
 			if article.ContentType == model.ContentTypeMarkdown {
-				rsp.Content = util.GetMarkdownSummary(article.Content)
+				rsp.Content = utils.GetMarkdownSummary(article.Content)
 			} else {
 				doc, err := goquery.NewDocumentFromReader(strings.NewReader(article.Content))
 				if err == nil {
@@ -103,7 +102,7 @@ func ToFavorite(favorite *model.Favorite) *model.FavoriteResponse {
 			rsp.Url = urls.TopicUrl(topic.ID)
 			rsp.User = ToUserById(topic.UserId)
 			rsp.Title = topic.Title
-			rsp.Content = util.GetMarkdownSummary(topic.Content)
+			rsp.Content = utils.GetMarkdownSummary(topic.Content)
 		}
 	}
 	return rsp
@@ -156,7 +155,7 @@ func ToHtmlContent(htmlContent string) string {
 		src := selection.AttrOr("src", "")
 		// 处理第三方图片
 		if strings.Contains(src, "qpic.cn") {
-			src = util.ParseUrl("/api/img/proxy").AddQuery("url", src).BuildStr()
+			src = utils.ParseUrl("/api/img/proxy").AddQuery("url", src).BuildStr()
 			// selection.SetAttr("src", src)
 		}
 

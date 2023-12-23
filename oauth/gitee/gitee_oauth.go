@@ -9,8 +9,8 @@ import (
 	"github.com/spf13/viper"
 	"golang.org/x/oauth2"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/log"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 )
 
 var ctxCache = cache.New(cache.WithMaximumSize(1000), cache.WithExpireAfterAccess(10*time.Minute))
@@ -46,7 +46,7 @@ func newOauthConfig(redirectUrl string) *oauth2.Config {
 
 func AuthCodeURL(params map[string]string) string {
 	// 将跳转地址写入上线文
-	state := util.Uuid()
+	state := utils.Uuid()
 	redirectUrl := getRedirectUrl(params)
 	ctxCache.Put(state, redirectUrl)
 
@@ -80,7 +80,7 @@ func GetUserInfo(accessToken string) (*UserInfo, error) {
 	content := string(response.Body())
 
 	userInfo := &UserInfo{}
-	err = util.ParseJson(content, userInfo)
+	err = utils.ParseJson(content, userInfo)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func GetUserInfo(accessToken string) (*UserInfo, error) {
 func getRedirectUrl(params map[string]string) string {
 	redirectUrl := viper.GetString("base.url") + "/oauth/gitee/callback"
 	if len(params) > 0 {
-		ub := util.ParseUrl(redirectUrl)
+		ub := utils.ParseUrl(redirectUrl)
 		for k, v := range params {
 			ub.AddQuery(k, v)
 		}

@@ -6,13 +6,12 @@ import (
 
 type User struct {
 	Model
-	Username     sql.NullString `gorm:"size:32;unique;" json:"username" form:"username"`            // 用户名
-	Email        sql.NullString `gorm:"size:128;unique;" json:"email" form:"email"`                 // 邮箱
-	Nickname     string         `gorm:"size:16;" json:"nickname" form:"nickname"`                   // 昵称
-	Avatar       string         `gorm:"type:text" json:"avatar" form:"avatar"`                      // 头像
-	Password     string         `gorm:"size:512" json:"password" form:"password"`                   // 密码
-	Website      string         `gorm:"size:1024" json:"website" form:"website"`                    // 个人主页
-	Description  string         `gorm:"type:text" json:"description" form:"description"`            // 个人描述
+	Uid          string         `gorm:"size:128;" json:"uid" form:"uid"`
+	Phone        string         `gorm:"size:50;" json:"phone" form:"phone"`
+	Username     sql.NullString `gorm:"size:32;" json:"username" form:"username"`                   // 用户名
+	Email        sql.NullString `gorm:"size:128;" json:"email" form:"email"`                        // 邮箱
+	Nickname     sql.NullString `gorm:"size:16;" json:"nickname" form:"nickname"`                   // 昵称
+	Header       sql.NullString `gorm:"size:128" json:"header" form:"header"`                       // 头像
 	Status       int            `gorm:"index:idx_user_status;not null" json:"status" form:"status"` // 状态
 	TopicCount   int            `gorm:"not null" json:"topicCount" form:"topicCount"`               // 帖子数量
 	CommentCount int            `gorm:"not null" json:"commentCount" form:"commentCount"`           // 跟帖数量

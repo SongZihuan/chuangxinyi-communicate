@@ -1,16 +1,14 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
-	"strings"
-
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/convert"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	"github.com/gin-gonic/gin"
 )
 
 type UserController struct {
@@ -37,36 +35,8 @@ func (c *UserController) Show(ctx *gin.Context) {
 		if user != nil && user.Status != model.StatusDeleted {
 			c.Success(ctx, convert.ToUser(user))
 		} else {
-			c.Fail(ctx, util.NewErrorMsg("用户不存在"))
+			c.Fail(ctx, utils.NewErrorMsg("用户不存在"))
 		}
-	}
-}
-
-// Update 用户资料编辑
-func (c *UserController) Update(ctx *gin.Context) {
-	user := c.GetCurrentUser(ctx)
-	if user == nil {
-		c.Fail(ctx, util.ErrorNotLogin)
-		return
-	}
-
-	var dto form.UserUpdateForm
-	if c.BindAndValidate(ctx, &dto) {
-		if len(dto.Website) > 0 && util.IsValidateUrl(dto.Website) != nil {
-			c.Fail(ctx, util.NewErrorMsg("个人主页地址错误"))
-			return
-		}
-		err := service.UserService.Updates(user.ID, map[string]interface{}{
-			"nickname":    dto.Nickname,
-			"avatar":      dto.Avatar,
-			"website":     dto.Website,
-			"description": dto.Description,
-		})
-		if err != nil {
-			c.Fail(ctx, util.FromError(err))
-			return
-		}
-		c.Success(ctx, nil)
 	}
 }
 
@@ -175,7 +145,7 @@ func (c *UserController) Watch(ctx *gin.Context) {
 	if c.BindAndValidate(ctx, &gDto) {
 		err := service.UserWatchService.Watch(gDto.ID, user.ID)
 		if err != nil {
-			c.Fail(ctx, util.FromError(err))
+			c.Fail(ctx, utils.FromError(err))
 			return
 		}
 		c.Success(ctx, nil)
@@ -207,78 +177,6 @@ func (c *UserController) WatchDelete(ctx *gin.Context) {
 	tmp := service.UserWatchService.GetBy(userID, user.ID)
 	if tmp != nil {
 		service.UserWatchService.Delete(tmp.ID)
-	}
-	c.Success(ctx, nil)
-}
-
-// UpdateAvatar 修改头像
-func (c *UserController) UpdateAvatar(ctx *gin.Context) {
-	user := c.GetCurrentUser(ctx)
-	avatar := strings.TrimSpace(ctx.Request.FormValue("avatar"))
-
-	err := service.UserService.UpdateAvatar(user.ID, avatar)
-	if err != nil {
-		c.Fail(ctx, util.FromError(err))
-		return
-	}
-	c.Success(ctx, nil)
-}
-
-// SetUsername 设置用户名
-func (c *UserController) SetUsername(ctx *gin.Context) {
-	user := c.GetCurrentUser(ctx)
-	username := strings.TrimSpace(ctx.Request.FormValue("username"))
-
-	err := service.UserService.SetUsername(user.ID, username)
-	if err != nil {
-		c.Fail(ctx, util.FromError(err))
-		return
-	}
-	c.Success(ctx, nil)
-}
-
-// SetEmail 设置邮箱
-func (c *UserController) SetEmail(ctx *gin.Context) {
-	user := c.GetCurrentUser(ctx)
-	email := strings.TrimSpace(ctx.Request.FormValue("email"))
-
-	err := service.UserService.SetEmail(user.ID, email)
-	if err != nil {
-		c.Fail(ctx, util.FromError(err))
-		return
-	}
-	c.Success(ctx, nil)
-}
-
-// SetPassword 设置密码
-func (c *UserController) SetPassword(ctx *gin.Context) {
-	user := c.GetCurrentUser(ctx)
-
-	var (
-		password   = strings.TrimSpace(ctx.Request.FormValue("password"))
-		rePassword = strings.TrimSpace(ctx.Request.FormValue("rePassword"))
-	)
-
-	err := service.UserService.SetPassword(user.ID, password, rePassword)
-	if err != nil {
-		c.Fail(ctx, util.FromError(err))
-		return
-	}
-	c.Success(ctx, nil)
-}
-
-// ChangePassword 更改密码
-func (c *UserController) ChangePassword(ctx *gin.Context) {
-	user := c.GetCurrentUser(ctx)
-	var (
-		oldPassword = ctx.Request.FormValue("oldPassword")
-		password    = ctx.Request.FormValue("password")
-		rePassword  = ctx.Request.FormValue("rePassword")
-	)
-	err := service.UserService.UpdatePassword(user.ID, oldPassword, password, rePassword)
-	if err != nil {
-		c.Fail(ctx, util.FromError(err))
-		return
 	}
 	c.Success(ctx, nil)
 }

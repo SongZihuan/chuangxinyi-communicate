@@ -8,8 +8,8 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 type TopicController struct {
@@ -22,7 +22,7 @@ func (c *TopicController) Show(ctx *gin.Context) {
 	if c.BindAndValidate(ctx, &gDto) {
 		topic := service.TopicService.Get(gDto.ID)
 		if topic == nil || topic.Status != model.StatusOk {
-			c.Fail(ctx, util.ErrorTopicNotFound)
+			c.Fail(ctx, utils.ErrorTopicNotFound)
 			return
 		}
 		service.TopicService.IncrViewCount(topic.ID) // 增加浏览量
@@ -52,7 +52,7 @@ func (c *TopicController) Store(ctx *gin.Context) {
 		topicForm.UserID = user.ID
 		topic, err := service.TopicService.Create(topicForm)
 		if err != nil {
-			c.Fail(ctx, util.FromError(err))
+			c.Fail(ctx, utils.FromError(err))
 			return
 		}
 		c.Success(ctx, convert.ToSimpleTopic(topic))
@@ -66,11 +66,11 @@ func (c *TopicController) Edit(ctx *gin.Context) {
 	if c.BindAndValidate(ctx, &gDto) {
 		topic := service.TopicService.Get(gDto.ID)
 		if topic == nil || topic.Status != model.StatusOk {
-			c.Fail(ctx, util.NewErrorMsg("话题不存在或已被删除"))
+			c.Fail(ctx, utils.NewErrorMsg("话题不存在或已被删除"))
 			return
 		}
 		if topic.UserId != user.ID {
-			c.Fail(ctx, util.NewErrorMsg("无权限"))
+			c.Fail(ctx, utils.NewErrorMsg("无权限"))
 			return
 		}
 
@@ -97,18 +97,18 @@ func (c *TopicController) Update(ctx *gin.Context) {
 	user := c.GetCurrentUser(ctx)
 	var gDto form.GeneralGetDto
 	if !c.BindAndValidate(ctx, &gDto) {
-		c.Fail(ctx, util.ErrorTopicNotFound)
+		c.Fail(ctx, utils.ErrorTopicNotFound)
 		return
 	}
 
 	topic := service.TopicService.Get(gDto.ID)
 	if topic == nil || topic.Status == model.StatusDeleted {
-		c.Fail(ctx, util.ErrorTopicNotFound)
+		c.Fail(ctx, utils.ErrorTopicNotFound)
 		return
 	}
 
 	if topic.UserId != user.ID {
-		c.Fail(ctx, util.NewErrorMsg("无权限"))
+		c.Fail(ctx, utils.NewErrorMsg("无权限"))
 		return
 	}
 
@@ -117,7 +117,7 @@ func (c *TopicController) Update(ctx *gin.Context) {
 		topicForm.ID = topic.ID
 		err := service.TopicService.Update(topicForm)
 		if err != nil {
-			c.Fail(ctx, util.FromError(err))
+			c.Fail(ctx, utils.FromError(err))
 			return
 		}
 		c.Success(ctx, convert.ToSimpleTopic(topic))
@@ -226,7 +226,7 @@ func (c *TopicController) GetTagTopics(ctx *gin.Context) {
 	page := form.FormValueIntDefault(ctx, "page", 1)
 	tagId, err := form.FormValueInt64(ctx, "tagId")
 	if err != nil {
-		c.Fail(ctx, util.ErrorTagNotFound)
+		c.Fail(ctx, utils.ErrorTagNotFound)
 		return
 	}
 	topics, paging := service.TopicService.GetTagTopics(tagId, page)
@@ -271,7 +271,7 @@ func (c *TopicController) Like(ctx *gin.Context) {
 	if c.BindAndValidate(ctx, &gDto) {
 		err := service.TopicLikeService.Like(user.ID, gDto.ID)
 		if err != nil {
-			c.Fail(ctx, util.FromError(err))
+			c.Fail(ctx, utils.FromError(err))
 			return
 		}
 		c.Success(ctx, nil)
@@ -283,12 +283,12 @@ func (c *TopicController) Favorite(ctx *gin.Context) {
 	user := c.GetCurrentUser(ctx)
 	var gDto form.GeneralGetDto
 	if !c.BindAndValidate(ctx, &gDto) {
-		c.Fail(ctx, util.ErrorTopicNotFound)
+		c.Fail(ctx, utils.ErrorTopicNotFound)
 		return
 	}
 	err := service.FavoriteService.AddTopicFavorite(user.ID, gDto.ID)
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 	c.Success(ctx, nil)

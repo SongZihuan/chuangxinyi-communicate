@@ -2,7 +2,7 @@ package dao
 
 import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 var UserDao = newUserDao()
@@ -81,6 +81,10 @@ func (d *userDao) UpdateColumn(id int64, name string, value interface{}) (err er
 
 func (d *userDao) Delete(id int64) {
 	db.Delete(&model.User{}, "id = ?", id)
+}
+
+func (d *userDao) GetByUid(uid string) *model.User {
+	return d.Take("uid = ?", uid)
 }
 
 func (d *userDao) GetByEmail(email string) *model.User {

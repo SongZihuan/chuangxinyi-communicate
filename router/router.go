@@ -22,7 +22,7 @@ func Setup(e *gin.Engine) {
 	e.Use(middleware.Cors())
 
 	e.Any("/", func(ctx *gin.Context) {
-		ctx.String(http.StatusOK, "Zendea API\n")
+		ctx.String(http.StatusOK, "Community API\n")
 	})
 
 	// e.Use(middleware.CurrentUser)
@@ -40,13 +40,6 @@ func Setup(e *gin.Engine) {
 	jwtAuth = middleware.JwtAuth(middleware.LoginStandard)
 	api.POST("/auth/login", jwtAuth.LoginHandler)
 	api.POST("/auth/login/refresh", jwtAuth.RefreshHandler)
-
-	jwtOAuth = middleware.JwtAuth(middleware.LoginOAuth)
-
-	oauthController := &controller.OAuthController{}
-	api.GET("/oauth/:provider/authorize", oauthController.Authorize)
-
-	api.GET("/oauth/:provider/callback", jwtOAuth.LoginHandler)
 
 	jwtApi := api.Group("/")
 	jwtApi.Use(jwtAuth.MiddlewareFunc(), middleware.CurrentUser)
@@ -115,10 +108,13 @@ func Setup(e *gin.Engine) {
 	api.GET("/articles/user/recent/:id", articleController.GetUserRecent)
 	api.GET("/user/articles/:id", articleController.GetUserArticles)
 
+	// header
+	headerController := &controller.HeaderController{}
+	api.GET("/header", headerController.GetHeader)
+
 	// Users
 	userController := &controller.UserController{}
 	api.GET("/profile/:id", userController.Show)
-	jwtApi.PUT("/users/:id", userController.Update)
 	jwtApi.GET("/user/current", userController.GetCurrent)
 	api.GET("/user/score/rank", userController.GetScoreRank)
 	jwtApi.GET("/user/scorelogs", userController.GetScorelogs)
@@ -126,20 +122,10 @@ func Setup(e *gin.Engine) {
 	jwtApi.GET("/user/notifications", userController.GetNotifications)
 	jwtApi.GET("/user/favorites", userController.GetFavorites)
 
-	jwtApi.PUT("/user/update/avatar", userController.UpdateAvatar)
-	jwtApi.PUT("/user/set/username", userController.SetUsername)
-	jwtApi.PUT("/user/set/email", userController.SetEmail)
-	jwtApi.PUT("/user/set/password", userController.SetPassword)
-	jwtApi.PUT("/user/change/password", userController.ChangePassword)
-
 	api.GET("/users/:id/recentwatchers", userController.GetRecentWatchers)
 	jwtApi.POST("/users/:id/watch", userController.Watch)
 	jwtApi.GET("/watch/watched", userController.GetWatched)
 	jwtApi.DELETE("/watch/delete", userController.WatchDelete)
-
-	// Auth
-	authController := &controller.AuthController{}
-	api.POST("/auth/signup", authController.Signup)
 
 	// Links
 	linkController := &controller.LinkController{}

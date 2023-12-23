@@ -9,8 +9,8 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 // UserController user controller
@@ -24,7 +24,7 @@ func (c *UserController) Show(ctx *gin.Context) {
 	if c.BindAndValidate(ctx, &gDto) {
 		user := service.UserService.Get(gDto.ID)
 		if user == nil {
-			c.Fail(ctx, util.NewErrorMsg("User not found, id="+strconv.FormatInt(gDto.ID, 10)))
+			c.Fail(ctx, utils.NewErrorMsg("User not found, id="+strconv.FormatInt(gDto.ID, 10)))
 			return
 		}
 		c.Success(ctx, c.buildUserItem(user))
@@ -44,7 +44,7 @@ func (c *UserController) Update(ctx *gin.Context) {
 	}
 	user := service.UserService.Get(gDto.ID)
 	if user == nil {
-		c.Fail(ctx, util.NewErrorMsg("User not found, id="+strconv.FormatInt(gDto.ID, 10)))
+		c.Fail(ctx, utils.NewErrorMsg("User not found, id="+strconv.FormatInt(gDto.ID, 10)))
 		return
 	}
 
@@ -55,7 +55,7 @@ func (c *UserController) Update(ctx *gin.Context) {
 	userForm.ID = gDto.ID
 	err := service.UserService.Update(userForm)
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 	c.Success(ctx, user)
@@ -106,10 +106,11 @@ func (c *UserController) buildUserItem(user *model.User) map[string]interface{} 
 	result["id"] = user.ID
 	result["status"] = user.Status
 	result["level"] = user.Level
-	result["username"] = user.Username.String
-	result["nickname"] = user.Nickname
-	result["avatar"] = user.Avatar
+	result["uid"] = user.Uid
+	result["phone"] = user.Phone
 	result["email"] = user.Email.String
+	result["username"] = user.Username.String
+	result["nickname"] = user.Nickname.String
 	result["score"] = score
 	result["createTime"] = user.CreateTime
 	result["updateTime"] = user.UpdateTime

@@ -7,8 +7,8 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/controller"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 // NodeController node controller
@@ -22,7 +22,7 @@ func (c *NodeController) Show(ctx *gin.Context) {
 	if c.BindAndValidate(ctx, &gDto) {
 		node := service.NodeService.Get(gDto.ID)
 		if node == nil {
-			c.Fail(ctx, util.NewErrorMsg("Node not found, id="+strconv.FormatInt(gDto.ID, 10)))
+			c.Fail(ctx, utils.NewErrorMsg("Node not found, id="+strconv.FormatInt(gDto.ID, 10)))
 			return
 		}
 		c.Success(ctx, node)
@@ -37,7 +37,7 @@ func (c *NodeController) Store(ctx *gin.Context) {
 	}
 	node, err := service.NodeService.Create(nodeForm)
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 	c.Success(ctx, node)
@@ -51,7 +51,7 @@ func (c *NodeController) Update(ctx *gin.Context) {
 	}
 	node := service.NodeService.Get(gDto.ID)
 	if node == nil {
-		c.Fail(ctx, util.NewErrorMsg("Node not found, id="+strconv.FormatInt(gDto.ID, 10)))
+		c.Fail(ctx, utils.NewErrorMsg("Node not found, id="+strconv.FormatInt(gDto.ID, 10)))
 		return
 	}
 
@@ -62,7 +62,7 @@ func (c *NodeController) Update(ctx *gin.Context) {
 	nodeForm.ID = gDto.ID
 	err := service.NodeService.Update(nodeForm)
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 	c.Success(ctx, node)
@@ -95,7 +95,7 @@ func (c *NodeController) List(ctx *gin.Context) {
 	list, paging := service.NodeService.List(conditions.Page(page, limit).Asc("sort_no"))
 	var results []map[string]interface{}
 	for _, node := range list {
-		item := util.StructToMap(node)
+		item := utils.StructToMap(node)
 		results = append(results, item)
 	}
 

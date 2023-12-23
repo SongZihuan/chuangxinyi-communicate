@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/viper"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/log"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 )
 
 var (
@@ -22,10 +22,10 @@ const DRIVER_MYSQL = "mysql"
 const DRIVER_SQLITE = "sqlite"
 
 // Setup : Connect to mysql database
-func Setup() {
+func Setup() error {
 	var err error
 
-	switch viper.Get("database.driver") {
+	switch viper.GetString("database.driver") {
 	case DRIVER_SQLITE:
 		path := viper.GetString("database.sqlite.path")
 		db, err = gorm.Open("sqlite3", path)
@@ -56,13 +56,15 @@ func Setup() {
 			}
 		}
 	default:
-		log.Fatal("We do not support this kind of storage system yet!")
+		return fmt.Errorf("we do not support this kind of storage system yet")
 	}
 
 	db.SingularTable(true) //禁用表名复数
 	if err = db.AutoMigrate(model.Models...).Error; nil != err {
-		log.Error("auto migrate tables failed")
+		return err
 	}
+
+	return nil
 }
 
 // Shutdown - close database connection

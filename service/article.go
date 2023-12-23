@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
 	"math"
 	"path"
 	"time"
@@ -14,10 +16,10 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/log"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/urls"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/urls"
 )
 
 type ScanArticleCallback func(articles []model.Article)
@@ -54,12 +56,19 @@ func (s *articleService) Create(dto form.ArticleCreateForm) (*model.Article, err
 		Status:      model.StatusOk,
 		Share:       false,
 		SourceUrl:   "",
-		CreateTime:  util.NowTimestamp(),
-		UpdateTime:  util.NowTimestamp(),
+		CreateTime:  utils.NowTimestamp(),
+		UpdateTime:  utils.NowTimestamp(),
 	}
 
-	err := dao.Tx(dao.DB(), func(tx *gorm.DB) error {
-		tagIDs := dao.TagDao.GetOrCreates(util.ParseTagsToArray(dto.Tags))
+	ok, err := yundun.CheckText(fmt.Sprintf("标题：%s\n内容：%s", dto.Title, dto.Content))
+	if err != nil {
+		return nil, err
+	} else if !ok {
+		return nil, fmt.Errorf("bad content")
+	}
+
+	err = dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+		tagIDs := dao.TagDao.GetOrCreates(utils.ParseTagsToArray(dto.Tags))
 		err := dao.ArticleDao.Create(article)
 		if err != nil {
 			return err
@@ -72,18 +81,25 @@ func (s *articleService) Create(dto form.ArticleCreateForm) (*model.Article, err
 
 // Update 编辑文章
 func (s *articleService) Update(dto form.ArticleUpdateForm) error {
-	err := dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+	ok, err := yundun.CheckText(fmt.Sprintf("标题：%s\n内容：%s", dto.Title, dto.Content))
+	if err != nil {
+		return err
+	} else if !ok {
+		return fmt.Errorf("bad content")
+	}
+
+	err = dao.Tx(dao.DB(), func(tx *gorm.DB) error {
 		err := dao.ArticleDao.Updates(dto.ID, map[string]interface{}{
 			"title":       dto.Title,
 			"content":     dto.Content,
-			"update_time": util.NowTimestamp(),
+			"update_time": utils.NowTimestamp(),
 		})
 		if err != nil {
 			return err
 		}
-		tagIds := dao.TagDao.GetOrCreates(util.ParseTagsToArray(dto.Tags)) // 创建文章对应标签
-		dao.ArticleTagDao.DeleteArticleTags(dto.ID)                        // 先删掉所有的标签
-		dao.ArticleTagDao.AddArticleTags(dto.ID, tagIds)                   // 然后重新添加标签
+		tagIds := dao.TagDao.GetOrCreates(utils.ParseTagsToArray(dto.Tags)) // 创建文章对应标签
+		dao.ArticleTagDao.DeleteArticleTags(dto.ID)                         // 先删掉所有的标签
+		dao.ArticleTagDao.AddArticleTags(dto.ID, tagIds)                    // 然后重新添加标签
 		return nil
 	})
 	cache.ArticleTagCache.Invalidate(dto.ID)
@@ -212,16 +228,16 @@ func (s *articleService) GenerateRss() {
 		}
 		description := ""
 		if article.ContentType == model.ContentTypeMarkdown {
-			description = util.GetMarkdownSummary(article.Content)
+			description = utils.GetMarkdownSummary(article.Content)
 		} else {
-			description = util.GetHtmlSummary(article.Content)
+			description = utils.GetHtmlSummary(article.Content)
 		}
 		item := &feeds.Item{
 			Title:       article.Title,
 			Link:        &feeds.Link{Href: articleUrl},
 			Description: description,
-			Author:      &feeds.Author{Name: user.Avatar, Email: user.Email.String},
-			Created:     util.TimeFromTimestamp(article.CreateTime),
+			Author:      &feeds.Author{Name: utils.GetUserName(user.Phone, user.Email, user.Username, user.Nickname), Email: user.Email.String},
+			Created:     utils.TimeFromTimestamp(article.CreateTime),
 		}
 		items = append(items, item)
 	}
@@ -240,13 +256,13 @@ func (s *articleService) GenerateRss() {
 	if err != nil {
 		log.Error(err.Error())
 	} else {
-		_ = util.WriteString(path.Join(viper.GetString("base.static_path"), "atom.xml"), atom, false)
+		_ = utils.WriteString(path.Join(viper.GetString("base.static_path"), "atom.xml"), atom, false)
 	}
 
 	rss, err := feed.ToRss()
 	if err != nil {
 		log.Error(err.Error())
 	} else {
-		_ = util.WriteString(path.Join(viper.GetString("base.static_path"), "rss.xml"), rss, false)
+		_ = utils.WriteString(path.Join(viper.GetString("base.static_path"), "rss.xml"), rss, false)
 	}
 }

@@ -5,7 +5,7 @@ import (
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/markdown"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/markdown"
 )
 
 func ToComments(comments []model.Comment) []model.CommentResponse {

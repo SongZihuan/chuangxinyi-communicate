@@ -5,7 +5,7 @@ import (
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 )
 
 type FavoriteController struct {
@@ -32,7 +32,7 @@ func (c *FavoriteController) GetFavorited(ctx *gin.Context) {
 func (c *FavoriteController) Delete(ctx *gin.Context) {
 	user := c.GetCurrentUser(ctx)
 	if user == nil {
-		c.Fail(ctx, util.ErrorNotLogin)
+		c.Fail(ctx, utils.ErrorNotLogin)
 		return
 	}
 

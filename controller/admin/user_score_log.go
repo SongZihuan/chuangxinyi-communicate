@@ -8,8 +8,8 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/convert"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 // UserScoreLogController user score controller
@@ -23,7 +23,7 @@ func (c *UserScoreLogController) Show(ctx *gin.Context) {
 	if c.BindAndValidate(ctx, &gDto) {
 		userScoreLog := service.UserScoreLogService.Get(gDto.ID)
 		if userScoreLog == nil {
-			c.Fail(ctx, util.NewErrorMsg("User score log not found, id="+strconv.FormatInt(gDto.ID, 10)))
+			c.Fail(ctx, utils.NewErrorMsg("User score log not found, id="+strconv.FormatInt(gDto.ID, 10)))
 			return
 		}
 		c.Success(ctx, userScoreLog)
@@ -57,7 +57,7 @@ func (c *UserScoreLogController) List(ctx *gin.Context) {
 
 	var results []map[string]interface{}
 	for _, userScoreLog := range list {
-		item := util.StructToMap(userScoreLog)
+		item := utils.StructToMap(userScoreLog)
 		item["user"] = convert.ToUserDefaultIfNull(userScoreLog.UserId)
 		results = append(results, item)
 	}

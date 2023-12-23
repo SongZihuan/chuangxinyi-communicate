@@ -7,8 +7,8 @@ import (
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 var UserWatchService = newUserWatchService()
@@ -97,7 +97,7 @@ func (s *userWatchService) Watch(userID int64, watcherID int64) error {
 		userWatch := &model.UserWatch{
 			UserID:     userID,
 			WatcherID:  watcherID,
-			CreateTime: util.NowTimestamp(),
+			CreateTime: utils.NowTimestamp(),
 		}
 		err := dao.UserWatchDao.Create(userWatch)
 		if err != nil {

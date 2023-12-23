@@ -7,9 +7,9 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/log"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 var UserScoreService = newUserScoreService()
@@ -130,11 +130,11 @@ func (s *userScoreService) addScore(userId int64, score int, sourceType, sourceI
 	if userScore == nil {
 		userScore = &model.UserScore{
 			UserId:     userId,
-			CreateTime: util.NowTimestamp(),
+			CreateTime: utils.NowTimestamp(),
 		}
 	}
 	userScore.Score = userScore.Score + score
-	userScore.UpdateTime = util.NowTimestamp()
+	userScore.UpdateTime = utils.NowTimestamp()
 	if err := s.CreateOrUpdate(userScore); err != nil {
 		return err
 	}
@@ -150,7 +150,7 @@ func (s *userScoreService) addScore(userId int64, score int, sourceType, sourceI
 		Description: description,
 		Type:        scoreType,
 		Score:       score,
-		CreateTime:  util.NowTimestamp(),
+		CreateTime:  utils.NowTimestamp(),
 	})
 	if err == nil {
 		cache.UserCache.InvalidateScore(userId)

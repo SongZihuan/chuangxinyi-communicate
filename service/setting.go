@@ -10,9 +10,9 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/log"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 var SettingService = newSettingService()
@@ -82,12 +82,12 @@ func (s *settingService) setSingle(db *gorm.DB, key, value, name, description st
 	sysConfig := dao.SettingDao.GetByKey(key)
 	if sysConfig == nil {
 		sysConfig = &model.Setting{
-			CreateTime: util.NowTimestamp(),
+			CreateTime: utils.NowTimestamp(),
 		}
 	}
 	sysConfig.Key = key
 	sysConfig.Value = value
-	sysConfig.UpdateTime = util.NowTimestamp()
+	sysConfig.UpdateTime = utils.NowTimestamp()
 
 	if len(name) > 0 {
 		sysConfig.Name = name
@@ -125,27 +125,27 @@ func (s *settingService) GetSetting() *model.ConfigData {
 	)
 
 	var siteKeywordsArr []string
-	if err := util.ParseJson(siteKeywords, &siteKeywordsArr); err != nil {
+	if err := utils.ParseJson(siteKeywords, &siteKeywordsArr); err != nil {
 		log.Warn("站点关键词数据错误")
 	}
 
 	var siteNavsArr []model.SiteNav
-	if err := util.ParseJson(siteNavs, &siteNavsArr); err != nil {
+	if err := utils.ParseJson(siteNavs, &siteNavsArr); err != nil {
 		log.Warn("站点导航数据错误")
 	}
 
 	var siteTipsArr []model.SiteTip
-	if err := util.ParseJson(siteTips, &siteTipsArr); err != nil {
+	if err := utils.ParseJson(siteTips, &siteTipsArr); err != nil {
 		log.Warn("小贴士数据错误")
 	}
 
 	var recommendTagsArr []string
-	if err := util.ParseJson(recommendTags, &recommendTagsArr); err != nil {
+	if err := utils.ParseJson(recommendTags, &recommendTagsArr); err != nil {
 		log.Warn("推荐标签数据错误")
 	}
 
 	var scoreConfig model.ScoreConfig
-	if err := util.ParseJson(scoreConfigStr, &scoreConfig); err != nil {
+	if err := utils.ParseJson(scoreConfigStr, &scoreConfig); err != nil {
 		log.Warn("积分配置错误")
 	}
 

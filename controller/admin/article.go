@@ -12,10 +12,10 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/markdown"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/strtrim"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/markdown"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/strtrim"
 )
 
 // ArticleController article controller
@@ -29,7 +29,7 @@ func (c *ArticleController) Show(ctx *gin.Context) {
 	if c.BindAndValidate(ctx, &gDto) {
 		article := service.ArticleService.Get(gDto.ID)
 		if article == nil {
-			c.Fail(ctx, util.NewErrorMsg("Article not found, id="+strconv.FormatInt(gDto.ID, 10)))
+			c.Fail(ctx, utils.NewErrorMsg("Article not found, id="+strconv.FormatInt(gDto.ID, 10)))
 			return
 		}
 		c.Success(ctx, article)
@@ -44,7 +44,7 @@ func (c *ArticleController) Update(ctx *gin.Context) {
 	}
 	article := service.ArticleService.Get(gDto.ID)
 	if article == nil {
-		c.Fail(ctx, util.NewErrorMsg("Article not found, id="+strconv.FormatInt(gDto.ID, 10)))
+		c.Fail(ctx, utils.NewErrorMsg("Article not found, id="+strconv.FormatInt(gDto.ID, 10)))
 		return
 	}
 
@@ -55,7 +55,7 @@ func (c *ArticleController) Update(ctx *gin.Context) {
 	articleForm.ID = gDto.ID
 	err := service.ArticleService.Update(articleForm)
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 	c.Success(ctx, article)
@@ -85,7 +85,7 @@ func (c *ArticleController) List(ctx *gin.Context) {
 
 	var results []map[string]interface{}
 	for _, article := range list {
-		item := util.StructToMap(article, "content")
+		item := utils.StructToMap(article, "content")
 		item["user"] = convert.ToUserDefaultIfNull(article.UserId)
 
 		// 简介

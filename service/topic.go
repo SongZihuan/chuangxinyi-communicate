@@ -2,6 +2,8 @@ package service
 
 import (
 	"errors"
+	"fmt"
+	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
 	"math"
 	"path"
 	"time"
@@ -14,10 +16,10 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/log"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/urls"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/urls"
 )
 
 type ScanTopicCallback func(topics []model.Topic)
@@ -57,23 +59,30 @@ func (s *topicService) Delete(id int64) error {
 }
 
 func (s *topicService) Update(dto form.TopicUpdateForm) error {
+	ok, err := yundun.CheckText(fmt.Sprintf("标题：%s\n内容：%s\n", dto.Title, dto.Content))
+	if err != nil {
+		return err
+	} else if !ok {
+		return fmt.Errorf("bad content")
+	}
+
 	node := dao.NodeDao.Get(dto.NodeID)
 	if node == nil || node.Status != model.StatusOk {
-		return util.NewErrorMsg("节点不存在")
+		return utils.NewErrorMsg("节点不存在")
 	}
-	err := dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+	err = dao.Tx(dao.DB(), func(tx *gorm.DB) error {
 		err := dao.TopicDao.Updates(dto.ID, map[string]interface{}{
 			"node_id":     dto.NodeID,
 			"title":       dto.Title,
 			"content":     dto.Content,
-			"update_time": util.NowTimestamp(),
+			"update_time": utils.NowTimestamp(),
 		})
 		if err != nil {
 			return err
 		}
-		tagIds := dao.TagDao.GetOrCreates(util.ParseTagsToArray(dto.Tags)) // 创建文章对应标签
-		dao.TopicTagDao.DeleteTopicTags(dto.ID)                            // 先删掉所有的标签
-		dao.TopicTagDao.AddTopicTags(dto.ID, tagIds)                       // 然后重新添加标签
+		tagIds := dao.TagDao.GetOrCreates(utils.ParseTagsToArray(dto.Tags)) // 创建文章对应标签
+		dao.TopicTagDao.DeleteTopicTags(dto.ID)                             // 先删掉所有的标签
+		dao.TopicTagDao.AddTopicTags(dto.ID, tagIds)                        // 然后重新添加标签
 		return nil
 	})
 
@@ -92,6 +101,13 @@ func (s *topicService) Undelete(id int64) error {
 
 // 发表话题
 func (s *topicService) Create(dto form.TopicCreateForm) (*model.Topic, error) {
+	ok, err := yundun.CheckText(fmt.Sprintf("标题：%s\n内容：%s\n", dto.Title, dto.Content))
+	if err != nil {
+		return nil, err
+	} else if !ok {
+		return nil, fmt.Errorf("bad content")
+	}
+
 	nodeID := dto.NodeID
 	if nodeID <= 0 {
 		nodeID = SettingService.GetSetting().DefaultNodeId
@@ -104,7 +120,7 @@ func (s *topicService) Create(dto form.TopicCreateForm) (*model.Topic, error) {
 		return nil, errors.New("节点不存在")
 	}
 
-	now := util.NowTimestamp()
+	now := utils.NowTimestamp()
 	topic := &model.Topic{
 		Type:            model.TopicTypeNormal,
 		UserId:          dto.UserID,
@@ -117,8 +133,8 @@ func (s *topicService) Create(dto form.TopicCreateForm) (*model.Topic, error) {
 		CreateTime:      now,
 	}
 
-	err := dao.Tx(dao.DB(), func(tx *gorm.DB) error {
-		tagIds := dao.TagDao.GetOrCreates(util.ParseTagsToArray(dto.Tags))
+	err = dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+		tagIds := dao.TagDao.GetOrCreates(utils.ParseTagsToArray(dto.Tags))
 		err := dao.TopicDao.Create(topic)
 		if err != nil {
 			return err
@@ -225,9 +241,9 @@ func (s *topicService) GenerateRss() {
 		item := &feeds.Item{
 			Title:       topic.Title,
 			Link:        &feeds.Link{Href: topicUrl},
-			Description: util.GetMarkdownSummary(topic.Content),
-			Author:      &feeds.Author{Name: user.Avatar, Email: user.Email.String},
-			Created:     util.TimeFromTimestamp(topic.CreateTime),
+			Description: utils.GetMarkdownSummary(topic.Content),
+			Author:      &feeds.Author{Name: utils.GetUserName(user.Phone, user.Email, user.Username, user.Nickname), Email: user.Email.String},
+			Created:     utils.TimeFromTimestamp(topic.CreateTime),
 		}
 		items = append(items, item)
 	}
@@ -245,14 +261,14 @@ func (s *topicService) GenerateRss() {
 	if err != nil {
 		log.Error(err.Error())
 	} else {
-		_ = util.WriteString(path.Join(viper.GetString("base.static_path"), "topic_atom.xml"), atom, false)
+		_ = utils.WriteString(path.Join(viper.GetString("base.static_path"), "topic_atom.xml"), atom, false)
 	}
 
 	rss, err := feed.ToRss()
 	if err != nil {
 		log.Error(err.Error())
 	} else {
-		_ = util.WriteString(path.Join(viper.GetString("base.static_path"), "topic_rss.xml"), rss, false)
+		_ = utils.WriteString(path.Join(viper.GetString("base.static_path"), "topic_rss.xml"), rss, false)
 	}
 }
 

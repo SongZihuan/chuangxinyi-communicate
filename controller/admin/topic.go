@@ -8,9 +8,9 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/convert"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/markdown"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/markdown"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 // TopicController topic controller
@@ -24,7 +24,7 @@ func (c *TopicController) Show(ctx *gin.Context) {
 	if c.BindAndValidate(ctx, &gDto) {
 		topic := service.TopicService.Get(gDto.ID)
 		if topic == nil {
-			c.Fail(ctx, util.NewErrorMsg("Topic not found, id="+strconv.FormatInt(gDto.ID, 10)))
+			c.Fail(ctx, utils.NewErrorMsg("Topic not found, id="+strconv.FormatInt(gDto.ID, 10)))
 			return
 		}
 		c.Success(ctx, topic)
@@ -39,7 +39,7 @@ func (c *TopicController) Update(ctx *gin.Context) {
 	}
 	topic := service.TopicService.Get(gDto.ID)
 	if topic == nil {
-		c.Fail(ctx, util.NewErrorMsg("Topic not found, id="+strconv.FormatInt(gDto.ID, 10)))
+		c.Fail(ctx, utils.NewErrorMsg("Topic not found, id="+strconv.FormatInt(gDto.ID, 10)))
 		return
 	}
 
@@ -50,7 +50,7 @@ func (c *TopicController) Update(ctx *gin.Context) {
 	topicForm.ID = gDto.ID
 	err := service.TopicService.Update(topicForm)
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 	c.Success(ctx, topic)
@@ -107,7 +107,7 @@ func (c *TopicController) List(ctx *gin.Context) {
 
 	var results []map[string]interface{}
 	for _, topic := range list {
-		result := util.StructToMap(topic, "content")
+		result := utils.StructToMap(topic, "content")
 		result["user"] = convert.ToUserDefaultIfNull(topic.UserId)
 		result["node"] = service.NodeService.Get(topic.NodeId)
 		result["tags"] = convert.ToTags(service.TopicService.GetTopicTags(topic.ID))
@@ -129,7 +129,7 @@ func (c *TopicController) Recommend(ctx *gin.Context) {
 	}
 	err := service.TopicService.SetRecommend(gDto.ID, true)
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 	c.Success(ctx, nil)
@@ -143,7 +143,7 @@ func (c *TopicController) Unrecommend(ctx *gin.Context) {
 	}
 	err := service.TopicService.SetRecommend(gDto.ID, false)
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 	c.Success(ctx, nil)

@@ -6,9 +6,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/log"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/uploader"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/uploader"
 )
 
 type UploadController struct {
@@ -21,18 +21,18 @@ const uploadMaxBytes int64 = 1024 * 1024 * 3 // 1M
 func (c *UploadController) Upload(ctx *gin.Context) {
 	file, header, err := ctx.Request.FormFile("image")
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 	defer file.Close()
 	if header.Size > uploadMaxBytes {
-		c.Fail(ctx, util.NewErrorMsg("图片不能超过3M"))
+		c.Fail(ctx, utils.NewErrorMsg("图片不能超过3M"))
 		return
 	}
 
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 
@@ -40,7 +40,7 @@ func (c *UploadController) Upload(ctx *gin.Context) {
 
 	url, err := uploader.PutImage(fileBytes)
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 	data := make(map[string]string)
@@ -102,13 +102,13 @@ func (c *UploadController) UploadFromEditor(ctx *gin.Context) {
 func (c *UploadController) UploadFromURL(ctx *gin.Context) {
 	user := c.GetCurrentUser(ctx)
 	if user == nil {
-		c.Fail(ctx, util.ErrorNotLogin)
+		c.Fail(ctx, utils.ErrorNotLogin)
 		return
 	}
 
 	data := make(map[string]string)
 	if err := ctx.ShouldBindJSON(&data); err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 

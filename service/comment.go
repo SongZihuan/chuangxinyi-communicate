@@ -2,13 +2,15 @@ package service
 
 import (
 	"errors"
+	"fmt"
+	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
 	"strings"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 var CommentService = newCommentService()
@@ -61,6 +63,13 @@ func (s *commentService) Create(dto form.CommentCreateForm) (*model.Comment, err
 		return nil, errors.New("参数EntityId非法")
 	}
 
+	ok, err := yundun.CheckText(fmt.Sprintf("评论：%s", dto.Content))
+	if err != nil {
+		return nil, err
+	} else if !ok {
+		return nil, fmt.Errorf("bad content")
+	}
+
 	comment := &model.Comment{
 		UserId:      dto.UserID,
 		EntityType:  dto.EntityType,
@@ -69,7 +78,7 @@ func (s *commentService) Create(dto form.CommentCreateForm) (*model.Comment, err
 		ContentType: model.ContentTypeMarkdown,
 		QuoteId:     dto.QuoteID,
 		Status:      model.StatusOk,
-		CreateTime:  util.NowTimestamp(),
+		CreateTime:  utils.NowTimestamp(),
 	}
 	if err := dao.CommentDao.Create(comment); err != nil {
 		return nil, errors.New("创建评论失败")
@@ -77,7 +86,7 @@ func (s *commentService) Create(dto form.CommentCreateForm) (*model.Comment, err
 
 	// 更新帖子最后回复时间
 	if dto.EntityType == model.EntityTypeTopic {
-		TopicService.OnComment(dto.EntityID, dto.UserID, util.NowTimestamp())
+		TopicService.OnComment(dto.EntityID, dto.UserID, utils.NowTimestamp())
 	}
 
 	// 用户跟帖计数
@@ -92,6 +101,13 @@ func (s *commentService) Create(dto form.CommentCreateForm) (*model.Comment, err
 
 // 发表评论
 func (s *commentService) Publish(userId int64, createForm *form.CommentCreateForm) (*model.Comment, error) {
+	ok, err := yundun.CheckText(fmt.Sprintf("评论：%s", createForm.Content))
+	if err != nil {
+		return nil, err
+	} else if !ok {
+		return nil, fmt.Errorf("bad content")
+	}
+
 	createForm.Content = strings.TrimSpace(createForm.Content)
 
 	if len(createForm.EntityType) == 0 {
@@ -117,7 +133,7 @@ func (s *commentService) Publish(userId int64, createForm *form.CommentCreateFor
 		ContentType: contentType,
 		QuoteId:     createForm.QuoteID,
 		Status:      model.StatusOk,
-		CreateTime:  util.NowTimestamp(),
+		CreateTime:  utils.NowTimestamp(),
 	}
 	if err := dao.CommentDao.Create(comment); err != nil {
 		return nil, err
@@ -125,7 +141,7 @@ func (s *commentService) Publish(userId int64, createForm *form.CommentCreateFor
 
 	// 更新帖子最后回复时间
 	if createForm.EntityType == model.EntityTypeTopic {
-		TopicService.OnComment(createForm.EntityID, userId, util.NowTimestamp())
+		TopicService.OnComment(createForm.EntityID, userId, utils.NowTimestamp())
 	}
 
 	// 用户跟帖计数

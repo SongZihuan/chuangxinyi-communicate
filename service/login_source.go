@@ -10,8 +10,8 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/oauth/gitee"
 	"gitee.com/wuntsong/chuangxinyi-communicate/oauth/github"
 	"gitee.com/wuntsong/chuangxinyi-communicate/oauth/qq"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 var LoginSourceService = newLoginSourceService()
@@ -81,7 +81,7 @@ func (s *loginSourceService) GetOrCreateByGithub(code, state string) (*model.Log
 		nickname = strings.TrimSpace(userInfo.Name)
 	}
 
-	userInfoJson, _ := util.FormatJson(userInfo)
+	userInfoJson, _ := utils.FormatJson(userInfo)
 	account = &model.LoginSource{
 		UserID:     sql.NullInt64{},
 		Avatar:     userInfo.AvatarUrl,
@@ -89,8 +89,8 @@ func (s *loginSourceService) GetOrCreateByGithub(code, state string) (*model.Log
 		TargetType: model.LoginSourceTypeGithub,
 		TargetID:   strconv.FormatInt(userInfo.Id, 10),
 		ExtraData:  userInfoJson,
-		CreateTime: util.NowTimestamp(),
-		UpdateTime: util.NowTimestamp(),
+		CreateTime: utils.NowTimestamp(),
+		UpdateTime: utils.NowTimestamp(),
 	}
 	err = s.Create(account)
 	if err != nil {
@@ -115,7 +115,7 @@ func (s *loginSourceService) GetOrCreateByGitee(code, state string) (*model.Logi
 		nickname = strings.TrimSpace(userInfo.Name)
 	}
 
-	userInfoJson, _ := util.FormatJson(userInfo)
+	userInfoJson, _ := utils.FormatJson(userInfo)
 	account = &model.LoginSource{
 		UserID:     sql.NullInt64{},
 		Avatar:     userInfo.AvatarUrl,
@@ -123,8 +123,8 @@ func (s *loginSourceService) GetOrCreateByGitee(code, state string) (*model.Logi
 		TargetType: model.LoginSourceTypeGitee,
 		TargetID:   strconv.FormatInt(userInfo.Id, 10),
 		ExtraData:  userInfoJson,
-		CreateTime: util.NowTimestamp(),
-		UpdateTime: util.NowTimestamp(),
+		CreateTime: utils.NowTimestamp(),
+		UpdateTime: utils.NowTimestamp(),
 	}
 	err = s.Create(account)
 	if err != nil {
@@ -144,7 +144,7 @@ func (s *loginSourceService) GetOrCreateByQQ(code, state string) (*model.LoginSo
 		return account, nil
 	}
 
-	userInfoJson, _ := util.FormatJson(userInfo)
+	userInfoJson, _ := utils.FormatJson(userInfo)
 	account = &model.LoginSource{
 		UserID:     sql.NullInt64{},
 		Avatar:     userInfo.FigureurlQQ1,
@@ -152,8 +152,8 @@ func (s *loginSourceService) GetOrCreateByQQ(code, state string) (*model.LoginSo
 		TargetType: model.LoginSourceTypeQQ,
 		TargetID:   userInfo.Unionid,
 		ExtraData:  userInfoJson,
-		CreateTime: util.NowTimestamp(),
-		UpdateTime: util.NowTimestamp(),
+		CreateTime: utils.NowTimestamp(),
+		UpdateTime: utils.NowTimestamp(),
 	}
 	err = s.Create(account)
 	if err != nil {

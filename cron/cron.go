@@ -4,41 +4,39 @@ import (
 	"github.com/robfig/cron"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/log"
 )
 
-func Setup() {
-	if !util.IsProd() {
-		log.Info("Not in a production enviroment!")
-		return
+func Setup() error {
+	err := startSchedule()
+	if err != nil {
+		return err
 	}
 
-	log.Info("Cron setup")
-	// 开启定时任务
-	startSchedule()
+	return nil
 }
 
-func startSchedule() {
+func startSchedule() error {
 	c := cron.New()
 
 	// Generate RSS
-	addCronFunc(c, "@every 30m", func() {
+	err := addCronFunc(c, "@every 30m", func() {
 		service.ArticleService.GenerateRss()
 		service.TopicService.GenerateRss()
 	})
-
-	// Generate sitemap
-	addCronFunc(c, "@every 45m", func() {
-		service.SitemapService.GenerateToday()
-	})
+	if err != nil {
+		return err
+	}
 
 	c.Start()
+
+	return nil
 }
 
-func addCronFunc(c *cron.Cron, sepc string, cmd func()) {
+func addCronFunc(c *cron.Cron, sepc string, cmd func()) error {
 	err := c.AddFunc(sepc, cmd)
 	if err != nil {
-		log.Error(err.Error())
+		return err
 	}
+
+	return nil
 }

@@ -5,8 +5,8 @@ import (
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 var FavoriteService = newFavoriteService()
@@ -90,6 +90,6 @@ func (s *favoriteService) addFavorite(userId int64, entityType string, entityId 
 		UserId:     userId,
 		EntityType: entityType,
 		EntityId:   entityId,
-		CreateTime: util.NowTimestamp(),
+		CreateTime: utils.NowTimestamp(),
 	})
 }

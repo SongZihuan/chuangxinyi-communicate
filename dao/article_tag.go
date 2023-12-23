@@ -2,8 +2,8 @@ package dao
 
 import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 var ArticleTagDao = newArticleTagDao()
@@ -81,7 +81,7 @@ func (d *articleTagDao) AddArticleTags(articleId int64, tagIds []int64) {
 		_ = d.Create(&model.ArticleTag{
 			ArticleId:  articleId,
 			TagId:      tagId,
-			CreateTime: util.NowTimestamp(),
+			CreateTime: utils.NowTimestamp(),
 		})
 	}
 }

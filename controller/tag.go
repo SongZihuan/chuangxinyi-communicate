@@ -8,8 +8,8 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 type TagController struct {
@@ -22,7 +22,7 @@ func (c *TagController) Show(ctx *gin.Context) {
 	if c.BindAndValidate(ctx, &gDto) {
 		tag := cache.TagCache.Get(gDto.ID)
 		if tag == nil {
-			c.Fail(ctx, util.ErrorTagNotFound)
+			c.Fail(ctx, utils.ErrorTagNotFound)
 			return
 		}
 		c.Success(ctx, convert.ToTag(tag))

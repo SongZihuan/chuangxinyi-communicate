@@ -3,7 +3,7 @@ package model
 var Models = []interface{}{
 	&User{}, &Tag{}, &Article{}, &ArticleTag{}, &Comment{}, &Favorite{},
 	&Topic{}, &Node{}, &TopicTag{}, &TopicLike{}, &Notification{}, &Setting{}, &Link{},
-	&LoginSource{}, &Sitemap{}, &UserWatch{}, &UserScore{}, &UserScoreLog{},
+	&LoginSource{}, &UserWatch{}, &UserScore{}, &UserScoreLog{},
 }
 
 type Model struct {

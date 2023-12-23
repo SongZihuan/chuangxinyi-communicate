@@ -3,12 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
-	"gitee.com/wuntsong/chuangxinyi-communicate/cron"
-	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
-	"gitee.com/wuntsong/chuangxinyi-communicate/middleware"
+	"gitee.com/wuntsong/chuangxinyi-communicate/auth/login"
+	initall "gitee.com/wuntsong/chuangxinyi-communicate/init"
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/router"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/log"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/spf13/viper"
@@ -26,6 +25,7 @@ func main() {
 	//2.Set up configuration
 	viper.SetConfigType("yaml")
 	viper.SetConfigName("config")
+	viper.SetEnvPrefix("COMMUNITY_")
 	viper.AddConfigPath(*configFile)
 
 	err = viper.ReadInConfig()
@@ -33,21 +33,16 @@ func main() {
 		log.Fatal(fmt.Sprintf("Parse conf file fail: %s", err.Error()))
 	}
 
-	//3.Set up run mode
-	mode := viper.GetString("mode")
-	gin.SetMode(mode)
+	serviceName := viper.GetString("serviceName")
+	err = initall.Init("COMMUNITY_", serviceName)
+	if err != nil {
+		log.Fatal(fmt.Sprintf("Fail to init: %s", err.Error()))
+	}
 
-	//4.Set up database connection
-	dao.Setup()
-
-	//5.Set up cache
-	cache.Setup()
-
-	////5.Set up cron
-	cron.Setup()
-
-	//6.Initialize language
-	middleware.InitLang()
+	_, err = login.ConnectWebSocket()
+	if err != nil {
+		logger.Logger.Error("websocket connect resp: %s", err)
+	}
 
 	engine := gin.Default()
 	router.Setup(engine)

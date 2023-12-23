@@ -7,8 +7,8 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/controller"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 // LinkController link controller
@@ -22,7 +22,7 @@ func (c *LinkController) Show(ctx *gin.Context) {
 	if c.BindAndValidate(ctx, &gDto) {
 		link := service.LinkService.Get(gDto.ID)
 		if link == nil {
-			c.Fail(ctx, util.NewErrorMsg("Link not found, id="+strconv.FormatInt(gDto.ID, 10)))
+			c.Fail(ctx, utils.NewErrorMsg("Link not found, id="+strconv.FormatInt(gDto.ID, 10)))
 			return
 		}
 		c.Success(ctx, link)
@@ -37,7 +37,7 @@ func (c *LinkController) Store(ctx *gin.Context) {
 	}
 	link, err := service.LinkService.Create(linkForm)
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 	c.Success(ctx, link)
@@ -51,7 +51,7 @@ func (c *LinkController) Update(ctx *gin.Context) {
 	}
 	link := service.LinkService.Get(gDto.ID)
 	if link == nil {
-		c.Fail(ctx, util.NewErrorMsg("Link not found, id="+strconv.FormatInt(gDto.ID, 10)))
+		c.Fail(ctx, utils.NewErrorMsg("Link not found, id="+strconv.FormatInt(gDto.ID, 10)))
 		return
 	}
 
@@ -62,7 +62,7 @@ func (c *LinkController) Update(ctx *gin.Context) {
 	linkForm.ID = gDto.ID
 	err := service.LinkService.Update(linkForm)
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 	c.Success(ctx, link)

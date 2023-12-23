@@ -6,11 +6,11 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/email"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/log"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/urls"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/email"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/urls"
 )
 
 var NotificationService = newNotificationService()
@@ -134,7 +134,7 @@ func (s *notificationService) SendTopicLikeNotification(topicLike *model.TopicLi
 func (s *notificationService) SendCommentNotification(comment *model.Comment) {
 	user := cache.UserCache.Get(comment.UserId)
 	quote := s.getQuoteComment(comment.QuoteId)
-	summary := util.GetMarkdownSummary(comment.Content)
+	summary := utils.GetMarkdownSummary(comment.Content)
 
 	var (
 		fromId       = comment.UserId // 消息发送人
@@ -175,7 +175,7 @@ func (s *notificationService) SendCommentNotification(comment *model.Comment) {
 		}
 
 		// 给被引用的人发消息
-		s.Produce(fromId, quote.UserId, user.Username.String+" 回复了你的评论："+summary, util.GetMarkdownSummary(quote.Content), model.MsgTypeComment, map[string]interface{}{
+		s.Produce(fromId, quote.UserId, user.Username.String+" 回复了你的评论："+summary, utils.GetMarkdownSummary(quote.Content), model.MsgTypeComment, map[string]interface{}{
 			"entityType": comment.EntityType,
 			"entityId":   comment.EntityId,
 			"commentId":  comment.ID,
@@ -212,7 +212,7 @@ func (s *notificationService) Produce(fromId, toId int64, content, quoteContent 
 		extraData string
 		err       error
 	)
-	if extraData, err = util.FormatJson(extraDataMap); err != nil {
+	if extraData, err = utils.FormatJson(extraDataMap); err != nil {
 		log.Error("格式化extraData错误")
 	}
 	s.notificationsChan <- &model.Notification{
@@ -223,7 +223,7 @@ func (s *notificationService) Produce(fromId, toId int64, content, quoteContent 
 		Type:         msgType,
 		ExtraData:    extraData,
 		Status:       model.NotificationStatusUnread,
-		CreateTime:   util.NowTimestamp(),
+		CreateTime:   utils.NowTimestamp(),
 	}
 }
 

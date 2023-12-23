@@ -8,8 +8,8 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 var NodeService = newNodeService()
@@ -35,7 +35,7 @@ func (s *nodeService) Create(dto form.NodeCreateForm) (*model.Node, error) {
 		Description: dto.Description,
 		SortNo:      dto.SortNo,
 		Status:      dto.Status,
-		CreateTime:  util.NowTimestamp(),
+		CreateTime:  utils.NowTimestamp(),
 	}
 	if err := dao.NodeDao.Create(node); err != nil {
 		return nil, errors.New("创建节点失败")
@@ -50,7 +50,7 @@ func (s *nodeService) Update(dto form.NodeUpdateForm) error {
 		"description": dto.Description,
 		"sort_no":     dto.SortNo,
 		"status":      dto.Status,
-		"update_time": util.NowTimestamp(),
+		"update_time": utils.NowTimestamp(),
 	})
 
 	return err

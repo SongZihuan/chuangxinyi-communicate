@@ -1,0 +1,82 @@
+package init
+
+import (
+	"context"
+	"gitee.com/wuntsong/chuangxinyi-communicate/auth"
+	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
+	"gitee.com/wuntsong/chuangxinyi-communicate/cron"
+	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
+	"gitee.com/wuntsong/chuangxinyi-communicate/global"
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
+	"gitee.com/wuntsong/chuangxinyi-communicate/rand"
+	"gitee.com/wuntsong/chuangxinyi-communicate/redis"
+	"gitee.com/wuntsong/chuangxinyi-communicate/signalexit"
+	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
+	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
+	"github.com/spf13/viper"
+	"os"
+)
+
+func Init(envPrefix string, serviceName string) error {
+	var err error
+	err = signalexit.InitSignalExit()
+	if err != nil {
+		return errors.Errorf("signal resp: %s", err.Error())
+	}
+
+	signalexit.AddExitByFunc(func(ctx context.Context, _ os.Signal) context.Context {
+		CloseAll()
+		return context.WithValue(ctx, "InitClose", true)
+	})
+
+	mode := viper.GetString("mode")
+	gin.SetMode(mode)
+
+	err = global.InitPeerName(envPrefix)
+	if err != nil {
+		return err
+	}
+
+	err = redis.InitRedis()
+	if err != nil {
+		return err
+	}
+
+	err = dao.Setup()
+	if err != nil {
+		return err
+	}
+
+	err = cache.Setup()
+	if err != nil {
+		return err
+	}
+
+	err = cron.Setup()
+	if err != nil {
+		return err
+	}
+
+	err = rand.InitRander()
+	if err != nil {
+		return err
+	}
+
+	err = logger.InitLogger(serviceName)
+	if err != nil {
+		return err
+	}
+
+	err = yundun.InitYunDun()
+	if err != nil {
+		return err
+	}
+
+	err = auth.InitAuth()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

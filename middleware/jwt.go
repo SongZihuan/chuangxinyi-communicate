@@ -1,6 +1,9 @@
 package middleware
 
 import (
+	"gitee.com/wuntsong/chuangxinyi-communicate/auth/login"
+	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 	"net/http"
 	"time"
 
@@ -10,8 +13,7 @@ import (
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/log"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/log"
 )
 
 // login type
@@ -21,9 +23,7 @@ var (
 )
 
 type LoginDto struct {
-	Username string `form:"username" json:"username" binding:"required"`
-	Password string `form:"password" json:"password" binding:"required"`
-	Code     string `form:"code" json:"code"`
+	LoginToken string `form:"loginToken" json:"loginToken" binding:"required"`
 }
 
 // LoginOAuthDto - oauth login
@@ -48,24 +48,26 @@ func JwtAuth(LoginType int) *jwt.GinJWTMiddleware {
 			if v, ok := data.(model.UserClaims); ok {
 				return jwt.MapClaims{
 					"id":    v.ID,
-					"name":  v.Name,
-					"uid":   v.ID,
-					"uname": v.Name,
+					"name":  utils.GetUserName(v.Phone, v.Email, v.Username, v.Nickname),
+					"uid":   v.Uid,
+					"uname": v.Phone,
 				}
 			}
 			return jwt.MapClaims{}
 		},
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
+
+			user := dao.UserDao.GetByUid(claims["uid"].(string))
+			if user == nil {
+				return nil
+			}
+
 			return model.UserClaims{
-				Name: claims["name"].(string),
-				ID:   int64(claims["id"].(float64)),
+				User: user,
 			}
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
-			if LoginType == LoginOAuth { //OAuth
-				return AuthenticatorOAuth(c)
-			}
 			return Authenticator(c)
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
@@ -102,48 +104,19 @@ func LoginResponse(c *gin.Context, code int, token string, expire time.Time) {
 		"message": "success",
 	})
 }
+
 func Authenticator(c *gin.Context) (interface{}, error) {
 	var loginDto LoginDto
 	if err := form.Bind(c, &loginDto); err != nil {
 		return "", err
 	}
 
-	log.Info("loginDto.Username: %s", loginDto.Username)
-
-	ok, err, u := service.UserService.VerifyAndReturnUserInfo(loginDto.Username, loginDto.Password) // Standard login
-	if ok {
-
-		return model.UserClaims{
-			ID:   u.ID,
-			Name: u.Username.String,
-		}, nil
-	}
-	return nil, err
-}
-
-func AuthenticatorOAuth(c *gin.Context) (interface{}, error) {
-	provider := c.Param("provider")
-
-	var oauthDto LoginOAuthDto
-	if err := form.Bind(c, &oauthDto); err != nil {
-		return "", err
-	}
-
-	account, err := service.LoginSourceService.GetOrCreate(provider, oauthDto.Code, oauthDto.State)
+	user, err := login.CheckLogin(c, loginDto.LoginToken)
 	if err != nil {
-
 		return nil, err
 	}
 
-	u, err := service.UserService.SignInByLoginSource(account)
-	if err == nil {
-		return model.UserClaims{
-			ID:   u.ID,
-			Name: u.Username.String,
-		}, nil
-	}
-
-	log.Info("oauthDto.Code: %s", oauthDto.Code)
-	log.Info("oauthDto.State: %s", oauthDto.State)
-	return nil, err
+	return model.UserClaims{
+		User: user,
+	}, nil
 }

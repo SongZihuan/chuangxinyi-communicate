@@ -8,9 +8,9 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/convert"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/markdown"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util/sqlcnd"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/markdown"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 // CommentController comment controller
@@ -24,7 +24,7 @@ func (c *CommentController) Show(ctx *gin.Context) {
 	if c.BindAndValidate(ctx, &gDto) {
 		comment := service.CommentService.Get(gDto.ID)
 		if comment == nil {
-			c.Fail(ctx, util.NewErrorMsg("Comment not found, id="+strconv.FormatInt(gDto.ID, 10)))
+			c.Fail(ctx, utils.NewErrorMsg("Comment not found, id="+strconv.FormatInt(gDto.ID, 10)))
 			return
 		}
 		c.Success(ctx, comment)
@@ -39,7 +39,7 @@ func (c *CommentController) Update(ctx *gin.Context) {
 	}
 	comment := service.CommentService.Get(gDto.ID)
 	if comment == nil {
-		c.Fail(ctx, util.NewErrorMsg("Comment not found, id="+strconv.FormatInt(gDto.ID, 10)))
+		c.Fail(ctx, utils.NewErrorMsg("Comment not found, id="+strconv.FormatInt(gDto.ID, 10)))
 		return
 	}
 
@@ -50,7 +50,7 @@ func (c *CommentController) Update(ctx *gin.Context) {
 	commentForm.ID = gDto.ID
 	err := service.CommentService.Update(commentForm)
 	if err != nil {
-		c.Fail(ctx, util.FromError(err))
+		c.Fail(ctx, utils.FromError(err))
 		return
 	}
 	c.Success(ctx, comment)
@@ -92,7 +92,7 @@ func (c *CommentController) List(ctx *gin.Context) {
 
 	var results []map[string]interface{}
 	for _, comment := range list {
-		result := util.StructToMap(comment, "content")
+		result := utils.StructToMap(comment, "content")
 		result["user"] = convert.ToUserDefaultIfNull(comment.UserId)
 		mr := markdown.NewMd().Run(comment.Content)
 		result["content"] = mr.ContentHtml

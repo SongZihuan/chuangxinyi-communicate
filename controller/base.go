@@ -7,7 +7,7 @@ import (
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/util"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 )
 
 // BaseController controller
@@ -17,7 +17,7 @@ type BaseController struct {
 // BindAndValidate bind and validate
 func (c *BaseController) BindAndValidate(ctx *gin.Context, obj interface{}) bool {
 	if err := form.Bind(ctx, obj); err != nil {
-		c.Fail(ctx, &util.CodeError{Code: -1, Message: err.Error()})
+		c.Fail(ctx, &utils.CodeError{Code: -1, Message: err.Error()})
 		return false
 	}
 	return true
@@ -40,8 +40,13 @@ func (c *BaseController) Success(ctx *gin.Context, data interface{}) {
 	})
 }
 
+// Redirect redirect to url
+func (c *BaseController) Redirect(ctx *gin.Context, url string) {
+	ctx.Redirect(http.StatusFound, url)
+}
+
 // Fail output error
-func (c *BaseController) Fail(ctx *gin.Context, error *util.CodeError) {
+func (c *BaseController) Fail(ctx *gin.Context, error *utils.CodeError) {
 	ctx.AbortWithStatusJSON(http.StatusOK, gin.H{
 		"code":    error.Code,
 		"message": error.Message,
