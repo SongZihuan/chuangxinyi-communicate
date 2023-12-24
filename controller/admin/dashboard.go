@@ -2,10 +2,10 @@ package admin
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	"runtime"
 	"time"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/config"
 	"gitee.com/wuntsong/chuangxinyi-communicate/controller"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 )
@@ -21,7 +21,7 @@ type DashboardController struct {
 // GetSysteminfo get system info
 func (c *DashboardController) Systeminfo(ctx *gin.Context) {
 	c.Success(ctx, gin.H{
-		"appName":   config.AppName,
+		"appName":   viper.GetString("readableName"),
 		"upTime":    utils.TimeSincePro(initTime),
 		"os":        runtime.GOOS,
 		"arch":      runtime.GOARCH,

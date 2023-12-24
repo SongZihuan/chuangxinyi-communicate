@@ -45,5 +45,6 @@ type ConfigData struct {
 
 type AppData struct {
 	Name           string `json:"name"`
+	DomainID       string `json:"domainID"`
 	UserLevelAdmin int    `json:"user_level_admin"`
 }

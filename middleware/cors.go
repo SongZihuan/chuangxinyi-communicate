@@ -1,18 +1,23 @@
 package middleware
 
 import (
-	"github.com/gin-contrib/cors"
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
-	"time"
+	"net/http"
 )
 
 func Cors() gin.HandlerFunc {
-	return cors.New(cors.Config{
-		AllowOrigins:     viper.GetStringSlice("cors.allow_origins"),
-		AllowMethods:     viper.GetStringSlice("cors.allow_methods"),
-		AllowHeaders:     viper.GetStringSlice("cors.allow_headers"),
-		AllowCredentials: viper.GetBool("cors.allow_credentials"),
-		MaxAge:           time.Second * time.Duration(viper.GetInt("cors.max_age")),
-	})
+	return func(c *gin.Context) {
+		if c.FullPath() == "/api/auth/login" {
+			logger.Logger.Tag("A", c.Request.Method)
+		}
+		method := c.Request.Method
+		origin := c.Request.Header.Get("Origin")
+		c.Header("Access-Control-Allow-Origin", origin)      // 可将将 * 替换为指定的域名
+		c.Header("Access-Control-Allow-Credentials", "true") // 可将将 * 替换为指定的域名
+		if method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusOK)
+		}
+		c.Next()
+	}
 }
