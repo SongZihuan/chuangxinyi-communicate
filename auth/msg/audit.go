@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/auth"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"github.com/pkg/errors"
 	"github.com/spf13/viper"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 func NewAudit(user *model.User, content string, args ...any) {
@@ -14,7 +14,7 @@ func NewAudit(user *model.User, content string, args ...any) {
 	}()
 }
 
-func SendAudit(user *model.User, content string, args ...any) (bool, error) {
+func SendAudit(user *model.User, content string, args ...any) (bool, errors.WTError) {
 	AuditCaller := viper.GetString("auth.auditCaller")
 
 	var respData auth.SendMsgResp
@@ -23,7 +23,7 @@ func SendAudit(user *model.User, content string, args ...any) (bool, error) {
 		Content: fmt.Sprintf(content, args...),
 	}, AuditCaller, &respData)
 	if err != nil {
-		return false, err
+		return false, errors.WarpQuick(err)
 	}
 
 	if !respData.Data.Success {

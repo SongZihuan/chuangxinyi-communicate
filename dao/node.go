@@ -3,6 +3,7 @@ package dao
 import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 var NodeDao = newNodeDao()
@@ -55,23 +56,23 @@ func (d *nodeDao) List(cnd *sqlcnd.SqlCnd) (list []model.Node, paging *sqlcnd.Pa
 	return
 }
 
-func (d *nodeDao) Create(t *model.Node) (err error) {
-	err = db.Create(t).Error
+func (d *nodeDao) Create(t *model.Node) (err errors.WTError) {
+	err = errors.WarpQuick(db.Create(t).Error)
 	return
 }
 
-func (d *nodeDao) Update(t *model.Node) (err error) {
-	err = db.Save(t).Error
+func (d *nodeDao) Update(t *model.Node) (err errors.WTError) {
+	err = errors.WarpQuick(db.Save(t).Error)
 	return
 }
 
-func (d *nodeDao) Updates(id int64, columns map[string]interface{}) (err error) {
-	err = db.Model(&model.Node{}).Where("id = ?", id).Updates(columns).Error
+func (d *nodeDao) Updates(id int64, columns map[string]interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.Node{}).Where("id = ?", id).Updates(columns).Error)
 	return
 }
 
-func (d *nodeDao) UpdateColumn(id int64, name string, value interface{}) (err error) {
-	err = db.Model(&model.Node{}).Where("id = ?", id).UpdateColumn(name, value).Error
+func (d *nodeDao) UpdateColumn(id int64, name string, value interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.Node{}).Where("id = ?", id).UpdateColumn(name, value).Error)
 	return
 }
 

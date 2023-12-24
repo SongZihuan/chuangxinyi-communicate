@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"github.com/pkg/errors"
+	errors "github.com/wuntsong-org/wterrors"
 	"strings"
 )
 
@@ -17,7 +17,7 @@ func init() {
 }
 
 // Bind : bind request dto and auto verify parameters
-func Bind(c *gin.Context, obj interface{}) error {
+func Bind(c *gin.Context, obj interface{}) errors.WTError {
 	_ = c.ShouldBindUri(obj)
 	if err := c.ShouldBind(obj); err != nil {
 		var tagErrorMsg []string
@@ -34,7 +34,7 @@ func Bind(c *gin.Context, obj interface{}) error {
 	return nil
 }
 
-//ValidateErrorMessage : customize error messages
+// ValidateErrorMessage : customize error messages
 var ValidateErrorMessage = map[string]string{
 	"default":        "%s - %s is invalid(%s)",
 	"customValidate": "%s can not be %s",

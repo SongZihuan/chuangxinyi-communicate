@@ -4,6 +4,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 var TopicTagDao = newTopicTagDao()
@@ -56,23 +57,23 @@ func (d *topicTagDao) List(cnd *sqlcnd.SqlCnd) (list []model.TopicTag, paging *s
 	return
 }
 
-func (d *topicTagDao) Create(t *model.TopicTag) (err error) {
-	err = db.Create(t).Error
+func (d *topicTagDao) Create(t *model.TopicTag) (err errors.WTError) {
+	err = errors.WarpQuick(db.Create(t).Error)
 	return
 }
 
-func (d *topicTagDao) Update(t *model.TopicTag) (err error) {
-	err = db.Save(t).Error
+func (d *topicTagDao) Update(t *model.TopicTag) (err errors.WTError) {
+	err = errors.WarpQuick(db.Save(t).Error)
 	return
 }
 
-func (d *topicTagDao) Updates(id int64, columns map[string]interface{}) (err error) {
-	err = db.Model(&model.TopicTag{}).Where("id = ?", id).Updates(columns).Error
+func (d *topicTagDao) Updates(id int64, columns map[string]interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.TopicTag{}).Where("id = ?", id).Updates(columns).Error)
 	return
 }
 
-func (d *topicTagDao) UpdateColumn(id int64, name string, value interface{}) (err error) {
-	err = db.Model(&model.TopicTag{}).Where("id = ?", id).UpdateColumn(name, value).Error
+func (d *topicTagDao) UpdateColumn(id int64, name string, value interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.TopicTag{}).Where("id = ?", id).UpdateColumn(name, value).Error)
 	return
 }
 

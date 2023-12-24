@@ -2,11 +2,11 @@ package token
 
 import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/auth"
-	"github.com/pkg/errors"
 	"github.com/spf13/viper"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
-func CheckPhoneToken(token string, phone string) (bool, error) {
+func CheckPhoneToken(token string, phone string) (bool, errors.WTError) {
 	PhoneCheckCaller := viper.GetString("auth.phoneCheckCaller")
 
 	var respData auth.CheckPhoneTokenResp
@@ -15,7 +15,7 @@ func CheckPhoneToken(token string, phone string) (bool, error) {
 		Token: token,
 	}, PhoneCheckCaller, &respData)
 	if err != nil {
-		return false, err
+		return false, errors.WarpQuick(err)
 	}
 
 	if !respData.Data.IsOK {
@@ -25,7 +25,7 @@ func CheckPhoneToken(token string, phone string) (bool, error) {
 	return true, nil
 }
 
-func CheckEmailToken(token string, email string) (bool, error) {
+func CheckEmailToken(token string, email string) (bool, errors.WTError) {
 	EmailCheckCaller := viper.GetString("auth.emailCheckCaller")
 
 	var respData auth.CheckEmailTokenResp
@@ -34,7 +34,7 @@ func CheckEmailToken(token string, email string) (bool, error) {
 		Token: token,
 	}, EmailCheckCaller, &respData)
 	if err != nil {
-		return false, err
+		return false, errors.WarpQuick(err)
 	}
 
 	if !respData.Data.IsOK {
@@ -44,7 +44,7 @@ func CheckEmailToken(token string, email string) (bool, error) {
 	return true, nil
 }
 
-func Check2FAToken(token string, userID string) (bool, error) {
+func Check2FAToken(token string, userID string) (bool, errors.WTError) {
 	SecondFACheckCaller := viper.GetString("auth.secondFACheckCaller")
 
 	var respData auth.CheckSecondFATokenResp
@@ -53,7 +53,7 @@ func Check2FAToken(token string, userID string) (bool, error) {
 		Token:  token,
 	}, SecondFACheckCaller, &respData)
 	if err != nil {
-		return false, err
+		return false, errors.WarpQuick(err)
 	}
 
 	if !respData.Data.IsOK {

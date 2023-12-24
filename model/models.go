@@ -3,7 +3,7 @@ package model
 var Models = []interface{}{
 	&User{}, &Tag{}, &Article{}, &ArticleTag{}, &Comment{}, &Favorite{},
 	&Topic{}, &Node{}, &TopicTag{}, &TopicLike{}, &Notification{}, &Setting{}, &Link{},
-	&LoginSource{}, &UserWatch{}, &UserScore{}, &UserScoreLog{},
+	&UserWatch{}, &UserScore{}, &UserScoreLog{},
 }
 
 type Model struct {
@@ -32,10 +32,6 @@ const (
 	MsgTypeComment   = 0 // 回复消息
 	MsgTypeTopicLike = 1 // 话题点赞
 	MsgTypeUserWatch = 2 // 用户关注
-
-	LoginSourceTypeGithub = "github"
-	LoginSourceTypeGitee  = "gitee"
-	LoginSourceTypeQQ     = "qq"
 
 	ScoreTypeIncr = 0 // 积分+
 	ScoreTypeDecr = 1 // 积分-

@@ -3,6 +3,7 @@ package dao
 import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 var NotificationDao = newNotificationDao()
@@ -55,23 +56,23 @@ func (d *notificationDao) List(cnd *sqlcnd.SqlCnd) (list []model.Notification, p
 	return
 }
 
-func (d *notificationDao) Create(t *model.Notification) (err error) {
-	err = db.Create(t).Error
+func (d *notificationDao) Create(t *model.Notification) (err errors.WTError) {
+	err = errors.WarpQuick(db.Create(t).Error)
 	return
 }
 
-func (d *notificationDao) Update(t *model.Notification) (err error) {
-	err = db.Save(t).Error
+func (d *notificationDao) Update(t *model.Notification) (err errors.WTError) {
+	err = errors.WarpQuick(db.Save(t).Error)
 	return
 }
 
-func (d *notificationDao) Updates(id int64, columns map[string]interface{}) (err error) {
-	err = db.Model(&model.Notification{}).Where("id = ?", id).Updates(columns).Error
+func (d *notificationDao) Updates(id int64, columns map[string]interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.Notification{}).Where("id = ?", id).Updates(columns).Error)
 	return
 }
 
-func (d *notificationDao) UpdateColumn(id int64, name string, value interface{}) (err error) {
-	err = db.Model(&model.Notification{}).Where("id = ?", id).UpdateColumn(name, value).Error
+func (d *notificationDao) UpdateColumn(id int64, name string, value interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.Notification{}).Where("id = ?", id).UpdateColumn(name, value).Error)
 	return
 }
 
@@ -80,8 +81,8 @@ func (s *notificationDao) GetUnReadCount(userId int64) (count int64) {
 	return
 }
 
-func (d *notificationDao) UpdateStatusBatch(userId int64) (err error) {
-	err = db.Model(&model.Notification{}).Where("user_id = ? and status = ?", userId, model.NotificationStatusUnread).Updates(model.Notification{Status: model.NotificationStatusReaded}).Error
+func (d *notificationDao) UpdateStatusBatch(userId int64) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.Notification{}).Where("user_id = ? and status = ?", userId, model.NotificationStatusUnread).Updates(model.Notification{Status: model.NotificationStatusReaded}).Error)
 	return
 }
 

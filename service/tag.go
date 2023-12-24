@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
+	errors "github.com/wuntsong-org/wterrors"
 	"strings"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
@@ -42,27 +43,27 @@ func (s *tagService) List(cnd *sqlcnd.SqlCnd) (list []model.Tag, paging *sqlcnd.
 	return dao.TagDao.List(cnd)
 }
 
-func (s *tagService) Create(t *model.Tag) error {
+func (s *tagService) Create(t *model.Tag) errors.WTError {
 	ok, err := yundun.CheckText(fmt.Sprintf("标签：%s", t.Name))
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	} else if !ok {
-		return fmt.Errorf("bad content")
+		return errors.Errorf("bad content")
 	}
 
 	return dao.TagDao.Create(t)
 }
 
-func (s *tagService) Update(t *model.Tag) error {
+func (s *tagService) Update(t *model.Tag) errors.WTError {
 	ok, err := yundun.CheckText(fmt.Sprintf("标签：%s", t.Name))
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	} else if !ok {
-		return fmt.Errorf("bad content")
+		return errors.Errorf("bad content")
 	}
 
 	if err := dao.TagDao.Update(t); err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 	cache.TagCache.Invalidate(t.ID)
 	return nil
@@ -78,7 +79,7 @@ func (s *tagService) Autocomplete(input string) []model.Tag {
 		model.StatusOk, "%"+input+"%").Limit(6))
 }
 
-func (s *tagService) GetOrCreate(name string) (*model.Tag, error) {
+func (s *tagService) GetOrCreate(name string) (*model.Tag, errors.WTError) {
 	return dao.TagDao.GetOrCreate(name)
 }
 

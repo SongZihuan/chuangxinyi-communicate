@@ -38,7 +38,7 @@ require (
 	github.com/spf13/viper v1.6.3
 	github.com/tidwall/gjson v1.9.3
 	github.com/vinta/pangu v3.0.0+incompatible
-	github.com/wuntsong-org/wterrors v1.0.0
+	github.com/wuntsong-org/wterrors v1.1.0
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.10.0
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d

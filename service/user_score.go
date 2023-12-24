@@ -1,7 +1,7 @@
 package service
 
 import (
-	"errors"
+	errors "github.com/wuntsong-org/wterrors"
 	"strconv"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
@@ -41,19 +41,19 @@ func (s *userScoreService) List(cnd *sqlcnd.SqlCnd) (list []model.UserScore, pag
 	return dao.UserScoreDao.List(cnd)
 }
 
-func (s *userScoreService) Create(t *model.UserScore) error {
+func (s *userScoreService) Create(t *model.UserScore) errors.WTError {
 	return dao.UserScoreDao.Create(t)
 }
 
-func (s *userScoreService) Update(t *model.UserScore) error {
+func (s *userScoreService) Update(t *model.UserScore) errors.WTError {
 	return dao.UserScoreDao.Update(t)
 }
 
-func (s *userScoreService) Updates(id int64, columns map[string]interface{}) error {
+func (s *userScoreService) Updates(id int64, columns map[string]interface{}) errors.WTError {
 	return dao.UserScoreDao.Updates(id, columns)
 }
 
-func (s *userScoreService) UpdateColumn(id int64, name string, value interface{}) error {
+func (s *userScoreService) UpdateColumn(id int64, name string, value interface{}) errors.WTError {
 	return dao.UserScoreDao.UpdateColumn(id, name, value)
 }
 
@@ -65,7 +65,7 @@ func (s *userScoreService) GetByUserId(userId int64) *model.UserScore {
 	return s.FindOne(sqlcnd.NewSqlCnd().Eq("user_id", userId))
 }
 
-func (s *userScoreService) CreateOrUpdate(t *model.UserScore) error {
+func (s *userScoreService) CreateOrUpdate(t *model.UserScore) errors.WTError {
 	if t.ID > 0 {
 		return s.Update(t)
 	} else {
@@ -106,7 +106,7 @@ func (s *userScoreService) IncrementPostCommentScore(comment *model.Comment) {
 }
 
 // Increment 增加分数
-func (s *userScoreService) Increment(userId int64, score int, sourceType, sourceId, description string) error {
+func (s *userScoreService) Increment(userId int64, score int, sourceType, sourceId, description string) errors.WTError {
 	if score <= 0 {
 		return errors.New("分数必须为正数")
 	}
@@ -114,7 +114,7 @@ func (s *userScoreService) Increment(userId int64, score int, sourceType, source
 }
 
 // Decrement 减少分数
-func (s *userScoreService) Decrement(userId int64, score int, sourceType, sourceId, description string) error {
+func (s *userScoreService) Decrement(userId int64, score int, sourceType, sourceId, description string) errors.WTError {
 	if score <= 0 {
 		return errors.New("分数必须为正数")
 	}
@@ -122,7 +122,7 @@ func (s *userScoreService) Decrement(userId int64, score int, sourceType, source
 }
 
 // addScore 加分数，也可以加负数
-func (s *userScoreService) addScore(userId int64, score int, sourceType, sourceId, description string) error {
+func (s *userScoreService) addScore(userId int64, score int, sourceType, sourceId, description string) errors.WTError {
 	if score == 0 {
 		return errors.New("分数不能为0")
 	}
@@ -136,7 +136,7 @@ func (s *userScoreService) addScore(userId int64, score int, sourceType, sourceI
 	userScore.Score = userScore.Score + score
 	userScore.UpdateTime = utils.NowTimestamp()
 	if err := s.CreateOrUpdate(userScore); err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	scoreType := model.ScoreTypeIncr
@@ -155,5 +155,5 @@ func (s *userScoreService) addScore(userId int64, score int, sourceType, sourceI
 	if err == nil {
 		cache.UserCache.InvalidateScore(userId)
 	}
-	return err
+	return errors.WarpQuick(err)
 }

@@ -2,13 +2,13 @@ package utils
 
 import (
 	"bytes"
-	"encoding/json"
 	jsoniter "github.com/json-iterator/go"
+	errors "github.com/wuntsong-org/wterrors"
 	"io"
 )
 
-func FormatJson(obj interface{}) (str string, err error) {
-	data, err := json.Marshal(obj)
+func FormatJson(obj interface{}) (str string, err errors.WTError) {
+	data, err := JsonMarshal(obj)
 	if err != nil {
 		return
 	}
@@ -16,32 +16,32 @@ func FormatJson(obj interface{}) (str string, err error) {
 	return
 }
 
-func ParseJson(str string, t interface{}) error {
-	return json.Unmarshal([]byte(str), t)
+func ParseJson(str string, t interface{}) errors.WTError {
+	return JsonUnmarshal([]byte(str), t)
 }
 
-func JsonMarshal(v interface{}) ([]byte, error) {
+func JsonMarshal(v interface{}) ([]byte, errors.WTError) {
 	buf := bytes.NewBuffer(make([]byte, 0))
 	e := jsoniter.NewEncoder(buf)
 	err := e.Encode(v)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 
 	res, err := io.ReadAll(buf)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 
 	return res, nil
 }
 
-func JsonUnmarshal(data []byte, v interface{}) error {
+func JsonUnmarshal(data []byte, v interface{}) errors.WTError {
 	d := jsoniter.NewDecoder(bytes.NewBuffer(data))
 	d.UseNumber()
 	err := d.Decode(v)
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	return nil

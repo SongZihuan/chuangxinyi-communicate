@@ -3,6 +3,7 @@ package dao
 import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 var LinkDao = newLinkDao()
@@ -55,23 +56,23 @@ func (d *linkDao) List(cnd *sqlcnd.SqlCnd) (list []model.Link, paging *sqlcnd.Pa
 	return
 }
 
-func (d *linkDao) Create(t *model.Link) (err error) {
-	err = db.Create(t).Error
+func (d *linkDao) Create(t *model.Link) (err errors.WTError) {
+	err = errors.WarpQuick(db.Create(t).Error)
 	return
 }
 
-func (d *linkDao) Update(t *model.Link) (err error) {
-	err = db.Save(t).Error
+func (d *linkDao) Update(t *model.Link) (err errors.WTError) {
+	err = errors.WarpQuick(db.Save(t).Error)
 	return
 }
 
-func (d *linkDao) Updates(id int64, columns map[string]interface{}) (err error) {
-	err = db.Model(&model.Link{}).Where("id = ?", id).Updates(columns).Error
+func (d *linkDao) Updates(id int64, columns map[string]interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.Link{}).Where("id = ?", id).Updates(columns).Error)
 	return
 }
 
-func (d *linkDao) UpdateColumn(id int64, name string, value interface{}) (err error) {
-	err = db.Model(&model.Link{}).Where("id = ?", id).UpdateColumn(name, value).Error
+func (d *linkDao) UpdateColumn(id int64, name string, value interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.Link{}).Where("id = ?", id).UpdateColumn(name, value).Error)
 	return
 }
 

@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
+	errors "github.com/wuntsong-org/wterrors"
 	"math"
 	"path"
 	"time"
@@ -46,7 +47,7 @@ func (s *articleService) List(cnd *sqlcnd.SqlCnd) (list []model.Article, paging 
 }
 
 // Create 发表文章
-func (s *articleService) Create(dto form.ArticleCreateForm) (*model.Article, error) {
+func (s *articleService) Create(dto form.ArticleCreateForm) (*model.Article, errors.WTError) {
 	article := &model.Article{
 		UserId:      dto.UserID,
 		Title:       dto.Title,
@@ -62,40 +63,40 @@ func (s *articleService) Create(dto form.ArticleCreateForm) (*model.Article, err
 
 	ok, err := yundun.CheckText(fmt.Sprintf("标题：%s\n内容：%s", dto.Title, dto.Content))
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	} else if !ok {
-		return nil, fmt.Errorf("bad content")
+		return nil, errors.Errorf("bad content")
 	}
 
-	err = dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+	err = dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
 		tagIDs := dao.TagDao.GetOrCreates(utils.ParseTagsToArray(dto.Tags))
 		err := dao.ArticleDao.Create(article)
 		if err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 		dao.ArticleTagDao.AddArticleTags(article.ID, tagIDs)
 		return nil
 	})
-	return article, err
+	return article, errors.WarpQuick(err)
 }
 
 // Update 编辑文章
-func (s *articleService) Update(dto form.ArticleUpdateForm) error {
+func (s *articleService) Update(dto form.ArticleUpdateForm) errors.WTError {
 	ok, err := yundun.CheckText(fmt.Sprintf("标题：%s\n内容：%s", dto.Title, dto.Content))
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	} else if !ok {
-		return fmt.Errorf("bad content")
+		return errors.Errorf("bad content")
 	}
 
-	err = dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+	err = dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
 		err := dao.ArticleDao.Updates(dto.ID, map[string]interface{}{
 			"title":       dto.Title,
 			"content":     dto.Content,
 			"update_time": utils.NowTimestamp(),
 		})
 		if err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 		tagIds := dao.TagDao.GetOrCreates(utils.ParseTagsToArray(dto.Tags)) // 创建文章对应标签
 		dao.ArticleTagDao.DeleteArticleTags(dto.ID)                         // 先删掉所有的标签
@@ -103,16 +104,16 @@ func (s *articleService) Update(dto form.ArticleUpdateForm) error {
 		return nil
 	})
 	cache.ArticleTagCache.Invalidate(dto.ID)
-	return err
+	return errors.WarpQuick(err)
 }
 
-func (s *articleService) Delete(id int64) error {
+func (s *articleService) Delete(id int64) errors.WTError {
 	err := dao.ArticleDao.UpdateColumn(id, "status", model.StatusDeleted)
 	if err == nil {
 		// 删掉标签文章
 		ArticleTagService.DeleteByArticleId(id)
 	}
-	return err
+	return errors.WarpQuick(err)
 }
 
 // 根据文章编号批量获取文章

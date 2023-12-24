@@ -6,11 +6,11 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/auth"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"github.com/pkg/errors"
 	"github.com/spf13/viper"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
-func SendMsgByUserUID(userID string, title string, content string) (bool, error) {
+func SendMsgByUserUID(userID string, title string, content string) (bool, errors.WTError) {
 	MsgCaller := viper.GetString("auth.msgCaller")
 
 	var respData auth.SendMsgResp
@@ -20,7 +20,7 @@ func SendMsgByUserUID(userID string, title string, content string) (bool, error)
 		Content: content,
 	}, MsgCaller, &respData)
 	if err != nil {
-		return false, err
+		return false, errors.WarpQuick(err)
 	}
 
 	if !respData.Data.Success {
@@ -30,16 +30,16 @@ func SendMsgByUserUID(userID string, title string, content string) (bool, error)
 	return true, nil
 }
 
-func SendMsgByUserID(userID int64, title string, content string) (bool, error) {
+func SendMsgByUserID(userID int64, title string, content string) (bool, errors.WTError) {
 	user := dao.UserDao.Get(userID) // 根据整型主键查找
 	if user == nil {
-		return false, fmt.Errorf("user not found")
+		return false, errors.Errorf("user not found")
 	}
 
 	return SendMsgByUserUID(user.Uid, title, content)
 }
 
-func SendMsg(user *model.User, title string, content string) (bool, error) {
+func SendMsg(user *model.User, title string, content string) (bool, errors.WTError) {
 	return SendMsgByUserUID(user.Uid, title, content)
 }
 

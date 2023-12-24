@@ -1,8 +1,8 @@
 package service
 
 import (
-	"errors"
 	"github.com/jinzhu/gorm"
+	errors "github.com/wuntsong-org/wterrors"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
@@ -29,7 +29,7 @@ func (s *nodeService) List(cnd *sqlcnd.SqlCnd) (list []model.Node, paging *sqlcn
 	return dao.NodeDao.List(cnd)
 }
 
-func (s *nodeService) Create(dto form.NodeCreateForm) (*model.Node, error) {
+func (s *nodeService) Create(dto form.NodeCreateForm) (*model.Node, errors.WTError) {
 	node := &model.Node{
 		Name:        dto.Name,
 		Description: dto.Description,
@@ -44,7 +44,7 @@ func (s *nodeService) Create(dto form.NodeCreateForm) (*model.Node, error) {
 	return node, nil
 }
 
-func (s *nodeService) Update(dto form.NodeUpdateForm) error {
+func (s *nodeService) Update(dto form.NodeUpdateForm) errors.WTError {
 	err := dao.NodeDao.Updates(dto.ID, map[string]interface{}{
 		"name":        dto.Name,
 		"description": dto.Description,
@@ -53,7 +53,7 @@ func (s *nodeService) Update(dto form.NodeUpdateForm) error {
 		"update_time": utils.NowTimestamp(),
 	})
 
-	return err
+	return errors.WarpQuick(err)
 }
 
 func (s *nodeService) Delete(id int64) {

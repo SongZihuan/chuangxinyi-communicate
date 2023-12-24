@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/global"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"github.com/pkg/errors"
 	"github.com/spf13/viper"
+	errors "github.com/wuntsong-org/wterrors"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"net/http"
@@ -52,7 +52,7 @@ func (l BackendLogger) WXInfo(msg string, args ...any) {
 	_ = LogMsg(false, fmt.Sprintf("[%s-%s] %s", l.ServiceName, global.PeerName, data))
 }
 
-func InitLogger(serviceName string) (err error) {
+func InitLogger(serviceName string) (err errors.WTError) {
 	if viper.GetString("mode") == "develop" {
 		c := zap.Config{
 			Level:       zap.NewAtomicLevelAt(zap.DebugLevel),
@@ -78,7 +78,7 @@ func InitLogger(serviceName string) (err error) {
 
 		l, err := c.Build(zap.AddCaller())
 		if err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 
 		Logger = BackendLogger{
@@ -113,7 +113,7 @@ func InitLogger(serviceName string) (err error) {
 
 		l, err := c.Build(zap.AddCaller())
 		if err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 
 		Logger = BackendLogger{
@@ -135,12 +135,12 @@ type Text struct {
 	MentionedList []string `json:"mentioned_list"`
 }
 
-func LogMsg(atall bool, text string, args ...any) error {
+func LogMsg(atall bool, text string, args ...any) errors.WTError {
 	u := viper.GetString("wxrobot.log")
 	return WxRobotSendNotRecord(u, fmt.Sprintf(text, args...), atall)
 }
 
-func WxRobotSendNotRecord(webhook string, text string, atAll bool) error {
+func WxRobotSendNotRecord(webhook string, text string, atAll bool) errors.WTError {
 	if len(webhook) == 0 {
 		return nil
 	}
@@ -164,13 +164,13 @@ func WxRobotSendNotRecord(webhook string, text string, atAll bool) error {
 
 	req, err := http.NewRequest(http.MethodPost, webhook, bytes.NewBuffer(dataByte))
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	client := http.DefaultClient
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	if resp.StatusCode != 200 {

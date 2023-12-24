@@ -3,6 +3,7 @@ package dao
 import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 var TopicDao = newTopicDao()
@@ -59,23 +60,23 @@ func (d *topicDao) Count(cnd *sqlcnd.SqlCnd) int {
 	return cnd.Count(db, &model.Topic{})
 }
 
-func (d *topicDao) Create(t *model.Topic) (err error) {
-	err = db.Create(t).Error
+func (d *topicDao) Create(t *model.Topic) (err errors.WTError) {
+	err = errors.WarpQuick(db.Create(t).Error)
 	return
 }
 
-func (d *topicDao) Update(t *model.Topic) (err error) {
-	err = db.Save(t).Error
+func (d *topicDao) Update(t *model.Topic) (err errors.WTError) {
+	err = errors.WarpQuick(db.Save(t).Error)
 	return
 }
 
-func (d *topicDao) Updates(id int64, columns map[string]interface{}) (err error) {
-	err = db.Model(&model.Topic{}).Where("id = ?", id).Updates(columns).Error
+func (d *topicDao) Updates(id int64, columns map[string]interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.Topic{}).Where("id = ?", id).Updates(columns).Error)
 	return
 }
 
-func (d *topicDao) UpdateColumn(id int64, name string, value interface{}) (err error) {
-	err = db.Model(&model.Topic{}).Where("id = ?", id).UpdateColumn(name, value).Error
+func (d *topicDao) UpdateColumn(id int64, name string, value interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.Topic{}).Where("id = ?", id).UpdateColumn(name, value).Error)
 	return
 }
 

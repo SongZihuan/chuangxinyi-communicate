@@ -102,7 +102,7 @@ func (c *UploadController) UploadFromEditor(ctx *gin.Context) {
 func (c *UploadController) Get(ctx *gin.Context) {
 	key := ctx.Request.FormValue("key")
 	if len(key) == 0 {
-		c.Fail(ctx, utils.FromString("key not give"))
+		c.Fail(ctx, utils.NewErrorMsg("key not give"))
 		return
 	}
 

@@ -5,7 +5,7 @@ import (
 	green20220302 "github.com/alibabacloud-go/green-20220302/client"
 	util "github.com/alibabacloud-go/tea-utils/v2/service"
 	"github.com/alibabacloud-go/tea/tea"
-	"github.com/pkg/errors"
+	errors "github.com/wuntsong-org/wterrors"
 	"net/http"
 	"strings"
 )
@@ -23,7 +23,7 @@ var TextLabel = []string{
 	"C_customized",
 }
 
-func invokeText(text string, service string) (*green20220302.TextModerationResponse, error) {
+func invokeText(text string, service string) (*green20220302.TextModerationResponse, errors.WTError) {
 	var err error
 
 	contentMap := map[string]interface{}{
@@ -32,7 +32,7 @@ func invokeText(text string, service string) (*green20220302.TextModerationRespo
 
 	serviceParameters, err := utils.JsonMarshal(contentMap)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 
 	textModerationRequest := &green20220302.TextModerationRequest{
@@ -44,13 +44,13 @@ func invokeText(text string, service string) (*green20220302.TextModerationRespo
 
 	response, err := YunDunClient.TextModerationWithOptions(textModerationRequest, runtime)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 
 	return response, nil
 }
 
-func CheckName(name string) (bool, error) {
+func CheckName(name string) (bool, errors.WTError) {
 	var err error
 	name = strings.TrimSpace(name)
 
@@ -62,7 +62,7 @@ func CheckName(name string) (bool, error) {
 
 	response, err := invokeText(name, "nickname_detection")
 	if err != nil {
-		return false, err
+		return false, errors.WarpQuick(err)
 	} else if response == nil {
 		return false, errors.Errorf("empty response")
 	} else if *response.StatusCode != http.StatusOK || *response.Body.Code != http.StatusOK {
@@ -90,7 +90,7 @@ func CheckName(name string) (bool, error) {
 	return true, nil
 }
 
-func CheckText(data string) (bool, error) {
+func CheckText(data string) (bool, errors.WTError) {
 	var err error
 	data = strings.TrimSpace(data)
 
@@ -102,7 +102,7 @@ func CheckText(data string) (bool, error) {
 
 	response, err := invokeText(data, "comment_detection")
 	if err != nil {
-		return false, err
+		return false, errors.WarpQuick(err)
 	} else if response == nil {
 		return false, errors.Errorf("empty response")
 	} else if *response.StatusCode != http.StatusOK || *response.Body.Code != http.StatusOK {

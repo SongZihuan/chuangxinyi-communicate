@@ -3,18 +3,17 @@ package login
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/auth"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"github.com/pkg/errors"
 	"github.com/spf13/viper"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
-var BannedStatus = fmt.Errorf("banned_status")
-var RoleNotFound = fmt.Errorf("role_not_found")
+var BannedStatus = errors.NewClass("banned_status")
+var RoleNotFound = errors.NewClass("role_not_found")
 
-func CheckLogin(ctx context.Context, token string) (*model.User, error) {
+func CheckLogin(ctx context.Context, token string) (*model.User, errors.WTError) {
 	LoginCaller := viper.GetString("auth.loginCaller")
 
 	var respData auth.CheckLoginTokenResp
@@ -22,25 +21,25 @@ func CheckLogin(ctx context.Context, token string) (*model.User, error) {
 		Token: token,
 	}, LoginCaller, &respData)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	} else if !respData.Data.IsLogin {
 		return nil, errors.Errorf(respData.Msg)
 	}
 
 	user, err := UpdateUserInfo(ctx, respData.Data.User, respData.Data.Info, respData.Data.Data)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 
 	err = StartGetUserInfo(token, user.Uid)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 
 	return user, nil
 }
 
-func UpdateUserInfo(ctx context.Context, easy auth.UserEasy, info auth.UserInfoEsay, data auth.UserData) (*model.User, error) {
+func UpdateUserInfo(ctx context.Context, easy auth.UserEasy, info auth.UserInfoEsay, data auth.UserData) (*model.User, errors.WTError) {
 	userNotFound := false
 
 	user := dao.UserDao.GetByUid(easy.UID)
@@ -76,7 +75,7 @@ func UpdateUserInfo(ctx context.Context, easy auth.UserEasy, info auth.UserInfoE
 		user.Status = model.StatusOk
 		err := dao.UserDao.Create(user)
 		if err != nil {
-			return nil, err
+			return nil, errors.WarpQuick(err)
 		}
 
 		if user.Phone == adminPhone {
@@ -91,7 +90,7 @@ func UpdateUserInfo(ctx context.Context, easy auth.UserEasy, info auth.UserInfoE
 
 		err := dao.UserDao.Update(user)
 		if err != nil {
-			return nil, err
+			return nil, errors.WarpQuick(err)
 		}
 	}
 

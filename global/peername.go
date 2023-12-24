@@ -2,7 +2,7 @@ package global
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
+	errors "github.com/wuntsong-org/wterrors"
 
 	"net"
 	"os"
@@ -15,7 +15,7 @@ var PeerName = Single
 var SelfIP []string
 var Eth0IP string
 
-func InitPeerName(envPrefix string) error {
+func InitPeerName(envPrefix string) errors.WTError {
 	SelfIP = GetSelfIP()
 
 	if len(Eth0IP) == 0 {

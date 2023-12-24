@@ -1,7 +1,7 @@
 package service
 
 import (
-	"errors"
+	errors "github.com/wuntsong-org/wterrors"
 
 	"github.com/jinzhu/gorm"
 
@@ -40,19 +40,19 @@ func (s *userWatchService) List(cnd *sqlcnd.SqlCnd) (list []model.UserWatch, pag
 	return dao.UserWatchDao.List(cnd)
 }
 
-func (s *userWatchService) Create(t *model.UserWatch) error {
+func (s *userWatchService) Create(t *model.UserWatch) errors.WTError {
 	return dao.UserWatchDao.Create(t)
 }
 
-func (s *userWatchService) Update(t *model.UserWatch) error {
+func (s *userWatchService) Update(t *model.UserWatch) errors.WTError {
 	return dao.UserWatchDao.Update(t)
 }
 
-func (s *userWatchService) Updates(id int64, columns map[string]interface{}) error {
+func (s *userWatchService) Updates(id int64, columns map[string]interface{}) errors.WTError {
 	return dao.UserWatchDao.Updates(id, columns)
 }
 
-func (s *userWatchService) UpdateColumn(id int64, name string, value interface{}) error {
+func (s *userWatchService) UpdateColumn(id int64, name string, value interface{}) errors.WTError {
 	return dao.UserWatchDao.UpdateColumn(id, name, value)
 }
 
@@ -77,7 +77,7 @@ func (s *userWatchService) Recent(userId int64, count int) []model.UserWatch {
 	return s.Find(sqlcnd.NewSqlCnd().Eq("user_id", userId).Desc("id").Limit(count))
 }
 
-func (s *userWatchService) Watch(userID int64, watcherID int64) error {
+func (s *userWatchService) Watch(userID int64, watcherID int64) errors.WTError {
 	if userID == watcherID {
 		return errors.New("不能自己关注自己")
 	}
@@ -92,7 +92,7 @@ func (s *userWatchService) Watch(userID int64, watcherID int64) error {
 		return errors.New("已关注")
 	}
 
-	return dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+	return dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
 		// 点赞
 		userWatch := &model.UserWatch{
 			UserID:     userID,
@@ -101,7 +101,7 @@ func (s *userWatchService) Watch(userID int64, watcherID int64) error {
 		}
 		err := dao.UserWatchDao.Create(userWatch)
 		if err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 		// 发送点赞通知
 		NotificationService.SendUserWatchNotification(userWatch)

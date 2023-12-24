@@ -7,9 +7,9 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/spf13/viper"
+	errors "github.com/wuntsong-org/wterrors"
 	"time"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 )
 
@@ -20,7 +20,7 @@ var (
 const DRIVER_MYSQL = "mysql"
 
 // Setup : Connect to mysql database
-func Setup() error {
+func Setup() errors.WTError {
 	var err error
 
 	switch viper.GetString("database.driver") {
@@ -34,7 +34,7 @@ func Setup() error {
 		dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=True&loc=Local", user, password, host, name, charset)
 		db, err = gorm.Open("mysql", dsn)
 		if err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 
 		db.DB().SetMaxIdleConns(viper.GetInt("database.mysql.pool.min"))
@@ -44,21 +44,20 @@ func Setup() error {
 			db.LogMode(true)
 		}
 	default:
-		return fmt.Errorf("we do not support this kind of storage system yet")
+		return errors.Errorf("we do not support this kind of storage system yet")
 	}
 
 	db.SingularTable(true) //禁用表名复数
 	if err = db.AutoMigrate(model.Models...).Error; nil != err {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	return nil
 }
 
 // Shutdown - close database connection
-func Shutdown() error {
-	logger.Logger.Info("Closing database's connections")
-	return db.Close()
+func Shutdown() errors.WTError {
+	return errors.WarpQuick(db.Close())
 }
 
 // GetDb - get a database connection
@@ -67,7 +66,7 @@ func DB() *gorm.DB {
 }
 
 // 事务环绕
-func Tx(db *gorm.DB, txFunc func(tx *gorm.DB) error) (err error) {
+func Tx(db *gorm.DB, txFunc func(tx *gorm.DB) errors.WTError) (err errors.WTError) {
 	tx := db.Begin()
 	if tx.Error != nil {
 		return
@@ -80,10 +79,9 @@ func Tx(db *gorm.DB, txFunc func(tx *gorm.DB) error) (err error) {
 		} else if err != nil {
 			tx.Rollback()
 		} else {
-			err = tx.Commit().Error
+			err = errors.WarpQuick(tx.Commit().Error)
 		}
 	}()
 
-	err = txFunc(tx)
-	return err
+	return txFunc(tx)
 }

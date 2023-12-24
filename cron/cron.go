@@ -2,20 +2,21 @@ package cron
 
 import (
 	"github.com/robfig/cron"
+	errors "github.com/wuntsong-org/wterrors"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
 )
 
-func Setup() error {
+func Setup() errors.WTError {
 	err := startSchedule()
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	return nil
 }
 
-func startSchedule() error {
+func startSchedule() errors.WTError {
 	c := cron.New()
 
 	// Generate RSS
@@ -24,7 +25,7 @@ func startSchedule() error {
 		service.TopicService.GenerateRss()
 	})
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	c.Start()
@@ -32,10 +33,10 @@ func startSchedule() error {
 	return nil
 }
 
-func addCronFunc(c *cron.Cron, sepc string, cmd func()) error {
+func addCronFunc(c *cron.Cron, sepc string, cmd func()) errors.WTError {
 	err := c.AddFunc(sepc, cmd)
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	return nil

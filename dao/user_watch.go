@@ -3,6 +3,7 @@ package dao
 import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 var UserWatchDao = newUserWatchDao()
@@ -55,23 +56,23 @@ func (d *userWatchDao) List(cnd *sqlcnd.SqlCnd) (list []model.UserWatch, paging 
 	return
 }
 
-func (d *userWatchDao) Create(t *model.UserWatch) (err error) {
-	err = db.Create(t).Error
+func (d *userWatchDao) Create(t *model.UserWatch) (err errors.WTError) {
+	err = errors.WarpQuick(db.Create(t).Error)
 	return
 }
 
-func (d *userWatchDao) Update(t *model.UserWatch) (err error) {
-	err = db.Save(t).Error
+func (d *userWatchDao) Update(t *model.UserWatch) (err errors.WTError) {
+	err = errors.WarpQuick(db.Save(t).Error)
 	return
 }
 
-func (d *userWatchDao) Updates(id int64, columns map[string]interface{}) (err error) {
-	err = db.Model(&model.UserWatch{}).Where("id = ?", id).Updates(columns).Error
+func (d *userWatchDao) Updates(id int64, columns map[string]interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.UserWatch{}).Where("id = ?", id).Updates(columns).Error)
 	return
 }
 
-func (d *userWatchDao) UpdateColumn(id int64, name string, value interface{}) (err error) {
-	err = db.Model(&model.UserWatch{}).Where("id = ?", id).UpdateColumn(name, value).Error
+func (d *userWatchDao) UpdateColumn(id int64, name string, value interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.UserWatch{}).Where("id = ?", id).UpdateColumn(name, value).Error)
 	return
 }
 

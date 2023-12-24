@@ -1,18 +1,22 @@
 package form
 
 import (
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	errors "github.com/wuntsong-org/wterrors"
 	"strconv"
 )
 
-func FormValueInt(ctx *gin.Context, name string) (int, error) {
+func FormValueInt(ctx *gin.Context, name string) (int, errors.WTError) {
 	str := ctx.Request.FormValue(name)
 	if str == "" {
 		return 0, errors.New(fmt.Sprintf("unable to find param value '%s'", name))
 	}
-	return strconv.Atoi(str)
+	res, err := strconv.Atoi(str)
+	if err != nil {
+		return 0, errors.WarpQuick(err)
+	}
+	return res, nil
 }
 
 func FormValueIntDefault(ctx *gin.Context, name string, def int) int {
@@ -22,12 +26,16 @@ func FormValueIntDefault(ctx *gin.Context, name string, def int) int {
 	return def
 }
 
-func FormValueInt64(ctx *gin.Context, name string) (int64, error) {
+func FormValueInt64(ctx *gin.Context, name string) (int64, errors.WTError) {
 	str := ctx.Request.FormValue(name)
 	if str == "" {
 		return 0, errors.New(fmt.Sprintf("unable to find param value '%s'", name))
 	}
-	return strconv.ParseInt(str, 10, 64)
+	res, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		return 0, errors.WarpQuick(err)
+	}
+	return res, nil
 }
 
 func FormValueInt64Default(ctx *gin.Context, name string, def int64) int64 {

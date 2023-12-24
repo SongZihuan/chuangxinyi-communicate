@@ -3,6 +3,7 @@ package dao
 import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 var UserScoreLogDao = newUserScoreLogDao()
@@ -55,23 +56,23 @@ func (d *userScoreLogDao) List(cnd *sqlcnd.SqlCnd) (list []model.UserScoreLog, p
 	return
 }
 
-func (d *userScoreLogDao) Create(t *model.UserScoreLog) (err error) {
-	err = db.Create(t).Error
+func (d *userScoreLogDao) Create(t *model.UserScoreLog) (err errors.WTError) {
+	err = errors.WarpQuick(db.Create(t).Error)
 	return
 }
 
-func (d *userScoreLogDao) Update(t *model.UserScoreLog) (err error) {
-	err = db.Save(t).Error
+func (d *userScoreLogDao) Update(t *model.UserScoreLog) (err errors.WTError) {
+	err = errors.WarpQuick(db.Save(t).Error)
 	return
 }
 
-func (d *userScoreLogDao) Updates(id int64, columns map[string]interface{}) (err error) {
-	err = db.Model(&model.UserScoreLog{}).Where("id = ?", id).Updates(columns).Error
+func (d *userScoreLogDao) Updates(id int64, columns map[string]interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.UserScoreLog{}).Where("id = ?", id).Updates(columns).Error)
 	return
 }
 
-func (d *userScoreLogDao) UpdateColumn(id int64, name string, value interface{}) (err error) {
-	err = db.Model(&model.UserScoreLog{}).Where("id = ?", id).UpdateColumn(name, value).Error
+func (d *userScoreLogDao) UpdateColumn(id int64, name string, value interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.UserScoreLog{}).Where("id = ?", id).UpdateColumn(name, value).Error)
 	return
 }
 

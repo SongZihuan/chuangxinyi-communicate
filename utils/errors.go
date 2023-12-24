@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"fmt"
+	errors "github.com/wuntsong-org/wterrors"
 	"strconv"
 )
 
@@ -14,37 +16,42 @@ var (
 )
 
 func NewError(code int, text string) *CodeError {
-	return &CodeError{code, text, nil}
+	return &CodeError{
+		WTError: errors.New(text).SetCode(fmt.Sprintf("%d", code)),
+	}
 }
 
 func NewErrorMsg(text string) *CodeError {
-	return &CodeError{-1, text, nil}
+	return &CodeError{
+		WTError: errors.New(text).SetCode("-1"),
+	}
 }
 
 func NewErrorData(code int, text string, data interface{}) *CodeError {
-	return &CodeError{code, text, data}
+	return &CodeError{
+		WTError: errors.New(text).SetCode(fmt.Sprintf("%d", code)),
+		Data:    data,
+	}
 }
 
 func FromError(err error) *CodeError {
 	if err == nil {
 		return nil
 	}
-	return &CodeError{-1, err.Error(), nil}
-}
-
-func FromString(str string) *CodeError {
-	if len(str) == 0 {
-		return nil
+	return &CodeError{
+		WTError: errors.New(err.Error()).SetCode("-1"),
 	}
-	return &CodeError{-1, str, nil}
 }
 
 type CodeError struct {
-	Code    int
-	Message string
-	Data    interface{}
+	errors.WTError
+	Data interface{}
 }
 
-func (e *CodeError) Error() string {
-	return strconv.Itoa(e.Code) + ": " + e.Message
+func (e *CodeError) CodeInt() int64 {
+	code, err := strconv.ParseInt(e.Code(), 10, 64)
+	if err != nil {
+		return -1
+	}
+	return code
 }

@@ -1,9 +1,9 @@
 package service
 
 import (
-	"errors"
 	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
+	errors "github.com/wuntsong-org/wterrors"
 	"strings"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
@@ -46,28 +46,28 @@ func (s *commentService) Count(cnd *sqlcnd.SqlCnd) int {
 	return dao.CommentDao.Count(cnd)
 }
 
-func (s *commentService) Update(dto form.CommentUpdateForm) error {
+func (s *commentService) Update(dto form.CommentUpdateForm) errors.WTError {
 	err := dao.NodeDao.Updates(dto.ID, map[string]interface{}{
 		"status": dto.Status,
 	})
 
-	return err
+	return errors.WarpQuick(err)
 }
 
-func (s *commentService) Delete(id int64) error {
+func (s *commentService) Delete(id int64) errors.WTError {
 	return dao.CommentDao.UpdateColumn(id, "status", model.StatusDeleted)
 }
 
-func (s *commentService) Create(dto form.CommentCreateForm) (*model.Comment, error) {
+func (s *commentService) Create(dto form.CommentCreateForm) (*model.Comment, errors.WTError) {
 	if dto.EntityID <= 0 {
 		return nil, errors.New("参数EntityId非法")
 	}
 
 	ok, err := yundun.CheckText(fmt.Sprintf("评论：%s", dto.Content))
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	} else if !ok {
-		return nil, fmt.Errorf("bad content")
+		return nil, errors.Errorf("bad content")
 	}
 
 	comment := &model.Comment{
@@ -100,12 +100,12 @@ func (s *commentService) Create(dto form.CommentCreateForm) (*model.Comment, err
 }
 
 // 发表评论
-func (s *commentService) Publish(userId int64, createForm *form.CommentCreateForm) (*model.Comment, error) {
+func (s *commentService) Publish(userId int64, createForm *form.CommentCreateForm) (*model.Comment, errors.WTError) {
 	ok, err := yundun.CheckText(fmt.Sprintf("评论：%s", createForm.Content))
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	} else if !ok {
-		return nil, fmt.Errorf("bad content")
+		return nil, errors.Errorf("bad content")
 	}
 
 	createForm.Content = strings.TrimSpace(createForm.Content)
@@ -136,7 +136,7 @@ func (s *commentService) Publish(userId int64, createForm *form.CommentCreateFor
 		CreateTime:  utils.NowTimestamp(),
 	}
 	if err := dao.CommentDao.Create(comment); err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 
 	// 更新帖子最后回复时间

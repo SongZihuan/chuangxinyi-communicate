@@ -4,6 +4,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 var UserScoreLogService = newUserScoreLogService()
@@ -35,19 +36,19 @@ func (s *userScoreLogService) List(cnd *sqlcnd.SqlCnd) (list []model.UserScoreLo
 	return dao.UserScoreLogDao.List(cnd)
 }
 
-func (s *userScoreLogService) Create(t *model.UserScoreLog) error {
+func (s *userScoreLogService) Create(t *model.UserScoreLog) errors.WTError {
 	return dao.UserScoreLogDao.Create(t)
 }
 
-func (s *userScoreLogService) Update(t *model.UserScoreLog) error {
+func (s *userScoreLogService) Update(t *model.UserScoreLog) errors.WTError {
 	return dao.UserScoreLogDao.Update(t)
 }
 
-func (s *userScoreLogService) Updates(id int64, columns map[string]interface{}) error {
+func (s *userScoreLogService) Updates(id int64, columns map[string]interface{}) errors.WTError {
 	return dao.UserScoreLogDao.Updates(id, columns)
 }
 
-func (s *userScoreLogService) UpdateColumn(id int64, name string, value interface{}) error {
+func (s *userScoreLogService) UpdateColumn(id int64, name string, value interface{}) errors.WTError {
 	return dao.UserScoreLogDao.UpdateColumn(id, name, value)
 }
 

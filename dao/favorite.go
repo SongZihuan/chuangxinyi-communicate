@@ -3,6 +3,7 @@ package dao
 import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 var FavoriteDao = newFavoriteDao()
@@ -55,23 +56,23 @@ func (d *favoriteDao) List(cnd *sqlcnd.SqlCnd) (list []model.Favorite, paging *s
 	return
 }
 
-func (d *favoriteDao) Create(t *model.Favorite) (err error) {
-	err = db.Create(t).Error
+func (d *favoriteDao) Create(t *model.Favorite) (err errors.WTError) {
+	err = errors.WarpQuick(db.Create(t).Error)
 	return
 }
 
-func (d *favoriteDao) Update(t *model.Favorite) (err error) {
-	err = db.Save(t).Error
+func (d *favoriteDao) Update(t *model.Favorite) (err errors.WTError) {
+	err = errors.WarpQuick(db.Save(t).Error)
 	return
 }
 
-func (d *favoriteDao) Updates(id int64, columns map[string]interface{}) (err error) {
-	err = db.Model(&model.Favorite{}).Where("id = ?", id).Updates(columns).Error
+func (d *favoriteDao) Updates(id int64, columns map[string]interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.Favorite{}).Where("id = ?", id).Updates(columns).Error)
 	return
 }
 
-func (d *favoriteDao) UpdateColumn(id int64, name string, value interface{}) (err error) {
-	err = db.Model(&model.Favorite{}).Where("id = ?", id).UpdateColumn(name, value).Error
+func (d *favoriteDao) UpdateColumn(id int64, name string, value interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.Favorite{}).Where("id = ?", id).UpdateColumn(name, value).Error)
 	return
 }
 

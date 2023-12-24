@@ -20,7 +20,7 @@ var UserCache = newUserCache()
 func newUserCache() *userCache {
 	return &userCache{
 		cache: cache.NewLoadingCache(
-			func(key cache.Key) (value cache.Value, e error) {
+			func(key cache.Key) (value cache.Value, err error) {
 				value = dao.UserDao.Get(key2Int64(key))
 				return
 			},

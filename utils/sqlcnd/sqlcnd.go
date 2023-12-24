@@ -2,6 +2,7 @@ package sqlcnd
 
 import (
 	"github.com/jinzhu/gorm"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 type SqlCnd struct {
@@ -141,9 +142,9 @@ func (s *SqlCnd) Find(db *gorm.DB, out interface{}) {
 	_ = s.Build(db).Find(out)
 }
 
-func (s *SqlCnd) FindOne(db *gorm.DB, out interface{}) error {
+func (s *SqlCnd) FindOne(db *gorm.DB, out interface{}) errors.WTError {
 	if err := s.Limit(1).Build(db).Find(out).Error; err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 	return nil
 }

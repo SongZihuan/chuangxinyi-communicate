@@ -1,9 +1,9 @@
 package service
 
 import (
-	"errors"
 	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
+	errors "github.com/wuntsong-org/wterrors"
 	"math"
 	"path"
 	"time"
@@ -49,28 +49,28 @@ func (s *topicService) Count(cnd *sqlcnd.SqlCnd) int {
 }
 
 // 删除
-func (s *topicService) Delete(id int64) error {
+func (s *topicService) Delete(id int64) errors.WTError {
 	err := dao.TopicDao.UpdateColumn(id, "status", model.StatusDeleted)
 	if err == nil {
 		// 删掉标签文章
 		TopicTagService.DeleteByTopicId(id)
 	}
-	return err
+	return errors.WarpQuick(err)
 }
 
-func (s *topicService) Update(dto form.TopicUpdateForm) error {
+func (s *topicService) Update(dto form.TopicUpdateForm) errors.WTError {
 	ok, err := yundun.CheckText(fmt.Sprintf("标题：%s\n内容：%s\n", dto.Title, dto.Content))
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	} else if !ok {
-		return fmt.Errorf("bad content")
+		return errors.Errorf("bad content")
 	}
 
 	node := dao.NodeDao.Get(dto.NodeID)
 	if node == nil || node.Status != model.StatusOk {
 		return utils.NewErrorMsg("节点不存在")
 	}
-	err = dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+	err = dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
 		err := dao.TopicDao.Updates(dto.ID, map[string]interface{}{
 			"node_id":     dto.NodeID,
 			"title":       dto.Title,
@@ -78,7 +78,7 @@ func (s *topicService) Update(dto form.TopicUpdateForm) error {
 			"update_time": utils.NowTimestamp(),
 		})
 		if err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 		tagIds := dao.TagDao.GetOrCreates(utils.ParseTagsToArray(dto.Tags)) // 创建文章对应标签
 		dao.TopicTagDao.DeleteTopicTags(dto.ID)                             // 先删掉所有的标签
@@ -86,26 +86,26 @@ func (s *topicService) Update(dto form.TopicUpdateForm) error {
 		return nil
 	})
 
-	return err
+	return errors.WarpQuick(err)
 }
 
 // 取消删除
-func (s *topicService) Undelete(id int64) error {
+func (s *topicService) Undelete(id int64) errors.WTError {
 	err := dao.TopicDao.UpdateColumn(id, "status", model.StatusOk)
 	if err == nil {
 		// 删掉标签文章
 		TopicTagService.UndeleteByTopicId(id)
 	}
-	return err
+	return errors.WarpQuick(err)
 }
 
 // 发表话题
-func (s *topicService) Create(dto form.TopicCreateForm) (*model.Topic, error) {
+func (s *topicService) Create(dto form.TopicCreateForm) (*model.Topic, errors.WTError) {
 	ok, err := yundun.CheckText(fmt.Sprintf("标题：%s\n内容：%s\n", dto.Title, dto.Content))
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	} else if !ok {
-		return nil, fmt.Errorf("bad content")
+		return nil, errors.Errorf("bad content")
 	}
 
 	nodeID := dto.NodeID
@@ -133,11 +133,11 @@ func (s *topicService) Create(dto form.TopicCreateForm) (*model.Topic, error) {
 		CreateTime:      now,
 	}
 
-	err = dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+	err = dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
 		tagIds := dao.TagDao.GetOrCreates(utils.ParseTagsToArray(dto.Tags))
 		err := dao.TopicDao.Create(topic)
 		if err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 
 		dao.TopicTagDao.AddTopicTags(topic.ID, tagIds)
@@ -151,11 +151,11 @@ func (s *topicService) Create(dto form.TopicCreateForm) (*model.Topic, error) {
 		// 获得积分
 		UserScoreService.IncrementPostTopicScore(topic)
 	}
-	return topic, err
+	return topic, errors.WarpQuick(err)
 }
 
 // 推荐
-func (s *topicService) SetRecommend(topicId int64, recommend bool) error {
+func (s *topicService) SetRecommend(topicId int64, recommend bool) errors.WTError {
 	return dao.TopicDao.UpdateColumn(topicId, "recommend", recommend)
 }
 
@@ -216,12 +216,12 @@ func (s *topicService) IncrViewCount(topicId int64) {
 
 // 当帖子被评论的时候，更新最后回复时间、回复数量+1
 func (s *topicService) OnComment(topicId, lastCommentUserId, lastCommentTime int64) {
-	dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+	dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
 		if err := dao.DB().Model(&model.Topic{}).Where("id = ?", topicId).Updates(map[string]interface{}{"comment_count": gorm.Expr("comment_count + ?", 1), "last_comment_user_id": lastCommentUserId, "lastCommentTime": lastCommentTime}).Error; err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 		if err := dao.DB().Model(&model.TopicTag{}).Where("topic_id = ?", topicId).Updates(map[string]interface{}{"last_comment_time": lastCommentTime}).Error; err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 		return nil
 	})

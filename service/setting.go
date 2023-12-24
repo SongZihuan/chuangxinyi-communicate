@@ -1,7 +1,7 @@
 package service
 
 import (
-	"errors"
+	errors "github.com/wuntsong-org/wterrors"
 	"strconv"
 
 	"github.com/jinzhu/gorm"
@@ -48,17 +48,17 @@ func (s *settingService) GetAll() []model.Setting {
 	return dao.SettingDao.Find(sqlcnd.NewSqlCnd().Asc("id"))
 }
 
-func (s *settingService) SetAll(configStr string) error {
+func (s *settingService) SetAll(configStr string) errors.WTError {
 	json := gjson.Parse(configStr)
 	configs, ok := json.Value().(map[string]interface{})
 	if !ok {
 		return errors.New("配置数据格式错误")
 	}
-	return dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+	return dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
 		for k := range configs {
 			v := json.Get(k).String()
 			if err := s.setSingle(tx, k, v, "", ""); err != nil {
-				return err
+				return errors.WarpQuick(err)
 			}
 		}
 		return nil
@@ -66,16 +66,16 @@ func (s *settingService) SetAll(configStr string) error {
 }
 
 // 设置配置，如果配置不存在，那么创建
-func (s *settingService) Set(key, value, name, description string) error {
-	return dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+func (s *settingService) Set(key, value, name, description string) errors.WTError {
+	return dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
 		if err := s.setSingle(tx, key, value, name, description); err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 		return nil
 	})
 }
 
-func (s *settingService) setSingle(db *gorm.DB, key, value, name, description string) error {
+func (s *settingService) setSingle(db *gorm.DB, key, value, name, description string) errors.WTError {
 	if len(key) == 0 {
 		return errors.New("sys config key is null")
 	}
@@ -103,7 +103,7 @@ func (s *settingService) setSingle(db *gorm.DB, key, value, name, description st
 		err = dao.SettingDao.Create(sysConfig)
 	}
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	} else {
 		cache.SettingCache.Invalidate(key)
 		return nil

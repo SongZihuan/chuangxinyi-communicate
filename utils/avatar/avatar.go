@@ -36,11 +36,11 @@ func init() {
 	identiconIns, _ = identicon.New(300, color.Transparent, avatarFrontColors...)
 }
 
-func Generate(userId int64) ([]byte, error) {
+func Generate(userId int64) ([]byte, errors.WTError) {
 	buf := new(bytes.Buffer)
 	img := GenerateAvatar(userId)
 	if err = png.Encode(buf, img); err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 	return buf.Bytes(), nil
 }
@@ -50,11 +50,11 @@ func GenerateAvatar(userId int64) image.Image {
 	return identiconIns.Make([]byte(strconv.FormatInt(userId, 10)))
 }
 
-func colorToRGB(colorStr string) (*color.RGBA, error) {
+func colorToRGB(colorStr string) (*color.RGBA, errors.WTError) {
 	colorStr = strings.TrimPrefix(colorStr, "#")
 	color64, err := strconv.ParseInt(colorStr, 16, 32)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 	colorInt := int(color64)
 	r, g, b := colorInt>>16, (colorInt&0x00FF00)>>8, colorInt&0x0000FF

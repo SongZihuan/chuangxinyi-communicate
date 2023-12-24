@@ -2,7 +2,6 @@ package login
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/auth"
 	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
@@ -12,6 +11,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 	"github.com/gorilla/websocket"
 	"github.com/spf13/viper"
+	errors "github.com/wuntsong-org/wterrors"
 	"io"
 	"net/url"
 	"strings"
@@ -52,16 +52,16 @@ func WriteMessage(c chan WSWebsiteMessage, msg WSWebsiteMessage) {
 func WriteJson(data any) string {
 	s, err := utils.JsonMarshal(data)
 	if err != nil {
-		return err.Error()
+		return errors.WarpQuick(err).Error()
 	}
 	return string(s)
 }
 
-func RestartGetUserInfo() error {
+func RestartGetUserInfo() errors.WTError {
 	res := redis.RedisClient.Keys(context.Background(), "logintoken:getinfo:*:*")
 	lst, err := res.Result()
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	for _, l := range lst {
@@ -79,7 +79,7 @@ func RestartGetUserInfo() error {
 	return nil
 }
 
-func StartGetUserInfo(token string, uid string) error {
+func StartGetUserInfo(token string, uid string) errors.WTError {
 	key := fmt.Sprintf("logintoken:getinfo:%s:%s", token, uid)
 	_ = redis.RedisClient.Del(context.Background(), key) // 删除这个key，避免重复
 
@@ -112,7 +112,7 @@ func StartGetUserInfo(token string, uid string) error {
 	return nil
 }
 
-func ConnectWebSocket() (chan WSWebsiteMessage, error) {
+func ConnectWebSocket() (chan WSWebsiteMessage, errors.WTError) {
 	UserInfoChan = make(chan WSWebsiteMessage, 10)
 
 	websocketURL := viper.GetString("auth.websocket")

@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"errors"
+	errors "github.com/wuntsong-org/wterrors"
 	"regexp"
 	"strings"
 
@@ -59,7 +59,7 @@ func GetHtmlSummary(html string) string {
 }
 
 // 验证用户名合法性，用户名必须由5-12位(数字、字母、_、-)组成，且必须以字母开头。
-func IsValidateUsername(username string) error {
+func IsValidateUsername(username string) errors.WTError {
 	if len(username) == 0 {
 		return errors.New("请输入用户名")
 	}
@@ -75,7 +75,7 @@ func IsValidateUsername(username string) error {
 }
 
 // 验证是否是合法的邮箱
-func IsValidateEmail(email string) (err error) {
+func IsValidateEmail(email string) (err errors.WTError) {
 	if len(email) == 0 {
 		err = errors.New("邮箱格式不符合规范")
 		return
@@ -89,7 +89,7 @@ func IsValidateEmail(email string) (err error) {
 }
 
 // 是否是合法的密码
-func IsValidatePassword(password, rePassword string) error {
+func IsValidatePassword(password, rePassword string) errors.WTError {
 	if len(password) == 0 {
 		return errors.New("请输入密码")
 	}
@@ -103,7 +103,7 @@ func IsValidatePassword(password, rePassword string) error {
 }
 
 // 是否是合法的URL
-func IsValidateUrl(url string) error {
+func IsValidateUrl(url string) errors.WTError {
 	if len(url) == 0 {
 		return errors.New("URL格式错误")
 	}

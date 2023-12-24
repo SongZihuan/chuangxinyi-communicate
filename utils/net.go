@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"errors"
+	errors "github.com/wuntsong-org/wterrors"
 	"net"
 )
 

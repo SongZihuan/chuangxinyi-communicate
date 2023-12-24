@@ -4,6 +4,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 var ArticleTagDao = newArticleTagDao()
@@ -48,23 +49,23 @@ func (d *articleTagDao) List(cnd *sqlcnd.SqlCnd) (list []model.ArticleTag, pagin
 	return
 }
 
-func (d *articleTagDao) Create(t *model.ArticleTag) (err error) {
-	err = db.Create(t).Error
+func (d *articleTagDao) Create(t *model.ArticleTag) (err errors.WTError) {
+	err = errors.WarpQuick(db.Create(t).Error)
 	return
 }
 
-func (d *articleTagDao) Update(t *model.ArticleTag) (err error) {
-	err = db.Save(t).Error
+func (d *articleTagDao) Update(t *model.ArticleTag) (err errors.WTError) {
+	err = errors.WarpQuick(db.Save(t).Error)
 	return
 }
 
-func (d *articleTagDao) Updates(id int64, columns map[string]interface{}) (err error) {
-	err = db.Model(&model.ArticleTag{}).Where("id = ?", id).Updates(columns).Error
+func (d *articleTagDao) Updates(id int64, columns map[string]interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.ArticleTag{}).Where("id = ?", id).Updates(columns).Error)
 	return
 }
 
-func (d *articleTagDao) UpdateColumn(id int64, name string, value interface{}) (err error) {
-	err = db.Model(&model.ArticleTag{}).Where("id = ?", id).UpdateColumn(name, value).Error
+func (d *articleTagDao) UpdateColumn(id int64, name string, value interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.ArticleTag{}).Where("id = ?", id).UpdateColumn(name, value).Error)
 	return
 }
 

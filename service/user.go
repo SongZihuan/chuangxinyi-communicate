@@ -11,6 +11,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 type ScanUserCallback func(users []model.User)
@@ -48,26 +49,26 @@ func (s *userService) Count(cnd *sqlcnd.SqlCnd) int {
 	return dao.UserDao.Count(cnd)
 }
 
-func (s *userService) Update(dto form.UserUpdateForm) error {
+func (s *userService) Update(dto form.UserUpdateForm) errors.WTError {
 	err := dao.UserDao.Updates(dto.ID, map[string]interface{}{
 		"level":       dto.Level,
 		"update_time": utils.NowTimestamp(),
 	})
 	cache.UserCache.Invalidate(dto.ID)
 
-	return err
+	return errors.WarpQuick(err)
 }
 
-func (s *userService) Updates(id int64, columns map[string]interface{}) error {
+func (s *userService) Updates(id int64, columns map[string]interface{}) errors.WTError {
 	err := dao.UserDao.Updates(id, columns)
 	cache.UserCache.Invalidate(id)
-	return err
+	return errors.WarpQuick(err)
 }
 
-func (s *userService) UpdateColumn(id int64, name string, value interface{}) error {
+func (s *userService) UpdateColumn(id int64, name string, value interface{}) errors.WTError {
 	err := dao.UserDao.UpdateColumn(id, name, value)
 	cache.UserCache.Invalidate(id)
-	return err
+	return errors.WarpQuick(err)
 }
 
 func (s *userService) Delete(id int64) {

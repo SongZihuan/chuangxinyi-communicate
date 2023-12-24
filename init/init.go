@@ -13,16 +13,16 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/signalexit"
 	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
 	"github.com/gin-gonic/gin"
-	"github.com/pkg/errors"
 	"github.com/spf13/viper"
+	errors "github.com/wuntsong-org/wterrors"
 	"os"
 )
 
-func Init(envPrefix string, serviceName string) error {
+func Init(envPrefix string, serviceName string) errors.WTError {
 	var err error
 	err = signalexit.InitSignalExit()
 	if err != nil {
-		return errors.Errorf("signal resp: %s", err.Error())
+		return errors.Errorf("signal resp: %s", errors.WarpQuick(err).Error())
 	}
 
 	signalexit.AddExitByFunc(func(ctx context.Context, _ os.Signal) context.Context {
@@ -35,47 +35,47 @@ func Init(envPrefix string, serviceName string) error {
 
 	err = logger.InitLogger(serviceName)
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	err = global.InitPeerName(envPrefix)
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	err = redis.InitRedis()
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	err = dao.Setup()
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	err = cache.Setup()
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	err = cron.Setup()
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	err = rand.InitRander()
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	err = yundun.InitYunDun()
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	err = auth.InitAuth()
 	if err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	return nil

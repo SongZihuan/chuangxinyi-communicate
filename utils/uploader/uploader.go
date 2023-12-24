@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
+	errors "github.com/wuntsong-org/wterrors"
 	"path/filepath"
 	"sync"
 	"time"
@@ -19,15 +20,15 @@ var (
 	aliyun = newAliyun()
 )
 
-func PutImage(data []byte) (string, error) {
+func PutImage(data []byte) (string, errors.WTError) {
 	return aliyun.PutImage(data)
 }
 
-func CopyImage(originUrl string) (string, error) {
+func CopyImage(originUrl string) (string, errors.WTError) {
 	return aliyun.CopyImage(originUrl)
 }
 
-func GetImage(key string) (string, error) {
+func GetImage(key string) (string, errors.WTError) {
 	return aliyun.GetImage(key)
 }
 
@@ -50,62 +51,62 @@ type aliyunOssUploader struct {
 	bucket *oss.Bucket
 }
 
-func (aliyun *aliyunOssUploader) PutImage(data []byte) (string, error) {
+func (aliyun *aliyunOssUploader) PutImage(data []byte) (string, errors.WTError) {
 	fileType := utils.GetImageType(data)
 	if fileType == utils.Unknown {
-		return "", fmt.Errorf("bad picture")
+		return "", errors.Errorf("bad picture")
 	}
 
 	ok, err := yundun.CheckBaseLinePic(data, int64(fileType))
 	if err != nil {
-		return "", err
+		return "", errors.WarpQuick(err)
 	} else if !ok {
-		return "", fmt.Errorf("bad picture")
+		return "", errors.Errorf("bad picture")
 	}
 
 	key := generateImageKey(data)
 	err = aliyun.putObject(fmt.Sprintf("图像文件/%s", key), data)
 	if err != nil {
-		return "", err
+		return "", errors.WarpQuick(err)
 	}
 	return key, nil
 }
 
-func (aliyun *aliyunOssUploader) CopyImage(originUrl string) (string, error) {
+func (aliyun *aliyunOssUploader) CopyImage(originUrl string) (string, errors.WTError) {
 	data, err := download(originUrl)
 	if err != nil {
-		return "", err
+		return "", errors.WarpQuick(err)
 	}
 	key, err := aliyun.PutImage(data)
 	if err != nil {
-		return "", err
+		return "", errors.WarpQuick(err)
 	}
 	return key, nil
 }
 
-func (aliyun *aliyunOssUploader) putObject(key string, data []byte) error {
+func (aliyun *aliyunOssUploader) putObject(key string, data []byte) errors.WTError {
 	bucket := aliyun.getBucket()
 	if err := bucket.PutObject(key, bytes.NewReader(data)); err != nil {
-		return err
+		return errors.WarpQuick(err)
 	}
 
 	return nil
 }
 
-func (aliyun *aliyunOssUploader) GetImage(key string) (string, error) {
+func (aliyun *aliyunOssUploader) GetImage(key string) (string, errors.WTError) {
 	url, err := aliyun.getObject(fmt.Sprintf("图像文件/%s", key))
 	if err != nil {
-		return "", err
+		return "", errors.WarpQuick(err)
 	}
 
 	return url, nil
 }
 
-func (aliyun *aliyunOssUploader) getObject(key string) (string, error) {
+func (aliyun *aliyunOssUploader) getObject(key string) (string, errors.WTError) {
 	bucket := aliyun.getBucket()
 	url, err := bucket.SignURL(key, oss.HTTPGet, 60)
 	if err != nil {
-		return "", err
+		return "", errors.WarpQuick(err)
 	}
 
 	return url, nil
@@ -127,10 +128,10 @@ func generateImageKey(data []byte) string {
 	return filepath.Join("images", utils.TimeFormat(time.Now(), "2006/01/02/"), md5+".jpg")
 }
 
-func download(url string) ([]byte, error) {
+func download(url string) ([]byte, errors.WTError) {
 	rsp, err := resty.New().R().Get(url)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 	return rsp.Body(), nil
 }

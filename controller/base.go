@@ -17,7 +17,7 @@ type BaseController struct {
 // BindAndValidate bind and validate
 func (c *BaseController) BindAndValidate(ctx *gin.Context, obj interface{}) bool {
 	if err := form.Bind(ctx, obj); err != nil {
-		c.Fail(ctx, &utils.CodeError{Code: -1, Message: err.Error()})
+		c.Fail(ctx, utils.NewError(-1, err.Error()))
 		return false
 	}
 	return true
@@ -48,8 +48,8 @@ func (c *BaseController) Redirect(ctx *gin.Context, url string) {
 // Fail output error
 func (c *BaseController) Fail(ctx *gin.Context, error *utils.CodeError) {
 	ctx.AbortWithStatusJSON(http.StatusOK, gin.H{
-		"code":    error.Code,
-		"message": error.Message,
+		"code":    error.CodeInt(),
+		"message": error.Message(),
 	})
 	return
 }

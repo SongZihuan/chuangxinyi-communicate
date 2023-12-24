@@ -42,12 +42,12 @@ func (c *CommentController) List(ctx *gin.Context) {
 
 	entityType = ctx.Request.FormValue("entityType")
 	if len(entityType) == 0 {
-		c.Fail(ctx, &utils.CodeError{Message: "参数：entityType 不能为空"})
+		c.Fail(ctx, utils.NewErrorMsg("参数：entityType 不能为空"))
 		return
 	}
 
 	if entityId, err = form.FormValueInt64(ctx, "entityId"); err != nil {
-		c.Fail(ctx, &utils.CodeError{Message: err.Error()})
+		c.Fail(ctx, utils.FromError(err))
 		return
 
 	}

@@ -19,6 +19,12 @@ import (
 var configFile = flag.String("f", "etc", "the config path")
 
 func main() {
+	fmt.Println("Start community backend...")
+	CmdMain()
+	fmt.Println("Bye~")
+}
+
+func CmdMain() {
 	flag.Parse()
 	var err error
 
@@ -38,6 +44,7 @@ func main() {
 	}
 
 	serviceName := viper.GetString("serviceName")
+	readableName := viper.GetString("readableName")
 	err = initall.Init("COMMUNITY_", serviceName)
 	if err != nil {
 		logger.Logger.Error(fmt.Sprintf("Fail to init: %s", err.Error()))
@@ -52,8 +59,9 @@ func main() {
 	engine := gin.Default()
 	router.Setup(engine)
 
+	addr := ":" + viper.GetString("base.port")
 	server := http.Server{
-		Addr:    ":" + viper.GetString("base.port"),
+		Addr:    addr,
 		Handler: engine,
 	}
 
@@ -62,6 +70,7 @@ func main() {
 		return context.WithValue(ctx, "Server-Shutdown", true)
 	})
 
+	logger.Logger.WXInfo("启动服务 %s 在端口 %s...", readableName, addr)
 	go func() {
 		_ = server.ListenAndServe()
 	}()

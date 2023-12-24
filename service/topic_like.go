@@ -1,7 +1,7 @@
 package service
 
 import (
-	"errors"
+	errors "github.com/wuntsong-org/wterrors"
 
 	"github.com/jinzhu/gorm"
 
@@ -40,19 +40,19 @@ func (s *topicLikeService) List(cnd *sqlcnd.SqlCnd) (list []model.TopicLike, pag
 	return dao.TopicLikeDao.List(cnd)
 }
 
-func (s *topicLikeService) Create(t *model.TopicLike) error {
+func (s *topicLikeService) Create(t *model.TopicLike) errors.WTError {
 	return dao.TopicLikeDao.Create(t)
 }
 
-func (s *topicLikeService) Update(t *model.TopicLike) error {
+func (s *topicLikeService) Update(t *model.TopicLike) errors.WTError {
 	return dao.TopicLikeDao.Update(t)
 }
 
-func (s *topicLikeService) Updates(id int64, columns map[string]interface{}) error {
+func (s *topicLikeService) Updates(id int64, columns map[string]interface{}) errors.WTError {
 	return dao.TopicLikeDao.Updates(id, columns)
 }
 
-func (s *topicLikeService) UpdateColumn(id int64, name string, value interface{}) error {
+func (s *topicLikeService) UpdateColumn(id int64, name string, value interface{}) errors.WTError {
 	return dao.TopicLikeDao.UpdateColumn(id, name, value)
 }
 
@@ -72,7 +72,7 @@ func (s *topicLikeService) Recent(topicId int64, count int) []model.TopicLike {
 	return s.Find(sqlcnd.NewSqlCnd().Eq("topic_id", topicId).Desc("id").Limit(count))
 }
 
-func (s *topicLikeService) Like(userId int64, topicId int64) error {
+func (s *topicLikeService) Like(userId int64, topicId int64) errors.WTError {
 	topic := dao.TopicDao.Get(topicId)
 	if topic == nil || topic.Status != model.StatusOk {
 		return errors.New("话题不存在")
@@ -84,7 +84,7 @@ func (s *topicLikeService) Like(userId int64, topicId int64) error {
 		return errors.New("已点赞")
 	}
 
-	return dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+	return dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
 		// 点赞
 		topicLike := &model.TopicLike{
 			UserId:     userId,
@@ -93,11 +93,11 @@ func (s *topicLikeService) Like(userId int64, topicId int64) error {
 		}
 		err := dao.TopicLikeDao.Create(topicLike)
 		if err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 		// 发送点赞通知
 		NotificationService.SendTopicLikeNotification(topicLike)
 
-		return dao.DB().Model(&topic).UpdateColumn("like_count", gorm.Expr("like_count + ?", 1)).Error
+		return errors.WarpQuick(dao.DB().Model(&topic).UpdateColumn("like_count", gorm.Expr("like_count + ?", 1)).Error)
 	})
 }

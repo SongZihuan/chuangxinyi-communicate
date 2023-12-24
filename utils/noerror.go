@@ -1,20 +1,20 @@
 package utils
 
 import (
-	"github.com/pkg/errors"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 type Logger interface {
 	Error(string, ...any)
 }
 
-func MustNotError(err error) {
+func MustNotError(err errors.WTError) {
 	if err != nil {
 		panic(err)
 	}
 }
 
-func Recover(logger Logger, err *error, msg string) {
+func Recover(logger Logger, err *errors.WTError, msg string) {
 	e := recover()
 	if e != nil {
 		logger.Error("Error (%s): %v", msg, e)

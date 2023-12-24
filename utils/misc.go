@@ -3,8 +3,7 @@ package utils
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"errors"
-	"fmt"
+	errors "github.com/wuntsong-org/wterrors"
 	"reflect"
 	"strings"
 
@@ -87,26 +86,26 @@ func fillMap(data map[string]interface{}, keys reflect.Type, values reflect.Valu
 	}
 }
 
-func MapToStruct(obj interface{}, data map[string]interface{}) error {
+func MapToStruct(obj interface{}, data map[string]interface{}) errors.WTError {
 	for k, v := range data {
 		err := setField(obj, k, v)
 		if err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 	}
 	return nil
 }
 
-func setField(obj interface{}, name string, value interface{}) error {
+func setField(obj interface{}, name string, value interface{}) errors.WTError {
 	structValue := reflect.ValueOf(obj).Elem()
 	structFieldValue := structValue.FieldByName(name)
 
 	if !structFieldValue.IsValid() {
-		return fmt.Errorf("No such field: %s in obj ", name)
+		return errors.Errorf("No such field: %s in obj ", name)
 	}
 
 	if !structFieldValue.CanSet() {
-		return fmt.Errorf("Cannot set %s field value ", name)
+		return errors.Errorf("Cannot set %s field value ", name)
 	}
 
 	structFieldType := structFieldValue.Type()

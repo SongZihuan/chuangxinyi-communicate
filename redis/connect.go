@@ -24,7 +24,7 @@ func InitRedis() errors.WTError {
 	if err != nil {
 		_ = RedisClient.Close()
 		RedisClient = nil
-		return errors.Errorf("redis is fail to connect: %s", err.Error())
+		return errors.Errorf("redis is fail to connect: %s", errors.WarpQuick(err).Error())
 	}
 
 	return nil

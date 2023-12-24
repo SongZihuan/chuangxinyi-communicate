@@ -1,7 +1,7 @@
 package service
 
 import (
-	"errors"
+	errors "github.com/wuntsong-org/wterrors"
 	"strings"
 
 	"github.com/jinzhu/gorm"
@@ -34,7 +34,7 @@ func (s *linkService) List(cnd *sqlcnd.SqlCnd) (list []model.Link, paging *sqlcn
 	return dao.LinkDao.List(cnd)
 }
 
-func (s *linkService) Create(dto form.LinkCreateForm) (*model.Link, error) {
+func (s *linkService) Create(dto form.LinkCreateForm) (*model.Link, errors.WTError) {
 	link := &model.Link{
 		Title:      dto.Title,
 		Url:        dto.URL,
@@ -42,17 +42,17 @@ func (s *linkService) Create(dto form.LinkCreateForm) (*model.Link, error) {
 		Logo:       dto.Logo,
 		CreateTime: utils.NowTimestamp(),
 	}
-	err := dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+	err := dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
 		err := dao.LinkDao.Create(link)
 		if err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 		return nil
 	})
-	return link, err
+	return link, errors.WarpQuick(err)
 }
 
-func (s *linkService) Update(dto form.LinkUpdateForm) error {
+func (s *linkService) Update(dto form.LinkUpdateForm) errors.WTError {
 	err := dao.LinkDao.Updates(dto.ID, map[string]interface{}{
 		"title":       dto.Title,
 		"url":         dto.URL,
@@ -62,7 +62,7 @@ func (s *linkService) Update(dto form.LinkUpdateForm) error {
 		"update_time": utils.NowTimestamp(),
 	})
 
-	return err
+	return errors.WarpQuick(err)
 }
 
 func (s *linkService) Delete(id int64) {
@@ -70,7 +70,7 @@ func (s *linkService) Delete(id int64) {
 }
 
 // 提交友情链接
-func (s *linkService) Submit(url, title, summary, logo string) (link *model.Link, err error) {
+func (s *linkService) Submit(url, title, summary, logo string) (link *model.Link, err errors.WTError) {
 	url = strings.TrimSpace(url)
 	title = strings.TrimSpace(title)
 	summary = strings.TrimSpace(summary)
@@ -92,10 +92,10 @@ func (s *linkService) Submit(url, title, summary, logo string) (link *model.Link
 		CreateTime: utils.NowTimestamp(),
 	}
 
-	err = dao.Tx(dao.DB(), func(tx *gorm.DB) error {
+	err = dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
 		err := dao.LinkDao.Create(link)
 		if err != nil {
-			return err
+			return errors.WarpQuick(err)
 		}
 		return nil
 	})

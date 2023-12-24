@@ -4,6 +4,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/auth/login"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	errors "github.com/wuntsong-org/wterrors"
 	"net/http"
 	"time"
 
@@ -105,15 +106,15 @@ func LoginResponse(c *gin.Context, code int, token string, expire time.Time) {
 	})
 }
 
-func Authenticator(c *gin.Context) (interface{}, error) {
+func Authenticator(c *gin.Context) (interface{}, errors.WTError) {
 	var loginDto LoginDto
 	if err := form.Bind(c, &loginDto); err != nil {
-		return "", err
+		return "", errors.WarpQuick(err)
 	}
 
 	user, err := login.CheckLogin(c, loginDto.LoginToken)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 
 	return model.UserClaims{

@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 	"github.com/gorilla/websocket"
-	"github.com/pkg/errors"
 	"github.com/spf13/viper"
+	errors "github.com/wuntsong-org/wterrors"
 	"io"
 	"net/http"
 	"net/url"
@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-func SendGetRequests(u string, values url.Values) (string, error) {
+func SendGetRequests(u string, values url.Values) (string, errors.WTError) {
 	timestamp := fmt.Sprintf("%d", time.Now().Unix())
 	n := utils.GenerateUniqueNumber(18)
 
@@ -28,20 +28,20 @@ func SendGetRequests(u string, values url.Values) (string, error) {
 
 	up, err := url.Parse(u)
 	if err != nil {
-		return "", err
+		return "", errors.WarpQuick(err)
 	}
 
 	signText := fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n", http.MethodGet, domainUID, timestamp, n, up.Path, values.Encode())
 	sign, err := utils.SignRsaHash256Sign(signText, PriKey)
 	if err != nil {
-		return "", err
+		return "", errors.WarpQuick(err)
 	}
 
 	values.Add("xsign", base64.StdEncoding.EncodeToString(sign))
 	return fmt.Sprintf("%s?%s", u, values.Encode()), nil
 }
 
-func SendRequests(data any, u string, r RespInterface) (*http.Response, error) {
+func SendRequests(data any, u string, r RespInterface) (*http.Response, errors.WTError) {
 	domainUID := viper.GetString("auth.domainUID")
 	xRunMode := viper.GetString("auth.xRunMode")
 
@@ -52,12 +52,12 @@ func SendRequests(data any, u string, r RespInterface) (*http.Response, error) {
 
 	uu, err := url.Parse(u)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 
 	req, err := http.NewRequest(http.MethodPost, u, bytes.NewBuffer(dataByte))
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 
 	timestamp := fmt.Sprintf("%d", time.Now().Unix())
@@ -66,7 +66,7 @@ func SendRequests(data any, u string, r RespInterface) (*http.Response, error) {
 	signText := fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n", http.MethodPost, domainUID, timestamp, n, uu.Path, string(dataByte))
 	sign, err := utils.SignRsaHash256Sign(signText, PriKey)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -79,12 +79,12 @@ func SendRequests(data any, u string, r RespInterface) (*http.Response, error) {
 	client := http.DefaultClient
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 
 	if resp.StatusCode != 200 {
@@ -93,31 +93,19 @@ func SendRequests(data any, u string, r RespInterface) (*http.Response, error) {
 
 	err = utils.JsonUnmarshal(body, r)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
-
-	// TODO 设置Code
-	//code := r.GetCode()
-	//if code == "SUCCESS" {
-	//	return resp, nil
-	//} else if code == "WEBSITE_DENY" {
-	//	return nil, fmt.Errorf("get website deny: %s", r.GetMsg()).SetCode(fmt.Sprintf(r.GetSubCode()))
-	//} else if code == "LOGIC_DENY" {
-	//	return nil, fmt.Errorf("get logic resp: %s", r.GetMsg()).SetCode(fmt.Sprintf(r.GetSubCode()))
-	//}
-	//
-	//return nil, fmt.Errorf("requests fail: %s", r.GetMsg()).SetCode(fmt.Sprintf(r.GetCode()))
 
 	code := r.GetCode()
 	if code == "SUCCESS" {
 		return resp, nil
 	} else if code == "WEBSITE_DENY" {
-		return nil, fmt.Errorf("get website deny: %s", r.GetMsg())
+		return nil, errors.Errorf("get website deny: %s", r.GetMsg()).SetCode(fmt.Sprintf(r.GetSubCode()))
 	} else if code == "LOGIC_DENY" {
-		return nil, fmt.Errorf("get logic resp: %s", r.GetMsg())
+		return nil, errors.Errorf("get logic resp: %s", r.GetMsg()).SetCode(fmt.Sprintf(r.GetSubCode()))
 	}
 
-	return nil, fmt.Errorf("requests fail: %s", r.GetMsg())
+	return nil, errors.Errorf("requests fail: %s", r.GetMsg()).SetCode(fmt.Sprintf(r.GetCode()))
 }
 
 func WriteRespFail(w http.ResponseWriter) {

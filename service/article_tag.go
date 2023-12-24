@@ -4,6 +4,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	errors "github.com/wuntsong-org/wterrors"
 )
 
 var ArticleTagService = newArticleTagService()
@@ -31,19 +32,19 @@ func (s *articleTagService) List(cnd *sqlcnd.SqlCnd) (list []model.ArticleTag, p
 	return dao.ArticleTagDao.List(cnd)
 }
 
-func (s *articleTagService) Create(t *model.ArticleTag) error {
+func (s *articleTagService) Create(t *model.ArticleTag) errors.WTError {
 	return dao.ArticleTagDao.Create(t)
 }
 
-func (s *articleTagService) Update(t *model.ArticleTag) error {
+func (s *articleTagService) Update(t *model.ArticleTag) errors.WTError {
 	return dao.ArticleTagDao.Update(t)
 }
 
-func (s *articleTagService) Updates(id int64, columns map[string]interface{}) error {
+func (s *articleTagService) Updates(id int64, columns map[string]interface{}) errors.WTError {
 	return dao.ArticleTagDao.Updates(id, columns)
 }
 
-func (s *articleTagService) UpdateColumn(id int64, name string, value interface{}) error {
+func (s *articleTagService) UpdateColumn(id int64, name string, value interface{}) errors.WTError {
 	return dao.ArticleTagDao.UpdateColumn(id, name, value)
 }
 

@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/auth/msg"
+	errors "github.com/wuntsong-org/wterrors"
 	"sync"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
@@ -46,19 +47,19 @@ func (s *notificationService) List(cnd *sqlcnd.SqlCnd) (list []model.Notificatio
 	return dao.NotificationDao.List(cnd)
 }
 
-func (s *notificationService) Create(t *model.Notification) error {
+func (s *notificationService) Create(t *model.Notification) errors.WTError {
 	return dao.NotificationDao.Create(t)
 }
 
-func (s *notificationService) Update(t *model.Notification) error {
+func (s *notificationService) Update(t *model.Notification) errors.WTError {
 	return dao.NotificationDao.Update(t)
 }
 
-func (s *notificationService) Updates(id int64, columns map[string]interface{}) error {
+func (s *notificationService) Updates(id int64, columns map[string]interface{}) errors.WTError {
 	return dao.NotificationDao.Updates(id, columns)
 }
 
-func (s *notificationService) UpdateColumn(id int64, name string, value interface{}) error {
+func (s *notificationService) UpdateColumn(id int64, name string, value interface{}) errors.WTError {
 	return dao.NotificationDao.UpdateColumn(id, name, value)
 }
 
@@ -72,7 +73,7 @@ func (s *notificationService) GetUnReadCount(userId int64) (count int64) {
 }
 
 // 将所有消息标记为已读
-func (s *notificationService) MarkRead(userId int64) error {
+func (s *notificationService) MarkRead(userId int64) errors.WTError {
 	return dao.NotificationDao.UpdateStatusBatch(userId)
 }
 

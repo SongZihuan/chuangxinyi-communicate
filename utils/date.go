@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	errors "github.com/wuntsong-org/wterrors"
 	"strconv"
 	"strings"
 	"time"
@@ -57,8 +58,12 @@ func TimeFormat(time time.Time, layout string) string {
 }
 
 // 字符串时间转时间类型
-func TimeParse(timeStr, layout string) (time.Time, error) {
-	return time.Parse(layout, timeStr)
+func TimeParse(timeStr, layout string) (time.Time, errors.WTError) {
+	res, err := time.Parse(layout, timeStr)
+	if err != nil {
+		return time.Time{}, errors.WarpQuick(err)
+	}
+	return res, nil
 }
 
 // return yyyyMMdd

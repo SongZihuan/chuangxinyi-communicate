@@ -141,34 +141,34 @@ var PicProfilePhotoLabel = []string{
 var tokenData *green20220302.DescribeUploadTokenResponseBodyData = nil
 
 // 创建上传文件客户端
-func createOssClient(tokenData *green20220302.DescribeUploadTokenResponseBodyData) (*oss.Bucket, error) {
+func createOssClient(tokenData *green20220302.DescribeUploadTokenResponseBodyData) (*oss.Bucket, errors.WTError) {
 	ossClient, err := oss.New(tea.StringValue(tokenData.OssInternetEndPoint), tea.StringValue(tokenData.AccessKeyId), tea.StringValue(tokenData.AccessKeySecret), oss.SecurityToken(tea.StringValue(tokenData.SecurityToken)))
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 	bucket, err := ossClient.Bucket(tea.StringValue(tokenData.BucketName))
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 	return bucket, nil
 }
 
 // 上传文件
-func uploadFile(file []byte, fileType int64) (string, error) {
+func uploadFile(file []byte, fileType int64) (string, errors.WTError) {
 	var err error
 
 	if tokenData == nil || tea.Int32Value(tokenData.Expiration) <= int32(time.Now().Unix()) {
 		//获取文件上传临时token
 		uploadTokenResponse, err := YunDunClient.DescribeUploadToken()
 		if err != nil {
-			return "", err
+			return "", errors.WarpQuick(err)
 		}
 		tokenData = uploadTokenResponse.Body.Data
 	}
 
 	bucket, err := createOssClient(tokenData)
 	if err != nil {
-		return "", err
+		return "", errors.WarpQuick(err)
 	}
 
 	suffix, ok := utils.MediaTypeSuffixMap[int(fileType)]
@@ -178,19 +178,19 @@ func uploadFile(file []byte, fileType int64) (string, error) {
 
 	key, err := uuid.NewV1()
 	if err != nil {
-		return "", err
+		return "", errors.WarpQuick(err)
 	}
 
 	objectName := fmt.Sprintf("%s%s.%s", tea.StringValue(tokenData.FileNamePrefix), key, suffix)
 
 	err = bucket.PutObject(objectName, bytes.NewReader(file))
 	if err != nil {
-		return "", err
+		return "", errors.WarpQuick(err)
 	}
 	return objectName, nil
 }
 
-func invokePic(file []byte, fileType int64, service string) (*green20220302.ImageModerationResponse, error) {
+func invokePic(file []byte, fileType int64, service string) (*green20220302.ImageModerationResponse, errors.WTError) {
 	runtime := &util.RuntimeOptions{}
 	var objectName, _ = uploadFile(file, fileType)
 
@@ -208,17 +208,17 @@ func invokePic(file []byte, fileType int64, service string) (*green20220302.Imag
 
 	res, err := YunDunClient.ImageModerationWithOptions(imageModerationRequest, runtime)
 	if err != nil {
-		return nil, err
+		return nil, errors.WarpQuick(err)
 	}
 
 	return res, nil
 }
 
-func CheckBaseLinePic(file []byte, fileType int64) (bool, error) {
+func CheckBaseLinePic(file []byte, fileType int64) (bool, errors.WTError) {
 	var err error
 	response, err := invokePic(file, fileType, "baselineCheck")
 	if err != nil {
-		return false, err
+		return false, errors.WarpQuick(err)
 	} else if response == nil {
 		return false, errors.Errorf("empty response")
 	} else if *response.StatusCode != http.StatusOK || *response.Body.Code != http.StatusOK {
@@ -248,11 +248,11 @@ func CheckBaseLinePic(file []byte, fileType int64) (bool, error) {
 	return true, nil
 }
 
-func CheckHeaderPic(file []byte, fileType int64) (bool, error) {
+func CheckHeaderPic(file []byte, fileType int64) (bool, errors.WTError) {
 	var err error
 	response, err := invokePic(file, fileType, "profilePhotoCheck")
 	if err != nil {
-		return false, err
+		return false, errors.WarpQuick(err)
 	} else if response == nil {
 		return false, errors.Errorf("empty response")
 	} else if *response.StatusCode != http.StatusOK || *response.Body.Code != http.StatusOK {

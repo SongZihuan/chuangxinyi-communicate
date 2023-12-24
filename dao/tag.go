@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"errors"
+	errors "github.com/wuntsong-org/wterrors"
 	"strings"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
@@ -59,23 +59,23 @@ func (d *tagDao) List(cnd *sqlcnd.SqlCnd) (list []model.Tag, paging *sqlcnd.Pagi
 	return
 }
 
-func (d *tagDao) Create(t *model.Tag) (err error) {
-	err = db.Create(t).Error
+func (d *tagDao) Create(t *model.Tag) (err errors.WTError) {
+	err = errors.WarpQuick(db.Create(t).Error)
 	return
 }
 
-func (d *tagDao) Update(t *model.Tag) (err error) {
-	err = db.Save(t).Error
+func (d *tagDao) Update(t *model.Tag) (err errors.WTError) {
+	err = errors.WarpQuick(db.Save(t).Error)
 	return
 }
 
-func (d *tagDao) Updates(id int64, columns map[string]interface{}) (err error) {
-	err = db.Model(&model.Tag{}).Where("id = ?", id).Updates(columns).Error
+func (d *tagDao) Updates(id int64, columns map[string]interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.Tag{}).Where("id = ?", id).Updates(columns).Error)
 	return
 }
 
-func (d *tagDao) UpdateColumn(id int64, name string, value interface{}) (err error) {
-	err = db.Model(&model.Tag{}).Where("id = ?", id).UpdateColumn(name, value).Error
+func (d *tagDao) UpdateColumn(id int64, name string, value interface{}) (err errors.WTError) {
+	err = errors.WarpQuick(db.Model(&model.Tag{}).Where("id = ?", id).UpdateColumn(name, value).Error)
 	return
 }
 
@@ -99,7 +99,7 @@ func (d *tagDao) GetByName(name string) *model.Tag {
 	return d.Take("name = ?", name)
 }
 
-func (d *tagDao) GetOrCreate(name string) (*model.Tag, error) {
+func (d *tagDao) GetOrCreate(name string) (*model.Tag, errors.WTError) {
 	if len(name) == 0 {
 		return nil, errors.New("标签为空")
 	}
@@ -115,7 +115,7 @@ func (d *tagDao) GetOrCreate(name string) (*model.Tag, error) {
 		}
 		err := d.Create(tag)
 		if err != nil {
-			return nil, err
+			return nil, errors.WarpQuick(err)
 		}
 		return tag, nil
 	}

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"errors"
+	errors "github.com/wuntsong-org/wterrors"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
@@ -38,19 +38,19 @@ func (s *favoriteService) List(cnd *sqlcnd.SqlCnd) (list []model.Favorite, pagin
 	return dao.FavoriteDao.List(cnd)
 }
 
-func (s *favoriteService) Create(t *model.Favorite) error {
+func (s *favoriteService) Create(t *model.Favorite) errors.WTError {
 	return dao.FavoriteDao.Create(t)
 }
 
-func (s *favoriteService) Update(t *model.Favorite) error {
+func (s *favoriteService) Update(t *model.Favorite) errors.WTError {
 	return dao.FavoriteDao.Update(t)
 }
 
-func (s *favoriteService) Updates(id int64, columns map[string]interface{}) error {
+func (s *favoriteService) Updates(id int64, columns map[string]interface{}) errors.WTError {
 	return dao.FavoriteDao.Updates(id, columns)
 }
 
-func (s *favoriteService) UpdateColumn(id int64, name string, value interface{}) error {
+func (s *favoriteService) UpdateColumn(id int64, name string, value interface{}) errors.WTError {
 	return dao.FavoriteDao.UpdateColumn(id, name, value)
 }
 
@@ -64,7 +64,7 @@ func (s *favoriteService) GetBy(userId int64, entityType string, entityId int64)
 }
 
 // 收藏文章
-func (s *favoriteService) AddArticleFavorite(userId, articleId int64) error {
+func (s *favoriteService) AddArticleFavorite(userId, articleId int64) errors.WTError {
 	article := dao.ArticleDao.Get(articleId)
 	if article == nil || article.Status != model.StatusOk {
 		return errors.New("收藏的文章不存在")
@@ -73,7 +73,7 @@ func (s *favoriteService) AddArticleFavorite(userId, articleId int64) error {
 }
 
 // 收藏主题
-func (s *favoriteService) AddTopicFavorite(userId, topicId int64) error {
+func (s *favoriteService) AddTopicFavorite(userId, topicId int64) errors.WTError {
 	topic := dao.TopicDao.Get(topicId)
 	if topic == nil || topic.Status != model.StatusOk {
 		return errors.New("收藏的话题不存在")
@@ -81,7 +81,7 @@ func (s *favoriteService) AddTopicFavorite(userId, topicId int64) error {
 	return s.addFavorite(userId, model.EntityTypeTopic, topicId)
 }
 
-func (s *favoriteService) addFavorite(userId int64, entityType string, entityId int64) error {
+func (s *favoriteService) addFavorite(userId int64, entityType string, entityId int64) errors.WTError {
 	temp := s.GetBy(userId, entityType, entityId)
 	if temp != nil { // 已经收藏
 		return nil
