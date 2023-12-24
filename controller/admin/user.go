@@ -31,11 +31,6 @@ func (c *UserController) Show(ctx *gin.Context) {
 	}
 }
 
-// Store 创建用户
-func (c *UserController) Store(ctx *gin.Context) {
-	c.Success(ctx, nil)
-}
-
 // Update 更新用户信息
 func (c *UserController) Update(ctx *gin.Context) {
 	var gDto form.GeneralGetDto

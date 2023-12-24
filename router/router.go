@@ -190,7 +190,6 @@ func Setup(e *gin.Engine) {
 	adminUserController := &admin.UserController{}
 	adminAPI.GET("/users", adminUserController.List)
 	adminAPI.GET("/users/:id", adminUserController.Show)
-	adminAPI.POST("/users", adminUserController.Store)
 	adminAPI.PUT("/users/:id", adminUserController.Update)
 	adminAPI.DELETE("/users/:id", adminUserController.Delete)
 

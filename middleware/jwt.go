@@ -90,7 +90,7 @@ func JwtAuth(LoginType int) *jwt.GinJWTMiddleware {
 				"message": message,
 			})
 		},
-		TokenLookup:   "header: Authorization, query: token, cookie: jwt",
+		TokenLookup:   "header:Authorization,query:token",
 		TokenHeadName: "Bearer",
 		TimeFunc:      time.Now,
 	})

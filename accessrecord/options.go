@@ -7,8 +7,8 @@ import (
 )
 
 func Options(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	w.Header().Set("Access-Control-Allow-Methods", strings.Join(viper.GetStringSlice("cors.allow_headers"), ", "))
-	w.Header().Set("Access-Control-Allow-Headers", strings.Join(viper.GetStringSlice("cors.allow_methods"), ", "))
+	w.Header().Set("Access-Control-Allow-Headers", strings.Join(viper.GetStringSlice("cors.allow_headers"), ", "))
+	w.Header().Set("Access-Control-Allow-Methods", strings.Join(viper.GetStringSlice("cors.allow_methods"), ", "))
 	w.Header().Set("Access-Control-Allow-Credentials", "true") // 可将将 * 替换为指定的域名
 
 	origin := r.Header.Get("Origin")
