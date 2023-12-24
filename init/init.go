@@ -7,6 +7,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/cron"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/global"
+	"gitee.com/wuntsong/chuangxinyi-communicate/ip"
 	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/rand"
 	"gitee.com/wuntsong/chuangxinyi-communicate/redis"
@@ -74,6 +75,11 @@ func Init(envPrefix string, serviceName string) errors.WTError {
 	}
 
 	err = auth.InitAuth()
+	if err != nil {
+		return errors.WarpQuick(err)
+	}
+
+	err = ip.InitYunIP()
 	if err != nil {
 		return errors.WarpQuick(err)
 	}

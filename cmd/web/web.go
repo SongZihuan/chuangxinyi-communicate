@@ -62,7 +62,7 @@ func CmdMain() {
 	addr := ":" + viper.GetString("base.port")
 	server := http.Server{
 		Addr:    addr,
-		Handler: engine,
+		Handler: NewServer(engine),
 	}
 
 	signalexit.AddExitByFunc(func(ctx context.Context, signal os.Signal) context.Context {

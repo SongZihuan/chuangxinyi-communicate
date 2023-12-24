@@ -19,8 +19,6 @@ func Setup(e *gin.Engine) {
 		gin.Recovery(),
 	)
 
-	e.Use(middleware.Cors())
-
 	e.Any("/", func(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "Community API\n")
 	})

@@ -6,7 +6,7 @@ toolchain go1.21.0
 
 require (
 	github.com/Pallinder/go-randomdata v1.2.0
-	github.com/PuerkitoBio/goquery v1.5.1
+	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.5
 	github.com/alibabacloud-go/green-20220302 v1.3.0
 	github.com/alibabacloud-go/tea v1.2.1
@@ -29,18 +29,19 @@ require (
 	github.com/jinzhu/gorm v1.9.12
 	github.com/jordan-wright/email v0.0.0-20200322182553-8eef2508c362
 	github.com/json-iterator/go v1.1.12
-	github.com/microcosm-cc/bluemonday v1.0.19
+	github.com/microcosm-cc/bluemonday v1.0.26
 	github.com/pkg/errors v0.9.1
 	github.com/robfig/cron v1.2.0
 	github.com/rs/zerolog v1.18.0
 	github.com/russross/blackfriday/v2 v2.0.1
 	github.com/satori/go.uuid v1.2.0
+	github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72
 	github.com/spf13/viper v1.6.3
 	github.com/tidwall/gjson v1.9.3
 	github.com/vinta/pangu v3.0.0+incompatible
 	github.com/wuntsong-org/wterrors v1.1.0
 	go.uber.org/zap v1.10.0
-	golang.org/x/crypto v0.10.0
+	golang.org/x/crypto v0.16.0
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 )
 
@@ -52,7 +53,7 @@ require (
 	github.com/alibabacloud-go/tea-utils v1.3.1 // indirect
 	github.com/alibabacloud-go/tea-xml v1.1.3 // indirect
 	github.com/aliyun/credentials-go v1.3.1 // indirect
-	github.com/andybalholm/cascadia v1.1.0 // indirect
+	github.com/andybalholm/cascadia v1.3.2 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
@@ -88,9 +89,9 @@ require (
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	go.uber.org/atomic v1.4.0 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
-	golang.org/x/net v0.11.0 // indirect
-	golang.org/x/sys v0.9.0 // indirect
-	golang.org/x/text v0.10.0 // indirect
+	golang.org/x/net v0.19.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.0.0-20190308202827-9d24e82272b4 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/appengine v1.4.0 // indirect

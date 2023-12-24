@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"gitee.com/wuntsong/chuangxinyi-communicate/accessrecord"
 	"gitee.com/wuntsong/chuangxinyi-communicate/auth/login"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
@@ -72,10 +73,15 @@ func JwtAuth(LoginType int) *jwt.GinJWTMiddleware {
 			return Authenticator(c)
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if _, ok := data.(model.UserClaims); ok {
-				return true
+			uc, ok := data.(model.UserClaims)
+			if !ok {
+				return false
 			}
-			return false
+
+			record := accessrecord.GetGinRecord(c)
+			record.User = uc.User
+
+			return true
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(200, gin.H{
