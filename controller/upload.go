@@ -98,6 +98,22 @@ func (c *UploadController) UploadFromEditor(ctx *gin.Context) {
 
 }
 
+// Get get file
+func (c *UploadController) Get(ctx *gin.Context) {
+	key := ctx.Request.FormValue("key")
+	if len(key) == 0 {
+		c.Fail(ctx, utils.FromString("key not give"))
+		return
+	}
+
+	url, err := uploader.GetImage(key)
+	if err != nil {
+		c.Fail(ctx, utils.FromError(err))
+		return
+	}
+	c.Redirect(ctx, url)
+}
+
 // UploadFromURL fetch file by URL
 func (c *UploadController) UploadFromURL(ctx *gin.Context) {
 	user := c.GetCurrentUser(ctx)

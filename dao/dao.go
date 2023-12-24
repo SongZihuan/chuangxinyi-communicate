@@ -37,7 +37,6 @@ func Setup() error {
 			return err
 		}
 
-		logger.Logger.Info("Successfully connect to MySQL, database: %s.", name)
 		db.DB().SetMaxIdleConns(viper.GetInt("database.mysql.pool.min"))
 		db.DB().SetMaxOpenConns(viper.GetInt("database.mysql.pool.max"))
 		db.DB().SetConnMaxLifetime(time.Minute)

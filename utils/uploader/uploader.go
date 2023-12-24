@@ -13,11 +13,10 @@ import (
 	"github.com/spf13/viper"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/urls"
 )
 
 var (
-	aliyun = NewAliyun()
+	aliyun = newAliyun()
 )
 
 func PutImage(data []byte) (string, error) {
@@ -28,7 +27,11 @@ func CopyImage(originUrl string) (string, error) {
 	return aliyun.CopyImage(originUrl)
 }
 
-func NewAliyun() *aliyunOssUploader {
+func GetImage(key string) (string, error) {
+	return aliyun.GetImage(key)
+}
+
+func newAliyun() *aliyunOssUploader {
 	return &aliyunOssUploader{
 		once:   sync.Once{},
 		bucket: nil,
@@ -61,7 +64,11 @@ func (aliyun *aliyunOssUploader) PutImage(data []byte) (string, error) {
 	}
 
 	key := generateImageKey(data)
-	return aliyun.putObject(key, data)
+	err = aliyun.putObject(fmt.Sprintf("图像文件/%s", key), data)
+	if err != nil {
+		return "", err
+	}
+	return key, nil
 }
 
 func (aliyun *aliyunOssUploader) CopyImage(originUrl string) (string, error) {
@@ -69,16 +76,39 @@ func (aliyun *aliyunOssUploader) CopyImage(originUrl string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return aliyun.PutImage(data)
+	key, err := aliyun.PutImage(data)
+	if err != nil {
+		return "", err
+	}
+	return key, nil
 }
 
-func (aliyun *aliyunOssUploader) putObject(key string, data []byte) (string, error) {
+func (aliyun *aliyunOssUploader) putObject(key string, data []byte) error {
 	bucket := aliyun.getBucket()
 	if err := bucket.PutObject(key, bytes.NewReader(data)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (aliyun *aliyunOssUploader) GetImage(key string) (string, error) {
+	url, err := aliyun.getObject(fmt.Sprintf("图像文件/%s", key))
+	if err != nil {
 		return "", err
 	}
 
-	return urls.UrlJoin(viper.GetString("aliyun.signHost"), key), nil
+	return url, nil
+}
+
+func (aliyun *aliyunOssUploader) getObject(key string) (string, error) {
+	bucket := aliyun.getBucket()
+	url, err := bucket.SignURL(key, oss.HTTPGet, 60)
+	if err != nil {
+		return "", err
+	}
+
+	return url, nil
 }
 
 func (aliyun *aliyunOssUploader) getBucket() *oss.Bucket {

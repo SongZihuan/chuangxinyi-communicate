@@ -32,6 +32,13 @@ func FromError(err error) *CodeError {
 	return &CodeError{-1, err.Error(), nil}
 }
 
+func FromString(str string) *CodeError {
+	if len(str) == 0 {
+		return nil
+	}
+	return &CodeError{-1, str, nil}
+}
+
 type CodeError struct {
 	Code    int
 	Message string
