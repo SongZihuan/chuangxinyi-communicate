@@ -6,6 +6,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/auth"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 	"github.com/spf13/viper"
 	errors "github.com/wuntsong-org/wterrors"
 )
@@ -73,6 +74,8 @@ func UpdateUserInfo(ctx context.Context, easy auth.UserEasy, info auth.UserInfoE
 
 	if userNotFound {
 		user.Status = model.StatusOk
+		user.CreateTime = utils.NowTimestamp()
+		user.UpdateTime = user.CreateTime
 		err := dao.UserDao.Create(user)
 		if err != nil {
 			return nil, errors.WarpQuick(err)
@@ -87,6 +90,8 @@ func UpdateUserInfo(ctx context.Context, easy auth.UserEasy, info auth.UserInfoE
 		if user.Phone == adminPhone {
 			user.Level = model.UserLevelAdmin
 		}
+
+		user.UpdateTime = utils.NowTimestamp()
 
 		err := dao.UserDao.Update(user)
 		if err != nil {
