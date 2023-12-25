@@ -2,7 +2,7 @@ package utils
 
 import "database/sql"
 
-func GetUserName(phone string, email sql.NullString, username sql.NullString, nickname sql.NullString) string {
+func GetUserName(defaultName string, email sql.NullString, username sql.NullString, nickname sql.NullString) string {
 	if nickname.Valid && len(nickname.String) != 0 {
 		return nickname.String
 	}
@@ -15,5 +15,5 @@ func GetUserName(phone string, email sql.NullString, username sql.NullString, ni
 		return email.String
 	}
 
-	return phone
+	return defaultName
 }

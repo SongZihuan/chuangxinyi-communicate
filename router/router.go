@@ -116,8 +116,6 @@ func Setup(e *gin.Engine) {
 	jwtApi.GET("/user/current", userController.GetCurrent)
 	api.GET("/user/score/rank", userController.GetScoreRank)
 	jwtApi.GET("/user/scorelogs", userController.GetScorelogs)
-	jwtApi.GET("/user/notifications/recent", userController.GetNotificationsRecent)
-	jwtApi.GET("/user/notifications", userController.GetNotifications)
 	jwtApi.GET("/user/favorites", userController.GetFavorites)
 
 	api.GET("/users/:id/recentwatchers", userController.GetRecentWatchers)

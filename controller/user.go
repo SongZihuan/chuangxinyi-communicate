@@ -65,39 +65,6 @@ func (c *UserController) GetScorelogs(ctx *gin.Context) {
 	})
 }
 
-// GetNotificationsRecent 获取最近3条未读消息
-func (c *UserController) GetNotificationsRecent(ctx *gin.Context) {
-	user := c.GetCurrentUser(ctx)
-	var count int64 = 0
-	var notifications []model.Notification
-	if user != nil {
-		count = service.NotificationService.GetUnReadCount(user.ID)
-		notifications = service.NotificationService.Find(sqlcnd.NewSqlCnd().Eq("user_id", user.ID).Eq("status", model.NotificationStatusUnread).Limit(3).Desc("id"))
-	}
-	data := make(map[string]interface{})
-	data["count"] = count
-	data["notifications"] = convert.ToNotifications(notifications)
-	c.Success(ctx, data)
-}
-
-// GetNotifications 用户通知
-func (c *UserController) GetNotifications(ctx *gin.Context) {
-	user := c.GetCurrentUser(ctx)
-	page := form.FormValueIntDefault(ctx, "page", 1)
-
-	messages, paging := service.NotificationService.List(sqlcnd.NewSqlCnd().
-		Eq("user_id", user.ID).
-		Page(page, 20).Desc("id"))
-
-	// 全部标记为已读
-	service.NotificationService.MarkRead(user.ID)
-
-	c.Success(ctx, gin.H{
-		"results": convert.ToNotifications(messages),
-		"paging":  paging,
-	})
-}
-
 // GetFavorites get favorites
 func (c *UserController) GetFavorites(ctx *gin.Context) {
 	user := c.GetCurrentUser(ctx)

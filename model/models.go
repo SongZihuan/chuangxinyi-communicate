@@ -2,7 +2,7 @@ package model
 
 var Models = []interface{}{
 	&User{}, &Tag{}, &Article{}, &ArticleTag{}, &Comment{}, &Favorite{},
-	&Topic{}, &Node{}, &TopicTag{}, &TopicLike{}, &Notification{}, &Setting{}, &Link{},
+	&Topic{}, &Node{}, &TopicTag{}, &TopicLike{}, &Setting{}, &Link{},
 	&UserWatch{}, &UserScore{}, &UserScoreLog{}, Record{},
 }
 
@@ -25,9 +25,6 @@ const (
 	EntityTypeTopic   = "topic"
 	EntityTypeComment = "comment"
 	EntityTypeUser    = "user"
-
-	NotificationStatusUnread = 0 // 消息未读
-	NotificationStatusReaded = 1 // 消息已读
 
 	MsgTypeComment   = 0 // 回复消息
 	MsgTypeTopicLike = 1 // 话题点赞

@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/tidwall/gjson"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
@@ -22,52 +21,6 @@ func ToFavorites(favorites []model.Favorite) []model.FavoriteResponse {
 		responses = append(responses, *ToFavorite(&favorite))
 	}
 	return responses
-}
-
-func ToNotification(notification *model.Notification) *model.NotificationResponse {
-	if notification == nil {
-		return nil
-	}
-
-	detailUrl := ""
-	icon := ""
-	if notification.Type == model.MsgTypeComment {
-		entityType := gjson.Get(notification.ExtraData, "entityType")
-		entityId := gjson.Get(notification.ExtraData, "entityId")
-		if entityType.String() == model.EntityTypeArticle {
-			detailUrl = urls.ArticleUrl(entityId.Int())
-		} else if entityType.String() == model.EntityTypeTopic {
-			detailUrl = urls.TopicUrl(entityId.Int())
-		}
-		icon = "comment"
-	} else if notification.Type == model.MsgTypeTopicLike {
-		entityId := gjson.Get(notification.ExtraData, "entityId")
-		detailUrl = urls.TopicUrl(entityId.Int())
-		icon = "heart"
-	} else if notification.Type == model.MsgTypeUserWatch {
-		entityId := gjson.Get(notification.ExtraData, "entityId")
-		detailUrl = urls.UserUrl(entityId.Int())
-		icon = "eye"
-	}
-	from := ToUserDefaultIfNull(notification.FromId)
-	if notification.FromId <= 0 {
-		from.Nickname = "系统通知"
-		from.Header = ""
-	}
-
-	return &model.NotificationResponse{
-		MessageId:    notification.ID,
-		From:         from,
-		UserId:       notification.UserId,
-		Content:      notification.Content,
-		QuoteContent: notification.QuoteContent,
-		Type:         notification.Type,
-		Icon:         icon,
-		DetailUrl:    detailUrl,
-		ExtraData:    notification.ExtraData,
-		Status:       notification.Status,
-		CreateTime:   notification.CreateTime,
-	}
 }
 
 func ToFavorite(favorite *model.Favorite) *model.FavoriteResponse {
@@ -106,17 +59,6 @@ func ToFavorite(favorite *model.Favorite) *model.FavoriteResponse {
 		}
 	}
 	return rsp
-}
-
-func ToNotifications(notifications []model.Notification) []model.NotificationResponse {
-	if len(notifications) == 0 {
-		return nil
-	}
-	var responses []model.NotificationResponse
-	for _, notification := range notifications {
-		responses = append(responses, *ToNotification(&notification))
-	}
-	return responses
 }
 
 func ToHtmlContent(htmlContent string) string {

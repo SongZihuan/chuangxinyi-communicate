@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/auth"
-	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
+	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"github.com/spf13/viper"
 	errors "github.com/wuntsong-org/wterrors"
@@ -31,7 +31,7 @@ func SendMsgByUserUID(userID string, title string, content string) (bool, errors
 }
 
 func SendMsgByUserID(userID int64, title string, content string) (bool, errors.WTError) {
-	user := dao.UserDao.Get(userID) // 根据整型主键查找
+	user := cache.UserCache.Get(userID)
 	if user == nil {
 		return false, errors.Errorf("user not found")
 	}
