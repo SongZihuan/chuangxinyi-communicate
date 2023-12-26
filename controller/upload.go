@@ -55,9 +55,10 @@ func (c *UploadController) UploadFromEditor(ctx *gin.Context) {
 
 	user := c.GetCurrentUser(ctx)
 	if user == nil {
-		ctx.IndentedJSON(http.StatusOK, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    1,
 			"message": "请先登录",
+			"success": false,
 			"data": gin.H{
 				"errFiles": errFiles,
 				"succMap":  succMap,
@@ -131,8 +132,9 @@ func (c *UploadController) UploadFromURL(ctx *gin.Context) {
 	url := data["url"]
 	output, err := uploader.CopyImage(url)
 	if err != nil {
-		ctx.IndentedJSON(http.StatusOK, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    0,
+			"success": false,
 			"message": err.Error(),
 			"data":    gin.H{},
 		})

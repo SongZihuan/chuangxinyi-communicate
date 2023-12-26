@@ -9,6 +9,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type UserController struct {
@@ -19,8 +20,8 @@ type UserController struct {
 func (c *UserController) GetCurrent(ctx *gin.Context) {
 	user := c.GetCurrentUser(ctx)
 
-	ctx.IndentedJSON(200, gin.H{
-		"code":    200,
+	ctx.JSON(http.StatusOK, gin.H{
+		"code":    0,
 		"success": true,
 		"message": "ok",
 		"data":    convert.ToUser(user),
