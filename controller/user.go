@@ -24,7 +24,7 @@ func (c *UserController) GetCurrent(ctx *gin.Context) {
 		"code":    0,
 		"success": true,
 		"message": "ok",
-		"data":    convert.ToUser(user),
+		"data":    convert.ToSelfser(user),
 	})
 }
 

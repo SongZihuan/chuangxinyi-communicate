@@ -37,7 +37,6 @@ func Setup(e *gin.Engine) {
 	// JWT
 	jwtAuth = middleware.JwtAuth(middleware.LoginStandard)
 	api.POST("/auth/login", jwtAuth.LoginHandler)
-	api.POST("/auth/login/refresh", jwtAuth.RefreshHandler)
 
 	jwtApi := api.Group("/")
 	jwtApi.Use(jwtAuth.MiddlewareFunc(), middleware.CurrentUser)

@@ -50,7 +50,7 @@ func JwtAuth(LoginType int) *jwt.GinJWTMiddleware {
 			if v, ok := data.(model.UserClaims); ok {
 				return jwt.MapClaims{
 					"id":    v.ID,
-					"name":  utils.GetUserName(v.Phone, v.Email, v.Username, v.Nickname),
+					"name":  utils.GetUserNameByPhone(v.Phone, v.Username, v.Nickname),
 					"uid":   v.Uid,
 					"uname": v.Phone,
 				}
@@ -85,9 +85,9 @@ func JwtAuth(LoginType int) *jwt.GinJWTMiddleware {
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(200, gin.H{
-				"code":    200,
+				"code":    -200,
 				"success": false,
-				"message": message,
+				"message": "请先登录",
 			})
 		},
 		TokenLookup:   "header:Authorization,query:token",

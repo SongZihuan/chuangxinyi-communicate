@@ -51,7 +51,7 @@ func (s *notificationService) Create(t *Notification) errors.WTError {
 	if from == nil {
 		fromName = "陌生人"
 	} else {
-		fromName = utils.GetUserName(from.Uid, from.Email, from.Username, from.Nickname)
+		fromName = utils.GetUserName(from.Uid, from.Username, from.Nickname)
 	}
 
 	content := t.Content

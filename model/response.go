@@ -4,12 +4,28 @@ import (
 	"html/template"
 )
 
-type UserInfo struct {
+type UserSelfInfo struct {
 	Id           int64  `json:"id"`
 	Uid          string `json:"uid"`
 	Username     string `json:"username"`
 	Phone        string `json:"phone"`
 	Email        string `json:"email"`
+	Nickname     string `json:"nickname"`
+	Header       string `json:"header"`
+	Level        int    `json:"level"`
+	LevelName    string `json:"levelName"`
+	Score        int    `json:"score"`        // 积分
+	TopicCount   int    `json:"topicCount"`   // 话题数量
+	CommentCount int    `json:"commentCount"` // 跟帖数量
+	PasswordSet  bool   `json:"passwordSet"`  // 密码已设置
+	Status       int    `json:"status"`
+	CreateTime   int64  `json:"createTime"`
+}
+
+type UserInfo struct {
+	Id           int64  `json:"id"`
+	Uid          string `json:"uid"`
+	Username     string `json:"username"`
 	Nickname     string `json:"nickname"`
 	Header       string `json:"header"`
 	Level        int    `json:"level"`

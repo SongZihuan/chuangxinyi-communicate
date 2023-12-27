@@ -37,6 +37,37 @@ func ToUser(user *model.User) *model.UserInfo {
 	ret := &model.UserInfo{
 		Id:           user.ID,
 		Uid:          user.Uid,
+		Username:     user.Username.String,
+		Nickname:     user.Nickname.String,
+		Header:       user.Header.String,
+		Level:        user.Level,
+		LevelName:    levelName,
+		TopicCount:   user.TopicCount,
+		CommentCount: user.CommentCount,
+		Status:       user.Status,
+		CreateTime:   user.CreateTime,
+	}
+	if user.Status == model.StatusDeleted {
+		ret.Username = "blacklist"
+		ret.Nickname = "黑名单用户"
+		ret.Header = ""
+	} else {
+		ret.Score = cache.UserCache.GetScore(user.ID)
+	}
+	return ret
+}
+
+func ToSelfser(user *model.User) *model.UserSelfInfo {
+	if user == nil {
+		return nil
+	}
+	levelName := "普通用户"
+	if user.Level == model.UserLevelAdmin {
+		levelName = "管理员"
+	}
+	ret := &model.UserSelfInfo{
+		Id:           user.ID,
+		Uid:          user.Uid,
 		Phone:        user.Phone,
 		Username:     user.Username.String,
 		Nickname:     user.Nickname.String,
