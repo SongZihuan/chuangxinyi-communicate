@@ -50,7 +50,7 @@ func (c *BaseController) Redirect(ctx *gin.Context, url string) {
 func (c *BaseController) Fail(ctx *gin.Context, error *utils.CodeError) {
 	ctx.AbortWithStatusJSON(http.StatusOK, gin.H{
 		"code":    error.CodeInt(),
-		"message": error.Message(),
+		"message": error.Msg(),
 		"success": false,
 	})
 	return

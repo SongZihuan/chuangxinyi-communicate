@@ -135,7 +135,6 @@ func Setup(e *gin.Engine) {
 	// Upload/Get
 	uploadController := &controller.UploadController{}
 	jwtApi.POST("/upload", uploadController.Upload)
-	jwtApi.POST("/upload/editor", uploadController.UploadFromEditor)
 	jwtApi.POST("/upload/fetch", uploadController.UploadFromURL)
 	api.GET("/file", uploadController.Get)
 

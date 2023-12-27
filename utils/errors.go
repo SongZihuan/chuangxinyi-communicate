@@ -37,6 +37,14 @@ func FromError(err error) *CodeError {
 	if err == nil {
 		return nil
 	}
+
+	var wterr errors.WTError
+	if errors.As(err, &wterr) {
+		return &CodeError{
+			WTError: wterr,
+		}
+	}
+
 	return &CodeError{
 		WTError: errors.New(err.Error()).SetCode("-1"),
 	}

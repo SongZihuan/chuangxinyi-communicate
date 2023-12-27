@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -30,7 +30,7 @@ func (c *UploadController) Upload(ctx *gin.Context) {
 		return
 	}
 
-	fileBytes, err := ioutil.ReadAll(file)
+	fileBytes, err := io.ReadAll(file)
 	if err != nil {
 		c.Fail(ctx, utils.FromError(err))
 		return
@@ -46,57 +46,6 @@ func (c *UploadController) Upload(ctx *gin.Context) {
 	data := make(map[string]string)
 	data["url"] = url
 	c.Success(ctx, data)
-}
-
-// UploadFromEditor upload file from editor
-func (c *UploadController) UploadFromEditor(ctx *gin.Context) {
-	errFiles := make([]string, 0)
-	succMap := make(map[string]string)
-
-	user := c.GetCurrentUser(ctx)
-	if user == nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code":    1,
-			"message": "请先登录",
-			"success": false,
-			"data": gin.H{
-				"errFiles": errFiles,
-				"succMap":  succMap,
-			},
-		})
-		return
-	}
-
-	mForm, _ := ctx.MultipartForm()
-	files := mForm.File["file[]"]
-	for _, file := range files {
-		f, err := file.Open()
-		if err != nil {
-			logger.Logger.Error(err.Error())
-			errFiles = append(errFiles, file.Filename)
-			continue
-		}
-		fileBytes, err := ioutil.ReadAll(f)
-		if err != nil {
-			logger.Logger.Error(err.Error())
-			errFiles = append(errFiles, file.Filename)
-			continue
-		}
-		url, err := uploader.PutImage(fileBytes)
-		if err != nil {
-			logger.Logger.Error(err.Error())
-			errFiles = append(errFiles, file.Filename)
-			continue
-		}
-
-		succMap[file.Filename] = url
-	}
-
-	c.Success(ctx, gin.H{
-		"errFiles": errFiles,
-		"succMap":  succMap,
-	})
-
 }
 
 // Get get file

@@ -24,7 +24,9 @@ type Notification struct {
 var NotificationService = newNotificationService()
 
 func newNotificationService() *notificationService {
-	return &notificationService{}
+	return &notificationService{
+		notificationsChan: make(chan *Notification, 10),
+	}
 }
 
 type notificationService struct {
@@ -178,12 +180,16 @@ func (s *notificationService) Consume() {
 		go func() {
 			logger.Logger.Info("开始消费系统消息...")
 			for {
-				m := <-s.notificationsChan
-				logger.Logger.Info("处理消息：from=%s to=%s", m.FromID, m.ToID)
+				func() {
+					defer utils.Recover(logger.Logger, nil, "")
 
-				if err := s.Create(m); err != nil {
-					logger.Logger.Info("创建消息发生异常...")
-				}
+					m := <-s.notificationsChan
+					logger.Logger.Info("处理消息：from=%s to=%s", m.FromID, m.ToID)
+
+					if err := s.Create(m); err != nil {
+						logger.Logger.Info("创建消息发生异常...")
+					}
+				}()
 			}
 		}()
 	})
