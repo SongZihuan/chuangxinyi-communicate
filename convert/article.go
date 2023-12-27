@@ -5,8 +5,7 @@ import (
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/markdown"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/strtrim"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/html"
 )
 
 func ToArticle(article *model.Article) *model.ArticleResponse {
@@ -29,18 +28,11 @@ func ToArticle(article *model.Article) *model.ArticleResponse {
 	tags := cache.TagCache.GetList(tagIds)
 	rsp.Tags = ToTags(tags)
 
-	if article.ContentType == model.ContentTypeMarkdown {
-		mr := markdown.NewMd(markdown.MdWithTOC()).Run(article.Content)
-		rsp.Content = template.HTML(ToHtmlContent(mr.ContentHtml))
-		rsp.Toc = template.HTML(mr.TocHtml)
-		if len(rsp.Summary) == 0 {
-			rsp.Summary = mr.SummaryText
-		}
-	} else {
-		rsp.Content = template.HTML(ToHtmlContent(article.Content))
-		if len(rsp.Summary) == 0 {
-			rsp.Summary = strtrim.GetTextSummary(article.Content, 256)
-		}
+	mr := html.NewHtml(html.WithTOC()).Run(article.Content)
+	rsp.Content = template.HTML(ToHtmlContent(mr.ContentHtml))
+	rsp.Toc = template.HTML(mr.TocHtml)
+	if len(rsp.Summary) == 0 {
+		rsp.Summary = mr.SummaryText
 	}
 
 	return rsp
@@ -77,15 +69,9 @@ func ToSimpleArticle(article *model.Article) *model.ArticleSimpleResponse {
 	tags := cache.TagCache.GetList(tagIds)
 	rsp.Tags = ToTags(tags)
 
-	if article.ContentType == model.ContentTypeMarkdown {
-		if len(rsp.Summary) == 0 {
-			mr := markdown.NewMd(markdown.MdWithTOC()).Run(article.Content)
-			rsp.Summary = mr.SummaryText
-		}
-	} else {
-		if len(rsp.Summary) == 0 {
-			rsp.Summary = strtrim.GetTextSummary(strtrim.GetHtmlText(article.Content), 256)
-		}
+	if len(rsp.Summary) == 0 {
+		mr := html.NewHtml(html.WithTOC()).Run(article.Content)
+		rsp.Summary = mr.SummaryText
 	}
 
 	return rsp

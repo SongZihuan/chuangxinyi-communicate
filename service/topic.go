@@ -241,7 +241,7 @@ func (s *topicService) GenerateRss() {
 		item := &feeds.Item{
 			Title:       topic.Title,
 			Link:        &feeds.Link{Href: topicUrl},
-			Description: utils.GetMarkdownSummary(topic.Content),
+			Description: utils.GetHtmlSummary(topic.Content),
 			Author:      &feeds.Author{Name: utils.GetUserName(user.Uid, user.Username, user.Nickname), Email: user.Email.String},
 			Created:     utils.TimeFromTimestamp(topic.CreateTime),
 		}

@@ -8,7 +8,6 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/strtrim"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/urls"
 )
 
@@ -37,15 +36,7 @@ func ToFavorite(favorite *model.Favorite) *model.FavoriteResponse {
 			rsp.Url = urls.ArticleUrl(article.ID)
 			rsp.User = ToUserById(article.UserId)
 			rsp.Title = article.Title
-			if article.ContentType == model.ContentTypeMarkdown {
-				rsp.Content = utils.GetMarkdownSummary(article.Content)
-			} else {
-				doc, err := goquery.NewDocumentFromReader(strings.NewReader(article.Content))
-				if err == nil {
-					text := doc.Text()
-					rsp.Content = strtrim.GetTextSummary(text, 256)
-				}
-			}
+			rsp.Content = utils.GetHtmlSummary(article.Content)
 		}
 	} else {
 		topic := service.TopicService.Get(favorite.EntityId)
@@ -55,7 +46,7 @@ func ToFavorite(favorite *model.Favorite) *model.FavoriteResponse {
 			rsp.Url = urls.TopicUrl(topic.ID)
 			rsp.User = ToUserById(topic.UserId)
 			rsp.Title = topic.Title
-			rsp.Content = utils.GetMarkdownSummary(topic.Content)
+			rsp.Content = utils.GetHtmlSummary(topic.Content)
 		}
 	}
 	return rsp

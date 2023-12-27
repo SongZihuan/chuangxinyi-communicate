@@ -75,7 +75,7 @@ func (s *commentService) Create(dto form.CommentCreateForm) (*model.Comment, err
 		EntityType:  dto.EntityType,
 		EntityId:    dto.EntityID,
 		Content:     dto.Content,
-		ContentType: model.ContentTypeMarkdown,
+		ContentType: model.ContentTypeHtml,
 		QuoteId:     dto.QuoteID,
 		Status:      model.StatusOk,
 		CreateTime:  utils.NowTimestamp(),
@@ -122,7 +122,7 @@ func (s *commentService) Publish(userId int64, createForm *form.CommentCreateFor
 
 	contentType := createForm.ContentType
 	if contentType == "" {
-		contentType = model.ContentTypeMarkdown
+		contentType = model.ContentTypeHtml
 	}
 
 	comment := &model.Comment{

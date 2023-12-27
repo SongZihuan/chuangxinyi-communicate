@@ -1,4 +1,4 @@
-package markdown
+package html
 
 import (
 	"regexp"
@@ -6,13 +6,12 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/microcosm-cc/bluemonday"
-	"github.com/russross/blackfriday/v2"
 	"github.com/vinta/pangu"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/strtrim"
 )
 
-type MdResult struct {
+type Result struct {
 	ContentHtml string // 内容
 	SummaryText string // 摘要
 	TocHtml     string // TOC目录
@@ -20,39 +19,37 @@ type MdResult struct {
 }
 
 // option
-type MdOption func(*SimpleMd)
+type Option func(*SimpleHtml)
 
 // 开启toc
-func MdWithTOC() MdOption {
-	return func(md *SimpleMd) {
+func WithTOC() Option {
+	return func(md *SimpleHtml) {
 		md.toc = true
 	}
 }
 
 // 开启缩略图
-func MdWithThumb(md *SimpleMd) MdOption {
-	return func(md *SimpleMd) {
+func WithThumb(md *SimpleHtml) Option {
+	return func(md *SimpleHtml) {
 		md.thumb = true
 	}
 }
 
 // 生成摘要的长度
-func MdWithSummaryLength(summaryLength int) MdOption {
-	return func(md *SimpleMd) {
+func WithSummaryLength(summaryLength int) Option {
+	return func(md *SimpleHtml) {
 		md.summaryTextLength = summaryLength
 	}
 }
 
-// simple md
-type SimpleMd struct {
+type SimpleHtml struct {
 	summaryTextLength int  // 摘要长度
 	toc               bool // 是否开启Toc
 	thumb             bool // 是否构建目录
 }
 
-// new simple md
-func NewMd(options ...MdOption) *SimpleMd {
-	simpleMd := &SimpleMd{
+func NewHtml(options ...Option) *SimpleHtml {
+	simpleMd := &SimpleHtml{
 		summaryTextLength: 256,
 		toc:               false,
 		thumb:             false,
@@ -64,22 +61,9 @@ func NewMd(options ...MdOption) *SimpleMd {
 }
 
 // run
-func (md *SimpleMd) Run(mdText string) *MdResult {
-	mdText = strings.Replace(mdText, "\r\n", "\n", -1)
+func (html *SimpleHtml) Run(contentHTML string) *Result {
+	contentHTML = strings.Replace(contentHTML, "\r\n", "\n", -1)
 
-	var htmlRenderer blackfriday.Option
-	if md.toc {
-		htmlRenderer = blackfriday.WithRenderer(blackfriday.NewHTMLRenderer(blackfriday.HTMLRendererParameters{
-			Flags: blackfriday.TOC,
-		}))
-	} else {
-		htmlRenderer = blackfriday.WithRenderer(blackfriday.NewHTMLRenderer(blackfriday.HTMLRendererParameters{
-			// Flags: blackfriday.TOC,
-		}))
-	}
-
-	unsafe := blackfriday.Run([]byte([]byte(mdText)), htmlRenderer)
-	contentHTML := string(unsafe)
 	doc, _ := goquery.NewDocumentFromReader(strings.NewReader(contentHTML))
 
 	// 处理图片
@@ -111,7 +95,7 @@ func (md *SimpleMd) Run(mdText string) *MdResult {
 		}
 	})
 
-	tocHtml := md.buildTocHtml(doc)
+	tocHtml := html.buildTocHtml(doc)
 	doc.Find("nav").Remove()
 
 	contentHTML, _ = doc.Find("body").Html()
@@ -128,16 +112,16 @@ func (md *SimpleMd) Run(mdText string) *MdResult {
 		AllowAttrs("src", "type", "width", "height", "wmode", "allowNetworking").OnElements("embed").
 		Sanitize(contentHTML)
 
-	return &MdResult{
+	return &Result{
 		ContentHtml: contentHTML,
-		SummaryText: md.summaryText(doc),
-		ThumbUrl:    md.thumbnailUrl(doc),
+		SummaryText: html.summaryText(doc),
+		ThumbUrl:    html.thumbnailUrl(doc),
 		TocHtml:     tocHtml,
 	}
 }
 
 // 缩略图
-func (md *SimpleMd) thumbnailUrl(doc *goquery.Document) string {
+func (md *SimpleHtml) thumbnailUrl(doc *goquery.Document) string {
 	if !md.thumb {
 		return ""
 	}
@@ -149,7 +133,7 @@ func (md *SimpleMd) thumbnailUrl(doc *goquery.Document) string {
 	return thumbnailURL
 }
 
-func (md SimpleMd) buildTocHtml(doc *goquery.Document) string {
+func (md SimpleHtml) buildTocHtml(doc *goquery.Document) string {
 	if !md.toc {
 		return ""
 	}
@@ -170,7 +154,7 @@ func (md SimpleMd) buildTocHtml(doc *goquery.Document) string {
 }
 
 // // 构建toc
-// func (md *SimpleMd) tocHtml(doc goquery.Document) string {
+// func (md *SimpleHtml) tocHtml(doc goquery.Document) string {
 // 	if !md.toc {
 // 		return ""
 // 	}
@@ -198,7 +182,7 @@ func (md SimpleMd) buildTocHtml(doc *goquery.Document) string {
 // }
 
 // 摘要
-func (md *SimpleMd) summaryText(doc *goquery.Document) string {
+func (md *SimpleHtml) summaryText(doc *goquery.Document) string {
 	if md.summaryTextLength <= 0 {
 		return ""
 	}

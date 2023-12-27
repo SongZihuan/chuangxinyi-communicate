@@ -5,7 +5,7 @@ import (
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/markdown"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/html"
 )
 
 func ToComments(comments []model.Comment) []model.CommentResponse {
@@ -35,12 +35,8 @@ func _buildComment(comment *model.Comment, buildQuote bool) *model.CommentRespon
 		CreateTime: comment.CreateTime,
 	}
 
-	if comment.ContentType == model.ContentTypeMarkdown {
-		markdownResult := markdown.NewMd().Run(comment.Content)
-		ret.Content = template.HTML(ToHtmlContent(markdownResult.ContentHtml))
-	} else {
-		ret.Content = template.HTML(ToHtmlContent(comment.Content))
-	}
+	result := html.NewHtml().Run(comment.Content)
+	ret.Content = template.HTML(ToHtmlContent(result.ContentHtml))
 
 	if buildQuote && comment.QuoteId > 0 {
 		quote := _buildComment(service.CommentService.Get(comment.QuoteId), false)

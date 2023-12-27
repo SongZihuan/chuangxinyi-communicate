@@ -8,7 +8,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/markdown"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/html"
 )
 
 func ToTopic(topic *model.Topic) *model.TopicResponse {
@@ -36,7 +36,7 @@ func ToTopic(topic *model.Topic) *model.TopicResponse {
 	tags := service.TopicService.GetTopicTags(topic.ID)
 	rsp.Tags = ToTags(tags)
 
-	mr := markdown.NewMd(markdown.MdWithTOC()).Run(topic.Content)
+	mr := html.NewHtml(html.WithTOC()).Run(topic.Content)
 	rsp.Content = template.HTML(ToHtmlContent(mr.ContentHtml))
 	rsp.Toc = template.HTML(mr.TocHtml)
 

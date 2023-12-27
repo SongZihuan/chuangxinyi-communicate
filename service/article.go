@@ -53,7 +53,7 @@ func (s *articleService) Create(dto form.ArticleCreateForm) (*model.Article, err
 		Title:       dto.Title,
 		Summary:     dto.Summary,
 		Content:     dto.Content,
-		ContentType: model.ContentTypeMarkdown,
+		ContentType: model.ContentTypeHtml,
 		Status:      model.StatusOk,
 		Share:       false,
 		SourceUrl:   "",
@@ -228,11 +228,7 @@ func (s *articleService) GenerateRss() {
 			continue
 		}
 		description := ""
-		if article.ContentType == model.ContentTypeMarkdown {
-			description = utils.GetMarkdownSummary(article.Content)
-		} else {
-			description = utils.GetHtmlSummary(article.Content)
-		}
+		description = utils.GetHtmlSummary(article.Content)
 		item := &feeds.Item{
 			Title:       article.Title,
 			Link:        &feeds.Link{Href: articleUrl},

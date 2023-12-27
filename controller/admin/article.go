@@ -1,21 +1,16 @@
 package admin
 
 import (
-	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
-	"strconv"
-	"strings"
-
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/controller"
 	"gitee.com/wuntsong/chuangxinyi-communicate/convert"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/markdown"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/html"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/strtrim"
+	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 // ArticleController article controller
@@ -89,19 +84,11 @@ func (c *ArticleController) List(ctx *gin.Context) {
 		item["user"] = convert.ToUserDefaultIfNull(article.UserId)
 
 		// 简介
-		if article.ContentType == model.ContentTypeMarkdown {
-			mr := markdown.NewMd().Run(article.Content)
-			if len(article.Summary) == 0 {
-				item["summary"] = mr.SummaryText
-			}
-		} else {
-			if len(article.Summary) == 0 {
-				doc, err := goquery.NewDocumentFromReader(strings.NewReader(article.Content))
-				if err != nil {
-					item["summary"] = strtrim.GetTextSummary(doc.Text(), 256)
-				}
-			}
+		mr := html.NewHtml().Run(article.Content)
+		if len(article.Summary) == 0 {
+			item["summary"] = mr.SummaryText
 		}
+
 		// 标签
 		tagIds := cache.ArticleTagCache.Get(article.ID)
 		tags := cache.TagCache.GetList(tagIds)

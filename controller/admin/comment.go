@@ -9,7 +9,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/markdown"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/html"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
@@ -94,7 +94,7 @@ func (c *CommentController) List(ctx *gin.Context) {
 	for _, comment := range list {
 		result := utils.StructToMap(comment, "content")
 		result["user"] = convert.ToUserDefaultIfNull(comment.UserId)
-		mr := markdown.NewMd().Run(comment.Content)
+		mr := html.NewHtml().Run(comment.Content)
 		result["content"] = mr.ContentHtml
 		results = append(results, result)
 	}

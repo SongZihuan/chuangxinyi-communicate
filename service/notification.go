@@ -110,7 +110,7 @@ func (s *notificationService) SendTopicLikeNotification(topicLike *model.TopicLi
 // 评论被回复消息
 func (s *notificationService) SendCommentNotification(comment *model.Comment) {
 	quote := s.getQuoteComment(comment.QuoteId)
-	summary := utils.GetMarkdownSummary(comment.Content)
+	summary := utils.GetHtmlSummary(comment.Content)
 
 	var (
 		fromId       = comment.UserId // 消息发送人
@@ -146,7 +146,7 @@ func (s *notificationService) SendCommentNotification(comment *model.Comment) {
 		}
 
 		// 给被引用的人发消息
-		s.Produce(fromId, quote.UserId, "我回复了你的评论："+summary, utils.GetMarkdownSummary(quote.Content), model.MsgTypeComment)
+		s.Produce(fromId, quote.UserId, "我回复了你的评论："+summary, utils.GetHtmlSummary(quote.Content), model.MsgTypeComment)
 	} else if comment.UserId != authorId { // 回复主贴，并且不是自己回复自己
 		// 给帖子作者发消息
 		s.Produce(fromId, authorId, content, quoteContent, model.MsgTypeComment)

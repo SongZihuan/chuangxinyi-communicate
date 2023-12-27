@@ -18,8 +18,7 @@ const (
 	UserLevelGeneral = 0  // 普通用户
 	UserLevelAdmin   = 10 // 管理员
 
-	ContentTypeHtml     = "html"
-	ContentTypeMarkdown = "markdown"
+	ContentTypeHtml = "html"
 
 	EntityTypeArticle = "article"
 	EntityTypeTopic   = "topic"

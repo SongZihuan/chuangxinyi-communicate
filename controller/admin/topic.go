@@ -9,7 +9,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/markdown"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/html"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 )
 
@@ -112,7 +112,7 @@ func (c *TopicController) List(ctx *gin.Context) {
 		result["node"] = service.NodeService.Get(topic.NodeId)
 		result["tags"] = convert.ToTags(service.TopicService.GetTopicTags(topic.ID))
 		// 简介
-		mr := markdown.NewMd().Run(topic.Content)
+		mr := html.NewHtml().Run(topic.Content)
 		result["summary"] = mr.SummaryText
 
 		results = append(results, result)

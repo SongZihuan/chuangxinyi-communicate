@@ -7,8 +7,7 @@ import (
 
 	"github.com/spf13/viper"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/markdown"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils/html"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/strtrim"
 )
 
@@ -30,32 +29,19 @@ func IndexOf(userIds []int64, userId int64) int {
 	return -1
 }
 
-func GetSummary(contentType string, content string) (summary string) {
-	if contentType == model.ContentTypeMarkdown {
-		mr := markdown.NewMd().Run(content)
-		summary = mr.SummaryText
-	} else {
-		summary = strtrim.GetTextSummary(strtrim.GetHtmlText(content), 256)
-	}
+func GetSummary(content string) (summary string) {
+	mr := html.NewHtml().Run(content)
+	summary = mr.SummaryText
 	return
 }
 
-// 截取markdown摘要
-func GetMarkdownSummary(text string) string {
+// 截取html摘要
+func GetHtmlSummary(text string) string {
 	if len(text) == 0 {
 		return ""
 	}
-	mdResult := markdown.NewMd().Run(text)
+	mdResult := html.NewHtml().Run(text)
 	return mdResult.SummaryText
-}
-
-// 获取html内容摘要
-func GetHtmlSummary(html string) string {
-	if len(html) == 0 {
-		return ""
-	}
-	text := strtrim.GetHtmlText(html)
-	return strtrim.GetTextSummary(text, 256)
 }
 
 // 验证用户名合法性，用户名必须由5-12位(数字、字母、_、-)组成，且必须以字母开头。
