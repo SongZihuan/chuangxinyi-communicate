@@ -2,12 +2,18 @@ package urls
 
 import (
 	"github.com/spf13/viper"
+	errors "github.com/wuntsong-org/wterrors"
 	"net/url"
 	"strconv"
 	"strings"
 )
 
-var BaseUrl = viper.GetString("base.url")
+var BaseUrl = ""
+
+func InitUrls() errors.WTError {
+	BaseUrl = viper.GetString("base.url")
+	return nil
+}
 
 // 是否是内部链接
 func IsInternalUrl(href string) bool {

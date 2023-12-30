@@ -1,6 +1,7 @@
 package convert
 
 import (
+	"gitee.com/wuntsong/chuangxinyi-communicate/urls"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -8,7 +9,6 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/service"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/urls"
 )
 
 func ToFavorites(favorites []model.Favorite) []model.FavoriteResponse {
@@ -26,6 +26,7 @@ func ToFavorite(favorite *model.Favorite) *model.FavoriteResponse {
 	rsp := &model.FavoriteResponse{}
 	rsp.FavoriteId = favorite.ID
 	rsp.EntityType = favorite.EntityType
+	rsp.EntityId = favorite.EntityId
 	rsp.CreateTime = favorite.CreateTime
 
 	if favorite.EntityType == model.EntityTypeArticle {
@@ -33,7 +34,6 @@ func ToFavorite(favorite *model.Favorite) *model.FavoriteResponse {
 		if article == nil || article.Status != model.StatusOk {
 			rsp.Deleted = true
 		} else {
-			rsp.Url = urls.ArticleUrl(article.ID)
 			rsp.User = ToUserById(article.UserId)
 			rsp.Title = article.Title
 			rsp.Content = utils.GetHtmlSummary(article.Content)
@@ -43,7 +43,6 @@ func ToFavorite(favorite *model.Favorite) *model.FavoriteResponse {
 		if topic == nil || topic.Status != model.StatusOk {
 			rsp.Deleted = true
 		} else {
-			rsp.Url = urls.TopicUrl(topic.ID)
 			rsp.User = ToUserById(topic.UserId)
 			rsp.Title = topic.Title
 			rsp.Content = utils.GetHtmlSummary(topic.Content)

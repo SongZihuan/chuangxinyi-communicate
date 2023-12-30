@@ -124,16 +124,47 @@ func (c *TopicController) Update(ctx *gin.Context) {
 	}
 }
 
+// Update 删除话题
+func (c *TopicController) Delete(ctx *gin.Context) {
+	user := c.GetCurrentUser(ctx)
+	var gDto form.GeneralGetDto
+	if !c.BindAndValidate(ctx, &gDto) {
+		c.Fail(ctx, utils.ErrorTopicNotFound)
+		return
+	}
+
+	topic := service.TopicService.Get(gDto.ID)
+	if topic == nil || topic.Status == model.StatusDeleted {
+		c.Fail(ctx, utils.ErrorTopicNotFound)
+		return
+	}
+
+	if topic.UserId != user.ID {
+		c.Fail(ctx, utils.NewErrorMsg("无权限"))
+		return
+	}
+
+	err := service.TopicService.Delete(topic.ID)
+	if err != nil {
+		c.Fail(ctx, utils.FromError(err))
+		return
+	}
+	c.Success(ctx, convert.ToSimpleTopic(topic))
+}
+
 // GetRecentLikes 点赞用户
 func (c *TopicController) GetRecentLikes(ctx *gin.Context) {
 	var gDto form.GeneralGetDto
 	if c.BindAndValidate(ctx, &gDto) {
 		topicLikes := service.TopicLikeService.Recent(gDto.ID, 10)
-		var users []model.UserInfo
+		var users []model.LikeInfo
 		for _, topicLike := range topicLikes {
 			userInfo := convert.ToUserById(topicLike.UserId)
 			if userInfo != nil {
-				users = append(users, *userInfo)
+				users = append(users, model.LikeInfo{
+					UserInfo:  *userInfo,
+					LikeCount: topicLike.Count,
+				})
 			}
 		}
 		c.Success(ctx, users)

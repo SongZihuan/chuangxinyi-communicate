@@ -12,6 +12,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/rand"
 	"gitee.com/wuntsong/chuangxinyi-communicate/redis"
 	"gitee.com/wuntsong/chuangxinyi-communicate/signalexit"
+	"gitee.com/wuntsong/chuangxinyi-communicate/urls"
 	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -80,6 +81,11 @@ func Init(envPrefix string, serviceName string) errors.WTError {
 	}
 
 	err = ip.InitYunIP()
+	if err != nil {
+		return errors.WarpQuick(err)
+	}
+
+	err = urls.InitUrls()
 	if err != nil {
 		return errors.WarpQuick(err)
 	}

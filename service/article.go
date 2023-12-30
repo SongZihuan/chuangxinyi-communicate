@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"gitee.com/wuntsong/chuangxinyi-communicate/urls"
 	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
 	errors "github.com/wuntsong-org/wterrors"
 	"math"
@@ -20,7 +21,6 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/urls"
 )
 
 type ScanArticleCallback func(articles []model.Article)

@@ -124,6 +124,38 @@ func (c *ArticleController) Update(ctx *gin.Context) {
 	}
 }
 
+// Delete 删除文章
+func (c *ArticleController) Delete(ctx *gin.Context) {
+	user := c.GetCurrentUser(ctx)
+	if user == nil {
+		c.Fail(ctx, utils.ErrorNotLogin)
+		return
+	}
+	var gDto form.GeneralGetDto
+	if !c.BindAndValidate(ctx, &gDto) {
+		c.Fail(ctx, utils.ErrorArticleNotFound)
+		return
+	}
+
+	article := service.ArticleService.Get(gDto.ID)
+	if article == nil || article.Status == model.StatusDeleted {
+		c.Fail(ctx, utils.ErrorArticleNotFound)
+		return
+	}
+
+	if article.UserId != user.ID {
+		c.Fail(ctx, utils.NewErrorMsg("无权限"))
+		return
+	}
+
+	err := service.ArticleService.Delete(article.ID)
+	if err != nil {
+		c.Fail(ctx, utils.FromError(err))
+		return
+	}
+	c.Success(ctx, nil)
+}
+
 // GetRecent 最近文章
 func (c *ArticleController) GetRecent(ctx *gin.Context) {
 	articles := service.ArticleService.Find(sqlcnd.NewSqlCnd().Where("status = ?", model.StatusOk).Desc("id").Limit(10))

@@ -17,7 +17,6 @@ type UserSelfInfo struct {
 	Score        int    `json:"score"`        // 积分
 	TopicCount   int    `json:"topicCount"`   // 话题数量
 	CommentCount int    `json:"commentCount"` // 跟帖数量
-	PasswordSet  bool   `json:"passwordSet"`  // 密码已设置
 	Status       int    `json:"status"`
 	CreateTime   int64  `json:"createTime"`
 }
@@ -33,9 +32,13 @@ type UserInfo struct {
 	Score        int    `json:"score"`        // 积分
 	TopicCount   int    `json:"topicCount"`   // 话题数量
 	CommentCount int    `json:"commentCount"` // 跟帖数量
-	PasswordSet  bool   `json:"passwordSet"`  // 密码已设置
 	Status       int    `json:"status"`
 	CreateTime   int64  `json:"createTime"`
+}
+
+type LikeInfo struct {
+	UserInfo
+	LikeCount int64 `json:"likeCount"`
 }
 
 type TagResponse struct {
@@ -114,7 +117,6 @@ type FavoriteResponse struct {
 	Title      string    `json:"title"`
 	Content    string    `json:"content"`
 	User       *UserInfo `json:"user"`
-	Url        string    `json:"url"`
 	CreateTime int64     `json:"createTime"`
 }
 

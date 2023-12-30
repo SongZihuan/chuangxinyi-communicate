@@ -62,7 +62,11 @@ func (c *TopicController) Delete(ctx *gin.Context) {
 	if !c.BindAndValidate(ctx, &gDto) {
 		return
 	}
-	service.TopicService.Delete(gDto.ID)
+	err := service.TopicService.Delete(gDto.ID)
+	if err != nil {
+		c.Fail(ctx, utils.FromError(err))
+		return
+	}
 	c.Success(ctx, nil)
 }
 
@@ -72,7 +76,11 @@ func (c *TopicController) Undelete(ctx *gin.Context) {
 	if !c.BindAndValidate(ctx, &gDto) {
 		return
 	}
-	service.TopicService.Undelete(gDto.ID)
+	err := service.TopicService.Undelete(gDto.ID)
+	if err != nil {
+		c.Fail(ctx, utils.FromError(err))
+		return
+	}
 	c.Success(ctx, nil)
 }
 

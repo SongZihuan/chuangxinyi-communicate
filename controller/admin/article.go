@@ -62,7 +62,11 @@ func (c *ArticleController) Delete(ctx *gin.Context) {
 	if !c.BindAndValidate(ctx, &gDto) {
 		return
 	}
-	service.ArticleService.Delete(gDto.ID)
+	err := service.ArticleService.Delete(gDto.ID)
+	if err != nil {
+		c.Fail(ctx, utils.FromError(err))
+		return
+	}
 	c.Success(ctx, nil)
 }
 

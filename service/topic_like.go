@@ -81,7 +81,13 @@ func (s *topicLikeService) Like(userId int64, topicId int64) errors.WTError {
 	// 判断是否已经点赞了
 	topicLike := dao.TopicLikeDao.Take("user_id = ? and topic_id = ?", userId, topicId)
 	if topicLike != nil {
-		return errors.New("已点赞")
+		if topicLike.Count > 10000 {
+			return nil
+		}
+
+		topicLike.Count++
+
+		return dao.TopicLikeDao.Update(topicLike)
 	}
 
 	return dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
@@ -89,6 +95,7 @@ func (s *topicLikeService) Like(userId int64, topicId int64) errors.WTError {
 		topicLike := &model.TopicLike{
 			UserId:     userId,
 			TopicId:    topicId,
+			Count:      1,
 			CreateTime: utils.NowTimestamp(),
 		}
 		err := dao.TopicLikeDao.Create(topicLike)

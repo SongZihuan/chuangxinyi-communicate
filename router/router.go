@@ -57,6 +57,7 @@ func Setup(e *gin.Engine) {
 	api.GET("/topic/:id", topicController.Show)
 
 	jwtApi.GET("/topic/:id/edit", topicController.Edit)
+	jwtApi.POST("/topic/:id/delete", topicController.Delete)
 	jwtApi.PUT("/topic/:id", topicController.Update)
 
 	api.GET("/topics/node", topicController.GetNodeTopics)
@@ -91,14 +92,12 @@ func Setup(e *gin.Engine) {
 	// Articles
 	articleController := &controller.ArticleController{}
 	jwtApi.POST("/articles", articleController.Store)
-	api.GET("/articles", articleController.List)
 	api.GET("/article/:id", articleController.Show)
 	jwtApi.GET("/article/:id/edit", articleController.Edit)
+	jwtApi.POST("/article/:id/delete", articleController.Delete)
 	jwtApi.PUT("/article/:id", articleController.Update)
 	jwtApi.POST("/article/:id/favorite", articleController.Favorite)
 
-	api.GET("/articles/related/:id", articleController.GetRelatedBy)
-	api.GET("/articles/tag/:id", articleController.GetTagArticles)
 	api.GET("/articles/user/newest/:id", articleController.GetUserNewestBy)
 
 	api.GET("/articles/recent", articleController.GetRecent)

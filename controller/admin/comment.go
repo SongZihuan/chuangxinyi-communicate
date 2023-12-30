@@ -62,7 +62,11 @@ func (c *CommentController) Delete(ctx *gin.Context) {
 	if !c.BindAndValidate(ctx, &gDto) {
 		return
 	}
-	service.CommentService.Delete(gDto.ID)
+	err := service.CommentService.Delete(gDto.ID)
+	if err != nil {
+		c.Fail(ctx, utils.FromError(err))
+		return
+	}
 	c.Success(ctx, nil)
 }
 

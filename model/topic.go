@@ -35,5 +35,6 @@ type TopicLike struct {
 	Model
 	UserId     int64 `gorm:"not null;index:idx_topic_like_user_id;" json:"userId" form:"userId"`    // 用户
 	TopicId    int64 `gorm:"not null;index:idx_topic_like_topic_id;" json:"topicId" form:"topicId"` // 主题编号
+	Count      int64 `gorm:"not null;" json:"count" form:"count"`                                   // 点赞数
 	CreateTime int64 `json:"createTime" form:"createTime"`                                          // 创建时间
 }

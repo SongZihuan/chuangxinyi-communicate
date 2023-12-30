@@ -1,10 +1,9 @@
 package controller
 
 import (
+	"gitee.com/wuntsong/chuangxinyi-communicate/urls"
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
-
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/urls"
 )
 
 // CaptchaController captcha controller

@@ -32,6 +32,5 @@ const (
 	ScoreTypeIncr = 0 // 积分+
 	ScoreTypeDecr = 1 // 积分-
 
-	TopicTypeNormal  = 0 // 普通帖子
-	TopicTypeTwitter = 1 // 推文
+	TopicTypeNormal = 0 // 普通帖子
 )
