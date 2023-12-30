@@ -76,15 +76,16 @@ func UpdateUserInfo(ctx context.Context, easy auth.UserEasy, info auth.UserInfoE
 		user.Status = model.StatusOk
 		user.CreateTime = utils.NowTimestamp()
 		user.UpdateTime = user.CreateTime
-		err := dao.UserDao.Create(user)
-		if err != nil {
-			return nil, errors.WarpQuick(err)
-		}
 
 		if user.Phone == adminPhone {
 			user.Level = model.UserLevelAdmin
 		} else {
 			user.Level = model.UserLevelGeneral
+		}
+
+		err := dao.UserDao.Create(user)
+		if err != nil {
+			return nil, errors.WarpQuick(err)
 		}
 	} else {
 		if user.Phone == adminPhone {
