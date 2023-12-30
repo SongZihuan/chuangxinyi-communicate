@@ -13,7 +13,6 @@ type Model struct {
 const (
 	StatusOk      = 0 // 正常
 	StatusDeleted = 1 // 删除
-	StatusPending = 2 // 待审核
 
 	UserLevelGeneral = 0  // 普通用户
 	UserLevelAdmin   = 10 // 管理员

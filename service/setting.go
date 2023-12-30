@@ -120,8 +120,8 @@ func (s *settingService) GetSetting() *model.ConfigData {
 		siteNotification = cache.SettingCache.GetValue(model.SettingSiteNotification)
 		recommendTags    = cache.SettingCache.GetValue(model.SettingRecommendTags)
 		scoreConfigStr   = cache.SettingCache.GetValue(model.SettingScoreConfig)
+		footerConfigStr  = cache.SettingCache.GetValue(model.SettingFooterConfig)
 		defaultNodeIdStr = cache.SettingCache.GetValue(model.SettingDefaultNodeId)
-		siteIndexHtml    = cache.SettingCache.GetValue(model.SettingSiteIndexHtml)
 	)
 
 	var siteKeywordsArr []string
@@ -149,6 +149,11 @@ func (s *settingService) GetSetting() *model.ConfigData {
 		logger.Logger.Info("积分配置错误")
 	}
 
+	var footerConfig model.FooterConfig
+	if err := utils.ParseJson(footerConfigStr, &footerConfig); err != nil {
+		logger.Logger.Info("底部信息配置错误")
+	}
+
 	var defaultNodeId, _ = strconv.ParseInt(defaultNodeIdStr, 10, 64)
 
 	return &model.ConfigData{
@@ -158,9 +163,9 @@ func (s *settingService) GetSetting() *model.ConfigData {
 		SiteNavs:         siteNavsArr,
 		SiteTips:         siteTipsArr,
 		SiteNotification: siteNotification,
-		SiteIndexHtml:    siteIndexHtml,
 		RecommendTags:    recommendTagsArr,
 		ScoreConfig:      scoreConfig,
+		FooterConfig:     footerConfig,
 		DefaultNodeId:    defaultNodeId,
 	}
 }

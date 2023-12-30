@@ -101,10 +101,10 @@ func (c *TopicController) List(ctx *gin.Context) {
 	if len(userID) > 0 {
 		conditions.Eq("user_id", userID)
 	}
-	if len(status) > 0 {
+	if len(status) > 0 && status != "-1" {
 		conditions.Eq("status", status)
 	}
-	if len(recommend) > 0 {
+	if len(recommend) > 0 && recommend != "-1" {
 		conditions.Eq("recommend", recommend)
 	}
 	if len(title) > 0 {

@@ -8,9 +8,9 @@ const (
 	SettingSiteNavs         = "siteNavs"         // 站点导航
 	SettingSiteTips         = "siteTips"         // 小贴士
 	SettingSiteNotification = "siteNotification" // 站点公告
-	SettingSiteIndexHtml    = "siteIndexHtml"    // 首页首屏HTML
 	SettingRecommendTags    = "recommendTags"    // 推荐标签
 	SettingScoreConfig      = "scoreConfig"      // 分数配置
+	SettingFooterConfig     = "footerConfig"     // 底部信息配置
 	SettingDefaultNodeId    = "defaultNodeId"    // 发帖默认节点
 )
 

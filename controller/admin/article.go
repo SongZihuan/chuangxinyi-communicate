@@ -74,12 +74,25 @@ func (c *ArticleController) Delete(ctx *gin.Context) {
 func (c *ArticleController) List(ctx *gin.Context) {
 	page := form.FormValueIntDefault(ctx, "page", 1)
 	limit := form.FormValueIntDefault(ctx, "limit", 20)
-	name := ctx.Request.FormValue("name")
+	id := ctx.Request.FormValue("id")
+	userID := ctx.Request.FormValue("user_id")
+	status := ctx.Request.FormValue("status")
+	title := ctx.Request.FormValue("title")
 
 	conditions := sqlcnd.NewSqlCnd()
-	if len(name) > 0 {
-		conditions.Like("name", name)
+	if len(id) > 0 {
+		conditions.Eq("id", id)
 	}
+	if len(userID) > 0 {
+		conditions.Eq("user_id", userID)
+	}
+	if len(status) > 0 && status != "-1" {
+		conditions.Eq("status", status)
+	}
+	if len(title) > 0 {
+		conditions.Like("title", title)
+	}
+
 	list, paging := service.ArticleService.List(conditions.Page(page, limit).Desc("id"))
 
 	var results []map[string]interface{}

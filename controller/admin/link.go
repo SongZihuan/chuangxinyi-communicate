@@ -82,11 +82,20 @@ func (c *LinkController) Delete(ctx *gin.Context) {
 func (c *LinkController) List(ctx *gin.Context) {
 	page := form.FormValueIntDefault(ctx, "page", 1)
 	limit := form.FormValueIntDefault(ctx, "limit", 20)
-	name := ctx.Request.FormValue("name")
+
+	title := ctx.Request.FormValue("title")
+	url := ctx.Request.FormValue("url")
+	status := ctx.Request.FormValue("status")
 
 	conditions := sqlcnd.NewSqlCnd()
-	if len(name) > 0 {
-		conditions.Like("name", name)
+	if len(status) > 0 && status != "-1" {
+		conditions.Eq("status", status)
+	}
+	if len(url) > 0 {
+		conditions.Eq("url", url)
+	}
+	if len(title) > 0 {
+		conditions.Eq("title", title)
 	}
 	list, paging := service.LinkService.List(conditions.Page(page, limit).Desc("id"))
 

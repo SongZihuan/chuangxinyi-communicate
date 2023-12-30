@@ -29,18 +29,25 @@ type ScoreConfig struct {
 	PostCommentScore int `json:"postCommentScore"` // 跟帖获得积分
 }
 
+// Footer配置
+type FooterConfig struct {
+	ICP       string `json:"icp"`
+	Gongan    string `json:"gongan"`
+	Copyright string `json:"copyright"`
+}
+
 // 配置返回结构体
 type ConfigData struct {
-	SiteTitle        string      `json:"siteTitle"`
-	SiteDescription  string      `json:"siteDescription"`
-	SiteKeywords     []string    `json:"siteKeywords"`
-	SiteNavs         []SiteNav   `json:"siteNavs"`
-	SiteTips         []SiteTip   `json:"siteTips"`
-	SiteNotification string      `json:"siteNotification"`
-	SiteIndexHtml    string      `json:"siteIndexHtml"`
-	RecommendTags    []string    `json:"recommendTags"`
-	ScoreConfig      ScoreConfig `json:"scoreConfig"`
-	DefaultNodeId    int64       `json:"defaultNodeId"`
+	SiteTitle        string       `json:"siteTitle"`
+	SiteDescription  string       `json:"siteDescription"`
+	SiteKeywords     []string     `json:"siteKeywords"`
+	SiteNavs         []SiteNav    `json:"siteNavs"`
+	SiteTips         []SiteTip    `json:"siteTips"`
+	SiteNotification string       `json:"siteNotification"`
+	RecommendTags    []string     `json:"recommendTags"`
+	ScoreConfig      ScoreConfig  `json:"scoreConfig"`
+	FooterConfig     FooterConfig `json:"footerConfig"`
+	DefaultNodeId    int64        `json:"defaultNodeId"`
 }
 
 type AppData struct {

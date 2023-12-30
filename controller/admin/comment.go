@@ -80,7 +80,7 @@ func (c *CommentController) List(ctx *gin.Context) {
 	userID := ctx.Request.FormValue("userId")
 
 	conditions := sqlcnd.NewSqlCnd()
-	if len(status) > 0 {
+	if len(status) > 0 && status != "-1" {
 		conditions.Eq("status", status)
 	}
 	if len(userID) > 0 {

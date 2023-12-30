@@ -1,10 +1,8 @@
 package service
 
 import (
-	errors "github.com/wuntsong-org/wterrors"
-	"strings"
-
 	"github.com/jinzhu/gorm"
+	errors "github.com/wuntsong-org/wterrors"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
@@ -67,38 +65,4 @@ func (s *linkService) Update(dto form.LinkUpdateForm) errors.WTError {
 
 func (s *linkService) Delete(id int64) {
 	dao.LinkDao.Delete(id)
-}
-
-// 提交友情链接
-func (s *linkService) Submit(url, title, summary, logo string) (link *model.Link, err errors.WTError) {
-	url = strings.TrimSpace(url)
-	title = strings.TrimSpace(title)
-	summary = strings.TrimSpace(summary)
-	logo = strings.TrimSpace(logo)
-
-	if len(url) == 0 {
-		return nil, errors.New("网址不能为空")
-	}
-	if len(title) == 0 {
-		return nil, errors.New("标题不能为空")
-	}
-
-	link = &model.Link{
-		Url:        url,
-		Title:      title,
-		Summary:    summary,
-		Logo:       logo,
-		Status:     model.StatusPending,
-		CreateTime: utils.NowTimestamp(),
-	}
-
-	err = dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
-		err := dao.LinkDao.Create(link)
-		if err != nil {
-			return errors.WarpQuick(err)
-		}
-		return nil
-	})
-
-	return
 }
