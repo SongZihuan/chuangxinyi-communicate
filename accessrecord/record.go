@@ -156,7 +156,7 @@ func AccessRecordHandle(w http.ResponseWriter, r *http.Request, next http.Handle
 					body = body[:65000]
 				}
 			} else {
-				body = fmt.Sprintf("<media type: %s bytes: %d>", utils.MediaTypeContentTypeMap[utils.GetMediaType(bodyByte)], len(bodyByte))
+				body = fmt.Sprintf("<media type: %s bytes: %d>", utils.GetMediaType(bodyByte), len(bodyByte))
 			}
 		}
 	}

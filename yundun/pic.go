@@ -154,7 +154,7 @@ func createOssClient(tokenData *green20220302.DescribeUploadTokenResponseBodyDat
 }
 
 // 上传文件
-func uploadFile(file []byte, fileType int64) (string, errors.WTError) {
+func uploadFile(file []byte, fileType string) (string, errors.WTError) {
 	var err error
 
 	if tokenData == nil || tea.Int32Value(tokenData.Expiration) <= int32(time.Now().Unix()) {
@@ -171,7 +171,7 @@ func uploadFile(file []byte, fileType int64) (string, errors.WTError) {
 		return "", errors.WarpQuick(err)
 	}
 
-	suffix, ok := utils.MediaTypeSuffixMap[int(fileType)]
+	suffix, ok := utils.MediaTypeSuffixMap[fileType]
 	if !ok {
 		return "", errors.Errorf("bad file type")
 	}
@@ -190,7 +190,7 @@ func uploadFile(file []byte, fileType int64) (string, errors.WTError) {
 	return objectName, nil
 }
 
-func invokePic(file []byte, fileType int64, service string) (*green20220302.ImageModerationResponse, errors.WTError) {
+func invokePic(file []byte, fileType string, service string) (*green20220302.ImageModerationResponse, errors.WTError) {
 	runtime := &util.RuntimeOptions{}
 	var objectName, _ = uploadFile(file, fileType)
 
@@ -214,7 +214,7 @@ func invokePic(file []byte, fileType int64, service string) (*green20220302.Imag
 	return res, nil
 }
 
-func CheckBaseLinePic(file []byte, fileType int64) (bool, errors.WTError) {
+func CheckBaseLinePic(file []byte, fileType string) (bool, errors.WTError) {
 	var err error
 	response, err := invokePic(file, fileType, "baselineCheck")
 	if err != nil {
@@ -248,7 +248,7 @@ func CheckBaseLinePic(file []byte, fileType int64) (bool, errors.WTError) {
 	return true, nil
 }
 
-func CheckHeaderPic(file []byte, fileType int64) (bool, errors.WTError) {
+func CheckHeaderPic(file []byte, fileType string) (bool, errors.WTError) {
 	var err error
 	response, err := invokePic(file, fileType, "profilePhotoCheck")
 	if err != nil {

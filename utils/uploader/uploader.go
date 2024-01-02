@@ -52,12 +52,12 @@ type aliyunOssUploader struct {
 }
 
 func (aliyun *aliyunOssUploader) PutImage(data []byte) (string, errors.WTError) {
-	fileType := utils.GetImageType(data)
-	if fileType == utils.Unknown {
+	fileType := utils.GetMediaType(data)
+	if !utils.IsImage(fileType) {
 		return "", errors.Errorf("bad picture")
 	}
 
-	ok, err := yundun.CheckBaseLinePic(data, int64(fileType))
+	ok, err := yundun.CheckBaseLinePic(data, fileType)
 	if err != nil {
 		return "", errors.WarpQuick(err)
 	} else if !ok {
