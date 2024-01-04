@@ -5,7 +5,7 @@
 
 ## 如何启动
 推荐docker启动。
-将配置文件夹（包含config.yaml）的文件夹挂载到容器的"/usr/local/share/backend/etc"，然后启动即可。
+将配置文件夹（包含config.yaml）的文件夹挂载到容器的"/usr/local/share/backend/etc"，然后挂在"/tmp/data"为可读地址，然后启动即可。
 端口默认为9527。
 
 ## 推荐配置
@@ -21,7 +21,7 @@ serviceName: 创信易社区-本地  # 日志名称
 base:
   port: 9527  # 端口号
   url: http://localhost  # 服务访问的Url
-  static_path: data  # 静态文件的地址
+  static_path: /tmp/data  # 静态文件的地址 腰围docker挂载该地址为可读
 
 admin:
   phone: # 根管理员手机号

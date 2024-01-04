@@ -8,7 +8,7 @@ import (
 	util "github.com/alibabacloud-go/tea-utils/v2/service"
 	"github.com/alibabacloud-go/tea/tea"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	errors "github.com/wuntsong-org/wterrors"
 	"net/http"
 	"time"
@@ -176,7 +176,7 @@ func uploadFile(file []byte, fileType string) (string, errors.WTError) {
 		return "", errors.Errorf("bad file type")
 	}
 
-	key, err := uuid.NewV1()
+	key, err := uuid.NewRandom()
 	if err != nil {
 		return "", errors.WarpQuick(err)
 	}

@@ -5,7 +5,6 @@ go 1.21
 toolchain go1.21.0
 
 require (
-	github.com/Pallinder/go-randomdata v1.2.0
 	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.5
 	github.com/alibabacloud-go/green-20220302 v1.3.0
@@ -13,36 +12,28 @@ require (
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.4
 	github.com/aliyun/aliyun-oss-go-sdk v2.1.0+incompatible
 	github.com/appleboy/gin-jwt/v2 v2.6.3
-	github.com/bluele/factory-go v0.0.1
 	github.com/dchest/captcha v0.0.0-20170622155422-6a29415a8364
 	github.com/emirpasic/gods v1.12.0
-	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.0
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-resty/resty/v2 v2.2.0
 	github.com/goburrow/cache v0.1.0
 	github.com/gofrs/uuid v4.4.0+incompatible
+	github.com/google/uuid v1.5.0
 	github.com/gorilla/feeds v1.1.1
 	github.com/gorilla/websocket v1.4.0
-	github.com/issue9/identicon v1.0.1
 	github.com/jinzhu/gorm v1.9.12
-	github.com/jordan-wright/email v0.0.0-20200322182553-8eef2508c362
 	github.com/json-iterator/go v1.1.12
 	github.com/microcosm-cc/bluemonday v1.0.26
-	github.com/pkg/errors v0.9.1
 	github.com/robfig/cron v1.2.0
 	github.com/rs/zerolog v1.18.0
-	github.com/russross/blackfriday/v2 v2.0.1
-	github.com/satori/go.uuid v1.2.0
 	github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72
 	github.com/spf13/viper v1.6.3
 	github.com/tidwall/gjson v1.9.3
 	github.com/vinta/pangu v3.0.0+incompatible
 	github.com/wuntsong-org/wterrors v1.3.0
 	go.uber.org/zap v1.10.0
-	golang.org/x/crypto v0.16.0
-	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 )
 
 require (
@@ -77,7 +68,8 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml v1.2.0 // indirect
-	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/spf13/afero v1.1.2 // indirect
 	github.com/spf13/cast v1.3.0 // indirect
 	github.com/spf13/jwalterweatherman v1.0.0 // indirect
@@ -89,6 +81,7 @@ require (
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	go.uber.org/atomic v1.4.0 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
+	golang.org/x/crypto v0.16.0 // indirect
 	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect

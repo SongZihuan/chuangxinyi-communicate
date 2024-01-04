@@ -6,8 +6,6 @@ import (
 	errors "github.com/wuntsong-org/wterrors"
 	"reflect"
 	"strings"
-
-	"github.com/satori/go.uuid"
 )
 
 func IsEmpty(a interface{}) bool {
@@ -158,9 +156,4 @@ func StructTypeOf(s interface{}) reflect.Type {
 		t = t.Elem()
 	}
 	return t
-}
-
-// uuid
-func Uuid() string {
-	return strings.ReplaceAll(uuid.NewV4().String(), "-", "")
 }

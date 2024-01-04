@@ -3,7 +3,7 @@ package redis
 import (
 	"context"
 	"fmt"
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"os"
 	"sync"
 	"time"
@@ -144,7 +144,7 @@ func GenerateUUIDMore(ctx context.Context, lockPrefix string, lockTTL time.Durat
 }
 
 func GenerateUUID(ctx context.Context, lockPrefix string, lockTTL time.Duration, checker func(context.Context, uuid.UUID) bool) (uuid.UUID, bool) {
-	uuidByte, err := uuid.NewV1()
+	uuidByte, err := uuid.NewRandom()
 	if err != nil {
 		return uuid.UUID{}, false
 	}
@@ -177,7 +177,7 @@ func GenerateStringMore(ctx context.Context, lockPrefix string, lockTTL time.Dur
 }
 
 func GenerateString(ctx context.Context, lockPrefix string, lockTTL time.Duration, checker func(context.Context, string) bool, gen func(context.Context, uuid.UUID) string) (string, bool) {
-	uuidByte, err := uuid.NewV1()
+	uuidByte, err := uuid.NewRandom()
 	if err != nil {
 		return "", false
 	}

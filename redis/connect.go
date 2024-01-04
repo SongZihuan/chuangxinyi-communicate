@@ -11,11 +11,13 @@ var RedisClient *redis.Client
 
 func InitRedis() errors.WTError {
 	addr := viper.GetString("redis.addr")
+	username := viper.GetString("redis.userName")
 	password := viper.GetString("redis.password")
 	db := viper.GetInt64("redis.db")
 
 	RedisClient = redis.NewClient(&redis.Options{
 		Addr:     addr,
+		Username: username,
 		Password: password,
 		DB:       int(db),
 	})
