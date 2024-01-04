@@ -305,6 +305,8 @@ github.com/wuntsong-org/wterrors v1.1.0 h1:EkZ1jOU8d5MwkM53/NbByksa5h5ADoVvtm+Y/
 github.com/wuntsong-org/wterrors v1.1.0/go.mod h1:auGJ19RfPa04G1I3TTwxgZ1JgwHwOIfLSDOmM0JULvo=
 github.com/wuntsong-org/wterrors v1.2.0 h1:i1rlXo1S9ucEimNJEjHLdbtVoFBRvOklSh/avByJ/n0=
 github.com/wuntsong-org/wterrors v1.2.0/go.mod h1:auGJ19RfPa04G1I3TTwxgZ1JgwHwOIfLSDOmM0JULvo=
+github.com/wuntsong-org/wterrors v1.3.0 h1:rjN5kqbkx86Ytfp7r+eghh/mIYi9GFv7vPegzv9x+O4=
+github.com/wuntsong-org/wterrors v1.3.0/go.mod h1:auGJ19RfPa04G1I3TTwxgZ1JgwHwOIfLSDOmM0JULvo=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
