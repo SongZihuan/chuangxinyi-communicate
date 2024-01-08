@@ -58,7 +58,7 @@ func WriteJson(data any) string {
 }
 
 func RestartGetUserInfo() errors.WTError {
-	res := redis.RedisClient.Keys(context.Background(), "logintoken:getinfo:*:*")
+	res := redis.Keys(context.Background(), "logintoken:getinfo:*:*")
 	lst, err := res.Result()
 	if err != nil {
 		return errors.WarpQuick(err)
@@ -81,13 +81,13 @@ func RestartGetUserInfo() errors.WTError {
 
 func StartGetUserInfo(token string, uid string) errors.WTError {
 	key := fmt.Sprintf("logintoken:getinfo:%s:%s", token, uid)
-	_ = redis.RedisClient.Del(context.Background(), key) // 删除这个key，避免重复
+	_ = redis.Del(context.Background(), key) // 删除这个key，避免重复
 
 	loginTokenExpire := viper.GetInt64("auth.loginTokenExpire")
 
 	go func() {
 		defer signalexit.AddExitFuncAsDeferNotDo(func() {
-			_ = redis.RedisClient.Set(context.Background(), key, "1", time.Second*time.Duration(loginTokenExpire))
+			_ = redis.Set(context.Background(), key, "1", time.Second*time.Duration(loginTokenExpire))
 		})()
 
 		for {

@@ -32,10 +32,9 @@ func GetGeo(ctx context.Context, ip string) (code string, geo string, resErr err
 		return UnknownGeoCode, LocalGeo, nil
 	}
 
-	res := redis.RedisClient.Get(ctx, fmt.Sprintf("ip:%s", url.QueryEscape(ip)))
-	resString, err := res.Result()
-	if err == nil && len(resString) != 0 {
-		codegeo := strings.Split(resString, ";")
+	res, ok := redis.GetCache(ctx, fmt.Sprintf("ip:%s", url.QueryEscape(ip)))
+	if ok {
+		codegeo := strings.Split(res, ";")
 		if len(codegeo) == 2 && len(codegeo[0]) == GeoCodeLen {
 			return codegeo[0], codegeo[1], nil
 		}
@@ -122,19 +121,19 @@ func GetGeo(ctx context.Context, ip string) (code string, geo string, resErr err
 		}
 
 		if expireSecond > 0 {
-			_ = redis.RedisClient.Set(ctx, fmt.Sprintf("ip:%s", url.QueryEscape(ip)), fmt.Sprintf("%s;%s", code, geo), time.Second*time.Duration(expireSecond))
+			redis.SetCache(ctx, fmt.Sprintf("ip:%s", url.QueryEscape(ip)), fmt.Sprintf("%s;%s", code, geo), time.Second*time.Duration(expireSecond))
 		}
 
 		return code, geo, nil
 	} else if data.Status == 382 {
 		if expireSecond > 0 {
-			_ = redis.RedisClient.Set(ctx, fmt.Sprintf("ip:%s", url.QueryEscape(ip)), fmt.Sprintf("%s;未知", UnknownGeoCode), time.Second*time.Duration(expireSecond))
+			redis.SetCache(ctx, fmt.Sprintf("ip:%s", url.QueryEscape(ip)), fmt.Sprintf("%s;未知", UnknownGeoCode), time.Second*time.Duration(expireSecond))
 		}
 
 		return UnknownGeoCode, "未知", nil
 	} else if data.Status == 375 {
 		if expireSecond > 0 {
-			_ = redis.RedisClient.Set(ctx, fmt.Sprintf("ip:%s", url.QueryEscape(ip)), fmt.Sprintf("%s;%s", UnknownGeoCode, LocalGeo), time.Second*time.Duration(expireSecond))
+			redis.SetCache(ctx, fmt.Sprintf("ip:%s", url.QueryEscape(ip)), fmt.Sprintf("%s;%s", UnknownGeoCode, LocalGeo), time.Second*time.Duration(expireSecond))
 		}
 
 		return UnknownGeoCode, LocalGeo, nil

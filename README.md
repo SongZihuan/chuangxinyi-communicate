@@ -45,6 +45,12 @@ redis:
   password: # redis 密码
   db: 0 # redis数据库
 
+cache:  # 缓存
+  addr: # {redis地址}:{redis端口号}  # 为空标识不启用
+  userName: default  # redis用户名
+  password: # redis 密码
+  db: 0 # redis数据库
+
 jwt:
   identity_key: identity
   key: oovooYeNg1Oomisah1  # jwt的key

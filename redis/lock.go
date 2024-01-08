@@ -91,7 +91,7 @@ func acquireLock(ctx context.Context, lockKey string, lockTTL time.Duration) boo
 	lockValue := generateLockValue()
 
 	// 使用SET命令尝试获取锁，并设置过期时间，使用NX选项确保只在键不存在时设置
-	result, err := RedisClient.SetNX(ctx, fmt.Sprintf("lock:%s", lockKey), lockValue, lockTTL).Result()
+	result, err := client.SetNX(ctx, fmt.Sprintf("lock:%s", lockKey), lockValue, lockTTL).Result()
 	if err != nil {
 		return false
 	}
@@ -107,7 +107,7 @@ func extendLock(ctx context.Context, lockKey string, lockTTL time.Duration) bool
 		return false
 	}
 
-	result, err := RedisClient.Expire(ctx, fmt.Sprintf("lock:%s", lockKey), lockTTL).Result()
+	result, err := client.Expire(ctx, fmt.Sprintf("lock:%s", lockKey), lockTTL).Result()
 	if err != nil {
 		return false
 	}
@@ -127,7 +127,7 @@ func releaseLock(lockKey string) {
 
 	delete(LockMap, lockKey)
 
-	_ = RedisClient.Del(context.Background(), fmt.Sprintf("lock:%s", lockKey)) // 不用ctx
+	_ = client.Del(context.Background(), fmt.Sprintf("lock:%s", lockKey)) // 不用ctx
 }
 
 func GenerateUUIDMore(ctx context.Context, lockPrefix string, lockTTL time.Duration, checker func(context.Context, uuid.UUID) bool) (uuid.UUID, bool) {

@@ -19,13 +19,13 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-resty/resty/v2 v2.2.0
 	github.com/goburrow/cache v0.1.0
-	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/google/uuid v1.5.0
 	github.com/gorilla/feeds v1.1.1
 	github.com/gorilla/websocket v1.4.0
 	github.com/jinzhu/gorm v1.9.12
 	github.com/json-iterator/go v1.1.12
 	github.com/microcosm-cc/bluemonday v1.0.26
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/robfig/cron v1.2.0
 	github.com/rs/zerolog v1.18.0
 	github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72
