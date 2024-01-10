@@ -57,13 +57,32 @@ func AccessRecordHandle(w http.ResponseWriter, r *http.Request, next http.Handle
 		path = path[:100]
 	}
 
-	queryByte, err := utils.JsonMarshal(queryValues)
+	queryMap := make(map[string][]string, len(queryValues))
+QUERY:
+	for k, v := range queryValues {
+		if len(v) == 0 {
+			continue
+		}
+
+		if len(v) > 5 {
+			continue
+		}
+
+		for _, vv := range v {
+			if len(vv) > 100 {
+				continue QUERY
+			}
+		}
+
+		queryMap[k] = v
+	}
+	queryByte, err := utils.JsonMarshal(queryMap)
 	if err != nil {
 		queryByte = []byte("{}")
 	}
 	query := string(queryByte)
 	if len(query) > 6000 {
-		query = query[:6000]
+		query = "{}"
 	}
 
 	if len(host) > 500 {
@@ -84,7 +103,7 @@ func AccessRecordHandle(w http.ResponseWriter, r *http.Request, next http.Handle
 	}
 	header := string(headerByte)
 	if len(header) > 6000 {
-		header = header[:6000]
+		header = "{}"
 	}
 
 	bodyByte, err := io.ReadAll(r.Body)
@@ -255,7 +274,7 @@ func AccessRecordHandle(w http.ResponseWriter, r *http.Request, next http.Handle
 		}
 		header := string(headerByte)
 		if len(header) > 6000 {
-			header = header[:6000]
+			header = "{}"
 		}
 		access.ResponseHeader = &header
 
