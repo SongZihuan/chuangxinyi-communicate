@@ -198,7 +198,7 @@ func AccessRecordHandle(w http.ResponseWriter, r *http.Request, next http.Handle
 		RequestsHeader:  header,
 	}
 
-	if !notRecord {
+	if !notRecord && geo != ip.LocalGeo {
 		err := dao.RecordDao.Create(access)
 		if err != nil {
 			logger.Logger.Error("mysql resp: %s", err.Error())
@@ -297,7 +297,7 @@ func AccessRecordHandle(w http.ResponseWriter, r *http.Request, next http.Handle
 
 		access.EndAt = &endTime
 
-		if !notRecord {
+		if !notRecord && geo != ip.LocalGeo {
 			err := dao.RecordDao.Update(access)
 			if err != nil {
 				logger.Logger.Error("mysql resp: %s", err)

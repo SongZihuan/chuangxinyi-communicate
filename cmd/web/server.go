@@ -9,6 +9,6 @@ func NewServer(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		accessrecord.AccessRecordHandle(w, r, func(w http.ResponseWriter, r *http.Request) {
 			accessrecord.Options(w, r, handler.ServeHTTP)
-		}, []string{})
+		}, []string{"/"}) // / 相当于 /api/v1/ping
 	})
 }
