@@ -20,9 +20,9 @@ import (
 	"os"
 )
 
-func Init(envPrefix string, serviceName string) errors.WTError {
+func InitCommunity(envPrefix string, serviceName string) errors.WTError {
 	var err error
-	err = signalexit.InitSignalExit()
+	err = signalexit.InitSignalExit(0)
 	if err != nil {
 		return errors.Errorf("signal resp: %s", errors.WarpQuick(err).Error())
 	}

@@ -15,7 +15,7 @@ type DeferFunc func()
 var ExitFuncList = make([]*ExitFunc, 0, 10)
 var ExitMutex sync.Mutex
 
-func InitSignalExit() errors.WTError {
+func InitSignalExit(exitCode int64) errors.WTError {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
 
@@ -38,7 +38,7 @@ func InitSignalExit() errors.WTError {
 			}()
 		}
 
-		os.Exit(0)
+		os.Exit(int(exitCode))
 	}()
 
 	return nil

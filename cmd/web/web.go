@@ -45,7 +45,7 @@ func CmdMain() {
 
 	serviceName := viper.GetString("serviceName")
 	readableName := viper.GetString("readableName")
-	err = initall.Init("COMMUNITY_", serviceName)
+	err = initall.InitCommunity("COMMUNITY_", serviceName)
 	if err != nil {
 		logger.Logger.Error(fmt.Sprintf("Fail to init: %s", err.Error()))
 		return
