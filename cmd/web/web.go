@@ -9,8 +9,8 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/router"
 	"gitee.com/wuntsong/chuangxinyi-communicate/signalexit"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog"
 	"github.com/spf13/viper"
 	"net/http"
 	"os"
@@ -28,28 +28,17 @@ func CmdMain() {
 	flag.Parse()
 	var err error
 
-	//1.Set up log level
-	zerolog.SetGlobalLevel(zerolog.Level(0))
-
-	//2.Set up configuration
 	viper.SetConfigType("yaml")
 	viper.SetConfigName("config")
 	viper.SetEnvPrefix("COMMUNITY_")
 	viper.AddConfigPath(*configFile)
 
 	err = viper.ReadInConfig()
-	if err != nil {
-		logger.Logger.Error(fmt.Sprintf("Parse conf file fail: %s", err.Error()))
-		return
-	}
+	utils.MustNotError(err)
 
-	serviceName := viper.GetString("serviceName")
 	readableName := viper.GetString("readableName")
-	err = initall.InitCommunity("COMMUNITY_", serviceName)
-	if err != nil {
-		logger.Logger.Error(fmt.Sprintf("Fail to init: %s", err.Error()))
-		return
-	}
+	err = initall.InitCommunity("COMMUNITY_")
+	utils.MustNotError(err)
 
 	_, err = login.ConnectWebSocket()
 	if err != nil {

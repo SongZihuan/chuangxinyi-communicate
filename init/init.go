@@ -20,7 +20,7 @@ import (
 	"os"
 )
 
-func InitCommunity(envPrefix string, serviceName string) errors.WTError {
+func InitCommunity(envPrefix string) errors.WTError {
 	var err error
 	err = signalexit.InitSignalExit(0)
 	if err != nil {
@@ -35,7 +35,7 @@ func InitCommunity(envPrefix string, serviceName string) errors.WTError {
 	mode := viper.GetString("mode")
 	gin.SetMode(mode)
 
-	err = logger.InitLogger(serviceName)
+	err = logger.InitLogger(viper.GetString("serviceName"))
 	if err != nil {
 		return errors.WarpQuick(err)
 	}
@@ -86,6 +86,46 @@ func InitCommunity(envPrefix string, serviceName string) errors.WTError {
 	}
 
 	err = urls.InitUrls()
+	if err != nil {
+		return errors.WarpQuick(err)
+	}
+
+	return nil
+}
+
+func InitSqlClear(envPrefix string) errors.WTError {
+	var err error
+	err = signalexit.InitSignalExit(0)
+	if err != nil {
+		return errors.Errorf("signal resp: %s", errors.WarpQuick(err).Error())
+	}
+
+	signalexit.AddExitByFunc(func(ctx context.Context, _ os.Signal) context.Context {
+		CloseAll()
+		return context.WithValue(ctx, "InitClose", true)
+	})
+
+	err = logger.InitLogger(viper.GetString("serviceName"))
+	if err != nil {
+		return errors.WarpQuick(err)
+	}
+
+	err = peername.InitPeerName(envPrefix)
+	if err != nil {
+		return errors.WarpQuick(err)
+	}
+
+	err = redis.InitRedis()
+	if err != nil {
+		return errors.WarpQuick(err)
+	}
+
+	err = dao.Setup()
+	if err != nil {
+		return errors.WarpQuick(err)
+	}
+
+	err = rand.InitRander()
 	if err != nil {
 		return errors.WarpQuick(err)
 	}

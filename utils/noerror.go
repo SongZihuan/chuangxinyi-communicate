@@ -8,7 +8,7 @@ type Logger interface {
 	Error(string, ...any)
 }
 
-func MustNotError(err errors.WTError) {
+func MustNotError(err error) {
 	if err != nil {
 		panic(err)
 	}

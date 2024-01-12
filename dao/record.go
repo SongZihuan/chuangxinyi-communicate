@@ -4,6 +4,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
 	errors "github.com/wuntsong-org/wterrors"
+	"time"
 )
 
 var RecordDao = newRecordDao()
@@ -70,4 +71,12 @@ func (d *recordDao) UpdateColumn(id int64, name string, value interface{}) (err 
 
 func (d *recordDao) Delete(id int64) {
 	db.Delete(&model.Record{}, "id = ?", id)
+}
+
+func (d *recordDao) DeleteOld(lastTime time.Time) (int64, errors.WTError) {
+	res := db.Delete(&model.Record{}, "create_time < ?", lastTime)
+	if res.Error != nil {
+		return 0, errors.WarpQuick(res.Error)
+	}
+	return res.RowsAffected, nil
 }

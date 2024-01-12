@@ -27,7 +27,7 @@ type Record struct {
 	PanicError        *string `gorm:"size:2000"`
 	Message           *string `gorm:"type:json"`
 	UseTime           int64
-	CreateAt          time.Time `gorm:"default:CURRENT_TIMESTAMP"`
-	StartAt           *time.Time
-	EndAt             *time.Time
+	CreateTime        time.Time `gorm:"index:idx_record_create_time;default:CURRENT_TIMESTAMP"`
+	StartTime         *time.Time
+	EndTime           *time.Time
 }
