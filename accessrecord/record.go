@@ -312,9 +312,9 @@ QUERY:
 		use := endTime.Sub(startTime).Milliseconds() // 毫秒
 		access.UseTime = use
 
-		access.StartAt = &startTime
+		access.StartTime = &startTime
 
-		access.EndAt = &endTime
+		access.EndTime = &endTime
 
 		if !notRecord && geo != ip.LocalGeo {
 			err := dao.RecordDao.Update(access)
