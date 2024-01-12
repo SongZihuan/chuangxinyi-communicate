@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
-	"gitee.com/wuntsong/chuangxinyi-communicate/global"
+	"gitee.com/wuntsong/chuangxinyi-communicate/global/peername"
 	"gitee.com/wuntsong/chuangxinyi-communicate/ip"
 	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
@@ -192,7 +192,7 @@ QUERY:
 	err = func() (errRes errors.WTError) {
 		defer utils.Recover(logger.Logger, &errRes, "create requests id prefix resp")
 		unixNano := time.Now().UnixNano()
-		text := fmt.Sprintf("%s\n%d\n%s\n%s\n", realIp, unixNano, r.URL.String(), global.PeerName)
+		text := fmt.Sprintf("%s\n%d\n%s\n%s\n", realIp, unixNano, r.URL.String(), peername.PeerName)
 		requestIDPrefix = fmt.Sprintf("%s-%d", utils.HashSHA256WithBase62(text), unixNano)
 		return nil
 	}()
@@ -203,7 +203,7 @@ QUERY:
 
 	access := &model.Record{
 		RequestIDPrefix: requestIDPrefix,
-		ServerName:      global.PeerName,
+		ServerName:      peername.PeerName,
 		IP:              realIp,
 		GeoCode:         code,
 		Geo:             geo,
@@ -225,7 +225,7 @@ QUERY:
 		}
 	}
 
-	w.Header().Set("X-Server", global.PeerName)
+	w.Header().Set("X-Server", peername.PeerName)
 
 	writer := MakeNewWriter(w)
 

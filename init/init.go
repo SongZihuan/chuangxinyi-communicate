@@ -6,7 +6,7 @@ import (
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/cron"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
-	"gitee.com/wuntsong/chuangxinyi-communicate/global"
+	"gitee.com/wuntsong/chuangxinyi-communicate/global/peername"
 	"gitee.com/wuntsong/chuangxinyi-communicate/ip"
 	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/rand"
@@ -40,7 +40,7 @@ func InitCommunity(envPrefix string, serviceName string) errors.WTError {
 		return errors.WarpQuick(err)
 	}
 
-	err = global.InitPeerName(envPrefix)
+	err = peername.InitPeerName(envPrefix)
 	if err != nil {
 		return errors.WarpQuick(err)
 	}

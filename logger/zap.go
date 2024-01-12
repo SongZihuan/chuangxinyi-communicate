@@ -3,7 +3,7 @@ package logger
 import (
 	"bytes"
 	"fmt"
-	"gitee.com/wuntsong/chuangxinyi-communicate/global"
+	"gitee.com/wuntsong/chuangxinyi-communicate/global/peername"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 	"github.com/spf13/viper"
 	errors "github.com/wuntsong-org/wterrors"
@@ -29,7 +29,7 @@ func (l BackendLogger) Error(msg string, args ...any) {
 	dataMsg := fmt.Sprintf("%s\nError stack:\n%s", data, string(buf[:n]))
 
 	l.Logger.Error(dataMsg)
-	_ = LogMsg(true, fmt.Sprintf("[%s-%s] %s", l.ServiceName, global.PeerName, dataMsg))
+	_ = LogMsg(true, fmt.Sprintf("[%s-%s] %s", l.ServiceName, peername.PeerName, dataMsg))
 }
 
 func (l BackendLogger) Tag(name string, args ...any) {
@@ -38,7 +38,7 @@ func (l BackendLogger) Tag(name string, args ...any) {
 	dataMsg = dataMsg[0 : len(dataMsg)-1]                                                    // 删除回车
 
 	l.Logger.Info(dataMsg)
-	_ = LogMsg(true, fmt.Sprintf("[%s-%s] %s", l.ServiceName, global.PeerName, dataMsg))
+	_ = LogMsg(true, fmt.Sprintf("[%s-%s] %s", l.ServiceName, peername.PeerName, dataMsg))
 }
 
 func (l BackendLogger) Info(msg string, args ...any) {
@@ -49,7 +49,7 @@ func (l BackendLogger) Info(msg string, args ...any) {
 func (l BackendLogger) WXInfo(msg string, args ...any) {
 	data := fmt.Sprintf(msg, args...)
 	l.Logger.Info(data)
-	_ = LogMsg(false, fmt.Sprintf("[%s-%s] %s", l.ServiceName, global.PeerName, data))
+	_ = LogMsg(false, fmt.Sprintf("[%s-%s] %s", l.ServiceName, peername.PeerName, data))
 }
 
 func InitLogger(serviceName string) (err errors.WTError) {
