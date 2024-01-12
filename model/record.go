@@ -4,7 +4,7 @@ import "time"
 
 type Record struct {
 	Model
-	RequestIDPrefix   string `gorm:"not null"`
+	RequestIDPrefix   string `gorm:"index:idx_record_requests_id_prefix;not null"`
 	ServerName        string `gorm:"not null"`
 	UserID            int64
 	UserUID           string  // 修改为你需要的数据类型
