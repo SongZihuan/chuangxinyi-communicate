@@ -2,7 +2,6 @@ package cache
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
@@ -31,7 +30,7 @@ func (c *settingCache) Get(key string) *model.Setting {
 	}
 
 	val := dao.SettingDao.GetByKey(key)
-	valString, err := json.Marshal(val)
+	valString, err := utils.JsonMarshal(val)
 	if err == nil {
 		redis.SetCache(context.Background(), redisKey, string(valString), 0)
 	}
@@ -40,11 +39,14 @@ func (c *settingCache) Get(key string) *model.Setting {
 }
 
 func (c *settingCache) GetValue(key string) string {
-	data, ok := redis.GetCache(context.Background(), fmt.Sprintf("settings:%s", key))
+	redisKey := fmt.Sprintf("settings:%s", key)
+	dataString, ok := redis.GetCache(context.Background(), redisKey)
 	if ok {
-		return data
+		return dataString
 	}
-	return ""
+
+	val := dao.SettingDao.GetByKey(key)
+	return val.Value
 }
 
 func (c *settingCache) Invalidate(key string) {
