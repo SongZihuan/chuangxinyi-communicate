@@ -1,10 +1,6 @@
 package cache
 
 import (
-	"time"
-
-	"github.com/goburrow/cache"
-
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
@@ -15,59 +11,29 @@ var (
 )
 
 type nodeCache struct {
-	cache    cache.LoadingCache
-	allCache cache.LoadingCache
 }
 
 var NodeCache = newNodeCache()
 
 func newNodeCache() *nodeCache {
-	return &nodeCache{
-		cache: cache.NewLoadingCache(
-			func(key cache.Key) (value cache.Value, e error) {
-				value = dao.NodeDao.Get(key2Int64(key))
-				return
-			},
-			cache.WithMaximumSize(1000),
-			cache.WithExpireAfterAccess(30*time.Minute),
-		),
-		allCache: cache.NewLoadingCache(
-			func(key cache.Key) (value cache.Value, e error) {
-				value = dao.NodeDao.Find(sqlcnd.NewSqlCnd().Eq("status", model.StatusOk).Asc("sort_no").Desc("id"))
-				return
-			},
-			cache.WithMaximumSize(10),
-			cache.WithRefreshAfterWrite(30*time.Minute),
-		),
-	}
+	return &nodeCache{}
 }
 
 func (c *nodeCache) Get(nodeId int64) *model.Node {
 	if nodeId <= 0 {
 		return nil
 	}
-	val, err := c.cache.Get(nodeId)
-	if err != nil {
-		return nil
-	}
-	return val.(*model.Node)
+	return dao.NodeDao.Get(nodeId)
 }
 
 func (c *nodeCache) Invalidate(nodeId int64) {
-	c.cache.Invalidate(nodeId)
+	// 什么都不做
 }
 
 func (c *nodeCache) GetAll() []model.Node {
-	val, err := c.allCache.Get(allNodesCacheKey)
-	if err != nil {
-		return nil
-	}
-	if val != nil {
-		return val.([]model.Node)
-	}
-	return nil
+	return dao.NodeDao.Find(sqlcnd.NewSqlCnd().Eq("status", model.StatusOk).Asc("sort_no").Desc("id"))
 }
 
 func (c *nodeCache) InvalidateAll() {
-	c.allCache.Invalidate(allNodesCacheKey)
+	// 什么都不做
 }

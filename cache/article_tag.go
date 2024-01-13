@@ -35,16 +35,17 @@ func newArticleTagCache() *articleTagCache {
 }
 
 func (c *articleTagCache) Get(articleId int64) []int64 {
-	val, err := c.cache.Get(articleId)
-	if err != nil {
-		return nil
-	}
-	if val != nil {
-		return val.([]int64)
+	articleTags := dao.ArticleTagDao.FindByArticleId(articleId)
+	if len(articleTags) > 0 {
+		var tagIds []int64
+		for _, articleTag := range articleTags {
+			tagIds = append(tagIds, articleTag.TagId)
+		}
+		return tagIds
 	}
 	return nil
 }
 
 func (c *articleTagCache) Invalidate(articleId int64) {
-	c.cache.Invalidate(articleId)
+	// 啥也不做
 }

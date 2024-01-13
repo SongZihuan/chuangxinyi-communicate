@@ -1,52 +1,52 @@
 package cache
 
 import (
-	"time"
-
-	"github.com/goburrow/cache"
-
+	"context"
+	"encoding/json"
+	"fmt"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
+	"gitee.com/wuntsong/chuangxinyi-communicate/redis"
+	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 )
 
 type settingCache struct {
-	cache cache.LoadingCache
 }
 
 var SettingCache = newSettingCache()
 
 func newSettingCache() *settingCache {
-	return &settingCache{
-		cache: cache.NewLoadingCache(
-			func(key cache.Key) (value cache.Value, e error) {
-				value = dao.SettingDao.GetByKey(key.(string))
-				return
-			},
-			cache.WithMaximumSize(1000),
-			cache.WithExpireAfterAccess(30*time.Minute),
-		),
-	}
+	return &settingCache{}
 }
 
 func (c *settingCache) Get(key string) *model.Setting {
-	val, err := c.cache.Get(key)
-	if err != nil {
-		return nil
+	redisKey := fmt.Sprintf("settings:%s", key)
+	dataString, ok := redis.GetCache(context.Background(), redisKey)
+	if ok {
+		var data model.Setting
+		err := utils.JsonUnmarshal([]byte(dataString), &data)
+		if err == nil {
+			return &data
+		}
 	}
-	if val != nil {
-		return val.(*model.Setting)
+
+	val := dao.SettingDao.GetByKey(key)
+	valString, err := json.Marshal(val)
+	if err == nil {
+		redis.SetCache(context.Background(), redisKey, string(valString), 0)
 	}
-	return nil
+
+	return val
 }
 
 func (c *settingCache) GetValue(key string) string {
-	sysConfig := c.Get(key)
-	if sysConfig == nil {
-		return ""
+	data, ok := redis.GetCache(context.Background(), fmt.Sprintf("settings:%s", key))
+	if ok {
+		return data
 	}
-	return sysConfig.Value
+	return ""
 }
 
 func (c *settingCache) Invalidate(key string) {
-	c.cache.Invalidate(key)
+	redis.DelCache(context.Background(), fmt.Sprintf("settings:%s", key))
 }

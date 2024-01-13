@@ -47,25 +47,22 @@ func (c *userCache) Get(userId int64) *model.User {
 	if userId <= 0 {
 		return nil
 	}
-	val, err := c.cache.Get(userId)
-	if err != nil {
-		return nil
-	}
-	return val.(*model.User)
+	return dao.UserDao.Get(userId)
 }
 
 func (c *userCache) Invalidate(userId int64) {
-	c.cache.Invalidate(userId)
+	// 啥也不做
 }
 
 func (c *userCache) GetScore(userId int64) int {
-	val, err := c.scoreCache.Get(userId)
-	if err != nil {
+	userScore := dao.UserScoreDao.FindOne(sqlcnd.NewSqlCnd().Eq("user_id", userId))
+	if userScore == nil {
 		return 0
+	} else {
+		return userScore.Score
 	}
-	return val.(int)
 }
 
 func (c *userCache) InvalidateScore(userId int64) {
-	c.scoreCache.Invalidate(userId)
+	// 啥也不做
 }
