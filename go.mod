@@ -31,7 +31,7 @@ require (
 	github.com/spf13/viper v1.6.3
 	github.com/tidwall/gjson v1.9.3
 	github.com/vinta/pangu v3.0.0+incompatible
-	github.com/wuntsong-org/wterrors v1.3.0
+	github.com/wuntsong-org/wterrors v1.4.0
 	go.uber.org/zap v1.10.0
 )
 
