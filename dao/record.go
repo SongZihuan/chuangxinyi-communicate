@@ -74,7 +74,7 @@ func (d *recordDao) Delete(id int64) {
 }
 
 func (d *recordDao) DeleteOld(lastTime time.Time) (int64, errors.WTError) {
-	res := db.Delete(&model.Record{}, "create_time < ?", lastTime)
+	res := db.Unscoped().Delete(&model.Record{}, "create_time < ?", lastTime)
 	if res.Error != nil {
 		return 0, errors.WarpQuick(res.Error)
 	}

@@ -1,8 +1,8 @@
 package sqlcnd
 
 import (
-	"github.com/jinzhu/gorm"
 	errors "github.com/wuntsong-org/wterrors"
+	"gorm.io/gorm"
 )
 
 type SqlCnd struct {
@@ -159,7 +159,7 @@ func (s *SqlCnd) Count(db *gorm.DB, model interface{}) int {
 		}
 	}
 
-	var count int
+	var count int64
 	_ = ret.Count(&count)
-	return count
+	return int(count) // 旧代码使用了int，因此只能把int64转换int了，可能损失数据
 }

@@ -1,5 +1,7 @@
 package model
 
+import "gorm.io/gorm"
+
 var Models = []interface{}{
 	&User{}, &Tag{}, &Article{}, &ArticleTag{}, &Comment{}, &Favorite{},
 	&Topic{}, &Node{}, &TopicTag{}, &TopicLike{}, &Setting{}, &Link{},
@@ -7,7 +9,8 @@ var Models = []interface{}{
 }
 
 type Model struct {
-	ID int64 `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"id" form:"id"`
+	ID         int64          `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"id" form:"id"`
+	DeleteTime gorm.DeletedAt // 使用DeleteTime而不是DeleteAt是为了保持命名的统一
 }
 
 const (

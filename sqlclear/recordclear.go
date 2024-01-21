@@ -7,15 +7,15 @@ import (
 	"time"
 )
 
-type Clearable func(time time.Time) (int64, errors.WTError)
+type RecordClearable func(time time.Time) (int64, errors.WTError)
 
-type ClearData struct {
+type RecordClearData struct {
 	Name      string
-	Clearable Clearable
+	Clearable RecordClearable
 	Day       int64
 }
 
-var ClearList = []ClearData{
+var RecordClearList = []RecordClearData{
 	{
 		Name:      "record",
 		Clearable: dao.RecordDao.DeleteOld,
@@ -23,8 +23,8 @@ var ClearList = []ClearData{
 	},
 }
 
-func StartClear() errors.WTError {
-	tableCount := len(ClearList)
+func StartRecordClear() errors.WTError {
+	tableCount := len(RecordClearList)
 
 	logger.Logger.WXInfo("开始清理数据库，计划清理 %d 张表", tableCount)
 
@@ -32,7 +32,7 @@ func StartClear() errors.WTError {
 	processTables := 0
 	processRows := int64(0)
 
-	for _, c := range ClearList {
+	for _, c := range RecordClearList {
 		rows, err := c.Clearable(time.Now().Add(-time.Hour * 24 * time.Duration(c.Day)))
 		if err != nil {
 			errorTables += 1

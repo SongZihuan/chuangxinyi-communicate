@@ -2,12 +2,12 @@ package dao
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/spf13/viper"
 	errors "github.com/wuntsong-org/wterrors"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	gormlogger "gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 	"time"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
@@ -32,23 +32,29 @@ func Setup() errors.WTError {
 		charset := viper.GetString("database.mysql.charset")
 
 		dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=True&loc=Local", user, password, host, name, charset)
-		db, err = gorm.Open("mysql", dsn)
+		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+			NamingStrategy: schema.NamingStrategy{
+				SingularTable: true,
+			},
+			Logger: gormlogger.Default.LogMode(gormlogger.Silent),
+		})
 		if err != nil {
 			return errors.WarpQuick(err)
 		}
 
-		db.DB().SetMaxIdleConns(viper.GetInt("database.mysql.pool.min"))
-		db.DB().SetMaxOpenConns(viper.GetInt("database.mysql.pool.max"))
-		db.DB().SetConnMaxLifetime(time.Minute)
-		if gin.Mode() != gin.ReleaseMode {
-			db.LogMode(true)
+		sqlDB, err := db.DB()
+		if err != nil {
+			return errors.WarpQuick(err)
 		}
+
+		sqlDB.SetMaxIdleConns(viper.GetInt("database.mysql.pool.min"))
+		sqlDB.SetMaxOpenConns(viper.GetInt("database.mysql.pool.max"))
+		sqlDB.SetConnMaxLifetime(time.Minute)
 	default:
 		return errors.Errorf("we do not support this kind of storage system yet")
 	}
 
-	db.SingularTable(true) //禁用表名复数
-	if err = db.AutoMigrate(model.Models...).Error; nil != err {
+	if err = db.AutoMigrate(model.Models...); nil != err {
 		return errors.WarpQuick(err)
 	}
 
@@ -57,7 +63,8 @@ func Setup() errors.WTError {
 
 // Shutdown - close database connection
 func Shutdown() errors.WTError {
-	return errors.WarpQuick(db.Close())
+	// 不需要处理关闭数据库
+	return nil
 }
 
 // GetDb - get a database connection

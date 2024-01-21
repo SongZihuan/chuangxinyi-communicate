@@ -11,8 +11,8 @@ import (
 
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/gorilla/feeds"
-	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"

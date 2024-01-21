@@ -32,6 +32,9 @@ func CmdMain() {
 	err = initall.InitSqlClear("COMMUNITY_")
 	utils.MustNotError(err)
 
+	err = sqlclear.StartRecordClear()
+	utils.MustNotError(err)
+
 	err = sqlclear.StartClear()
 	utils.MustNotError(err)
 }

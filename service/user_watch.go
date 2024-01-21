@@ -3,7 +3,7 @@ package service
 import (
 	errors "github.com/wuntsong-org/wterrors"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"

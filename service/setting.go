@@ -4,8 +4,8 @@ import (
 	errors "github.com/wuntsong-org/wterrors"
 	"strconv"
 
-	"github.com/jinzhu/gorm"
 	"github.com/tidwall/gjson"
+	"gorm.io/gorm"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"

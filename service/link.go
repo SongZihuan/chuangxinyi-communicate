@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/jinzhu/gorm"
 	errors "github.com/wuntsong-org/wterrors"
+	"gorm.io/gorm"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"

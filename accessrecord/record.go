@@ -217,7 +217,7 @@ QUERY:
 		RequestsHeader:  header,
 	}
 
-	if !notRecord && geo != ip.LocalGeo {
+	if !notRecord {
 		err := dao.RecordDao.Create(access)
 		if err != nil {
 			logger.Logger.Error("mysql resp: %s", err.Error())
@@ -316,7 +316,7 @@ QUERY:
 
 		access.EndTime = &endTime
 
-		if !notRecord && geo != ip.LocalGeo {
+		if !notRecord {
 			err := dao.RecordDao.Update(access)
 			if err != nil {
 				logger.Logger.Error("mysql resp: %s", err)

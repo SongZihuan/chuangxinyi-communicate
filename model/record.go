@@ -3,7 +3,8 @@ package model
 import "time"
 
 type Record struct {
-	Model
+	// 不使用Model
+	ID                int64  `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"id" form:"id"`
 	RequestIDPrefix   string `gorm:"index:idx_record_requests_id_prefix;not null"`
 	ServerName        string `gorm:"not null"`
 	UserID            int64
@@ -27,7 +28,7 @@ type Record struct {
 	PanicError        *string `gorm:"size:2000"`
 	Message           *string `gorm:"type:json"`
 	UseTime           int64
-	CreateTime        time.Time `gorm:"index:idx_record_create_time;default:CURRENT_TIMESTAMP"`
+	CreateTime        time.Time `gorm:"index:idx_record_create_time;autoUpdateTime"`
 	StartTime         *time.Time
 	EndTime           *time.Time
 }
