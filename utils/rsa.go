@@ -74,14 +74,24 @@ func ReadRsaPublicKey(c []byte) (*rsa.PublicKey, errors.WTError) {
 
 func ReadRsaPrivateKey(c []byte) (*rsa.PrivateKey, errors.WTError) {
 	block, _ := pem.Decode(c)
-	if block == nil || block.Type != "RSA PRIVATE KEY" {
+	if block == nil || (block.Type != "RSA PRIVATE KEY" && block.Type != "PRIVATE KEY") {
 		return nil, errors.Errorf("bad private key")
 	}
 
-	privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	privateKeyRsa, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err == nil {
+		return privateKeyRsa, nil
+	}
+
+	privateKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
 	if err != nil {
-		return nil, errors.Errorf("bad private key")
+		return nil, errors.WarpQuick(err)
 	}
 
-	return privateKey, nil
+	privateKeyRsa, ok := privateKey.(*rsa.PrivateKey)
+	if !ok {
+		return nil, errors.Errorf("not a rsa private key")
+	}
+
+	return privateKeyRsa, nil
 }
