@@ -21,7 +21,6 @@ serviceName: 创信易社区-本地  # 日志名称
 base:
   port: 9527  # 端口号
   url: http://localhost  # 服务访问的Url
-  static_path: /tmp/data  # 静态文件的地址 腰围docker挂载该地址为可读
 
 admin:
   phone: # 根管理员手机号

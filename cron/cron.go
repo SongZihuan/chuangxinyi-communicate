@@ -3,30 +3,26 @@ package cron
 import (
 	"github.com/robfig/cron"
 	errors "github.com/wuntsong-org/wterrors"
-
-	"gitee.com/wuntsong/chuangxinyi-communicate/service"
 )
 
 func Setup() errors.WTError {
-	err := startSchedule()
-	if err != nil {
-		return errors.WarpQuick(err)
-	}
-
+	// 暂时无任务
+	//err := startSchedule()
+	//if err != nil {
+	//	return errors.WarpQuick(err)
+	//}
+	//
 	return nil
 }
 
 func startSchedule() errors.WTError {
 	c := cron.New()
 
-	// Generate RSS
-	err := addCronFunc(c, "@every 30m", func() {
-		service.ArticleService.GenerateRss()
-		service.TopicService.GenerateRss()
-	})
-	if err != nil {
-		return errors.WarpQuick(err)
-	}
+	//err := addCronFunc(c, "@every 30m", func() {
+	//})
+	//if err != nil {
+	//	return errors.WarpQuick(err)
+	//}
 
 	c.Start()
 

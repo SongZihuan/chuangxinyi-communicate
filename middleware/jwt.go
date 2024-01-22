@@ -120,7 +120,6 @@ func Authenticator(c *gin.Context) (interface{}, errors.WTError) {
 
 	user, err := login.CheckLogin(c, loginDto.LoginToken)
 	if err != nil {
-		logger.Logger.Error("CHECK USER ERROR: %s", err.Error())
 		return nil, errors.WarpQuick(err)
 	}
 

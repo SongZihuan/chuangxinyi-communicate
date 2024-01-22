@@ -2,22 +2,15 @@ package service
 
 import (
 	"fmt"
-	"gitee.com/wuntsong/chuangxinyi-communicate/urls"
 	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
-	errors "github.com/wuntsong-org/wterrors"
-	"math"
-	"path"
-	"time"
-
 	"github.com/emirpasic/gods/sets/hashset"
-	"github.com/gorilla/feeds"
-	"github.com/spf13/viper"
+	errors "github.com/wuntsong-org/wterrors"
 	"gorm.io/gorm"
+	"math"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
-	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
@@ -213,53 +206,5 @@ func (s *articleService) ScanDesc(dateFrom, dateTo int64, cb ScanArticleCallback
 		}
 		cursor = list[len(list)-1].ID
 		cb(list)
-	}
-}
-
-// rss
-func (s *articleService) GenerateRss() {
-	articles := dao.ArticleDao.Find(sqlcnd.NewSqlCnd().Where("status = ?", model.StatusOk).Desc("id").Limit(1000))
-
-	var items []*feeds.Item
-	for _, article := range articles {
-		articleUrl := urls.ArticleUrl(article.ID)
-		user := cache.UserCache.Get(article.UserId)
-		if user == nil {
-			continue
-		}
-		description := ""
-		description = utils.GetHtmlSummary(article.Content)
-		item := &feeds.Item{
-			Title:       article.Title,
-			Link:        &feeds.Link{Href: articleUrl},
-			Description: description,
-			Author:      &feeds.Author{Name: utils.GetUserName(user.Uid, user.Username, user.Nickname), Email: user.Email.String},
-			Created:     utils.TimeFromTimestamp(article.CreateTime),
-		}
-		items = append(items, item)
-	}
-
-	siteTitle := cache.SettingCache.GetValue(model.SettingSiteTitle)
-	siteDescription := cache.SettingCache.GetValue(model.SettingSiteDescription)
-	feed := &feeds.Feed{
-		Title:       siteTitle,
-		Link:        &feeds.Link{Href: viper.GetString("base.url")},
-		Description: siteDescription,
-		Author:      &feeds.Author{Name: siteTitle},
-		Created:     time.Now(),
-		Items:       items,
-	}
-	atom, err := feed.ToAtom()
-	if err != nil {
-		logger.Logger.Error(err.Error())
-	} else {
-		_ = utils.WriteString(path.Join(viper.GetString("base.static_path"), "atom.xml"), atom, false)
-	}
-
-	rss, err := feed.ToRss()
-	if err != nil {
-		logger.Logger.Error(err.Error())
-	} else {
-		_ = utils.WriteString(path.Join(viper.GetString("base.static_path"), "rss.xml"), rss, false)
 	}
 }

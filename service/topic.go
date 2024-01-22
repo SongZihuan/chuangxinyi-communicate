@@ -2,21 +2,14 @@ package service
 
 import (
 	"fmt"
-	"gitee.com/wuntsong/chuangxinyi-communicate/urls"
 	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
 	errors "github.com/wuntsong-org/wterrors"
-	"math"
-	"path"
-	"time"
-
-	"github.com/gorilla/feeds"
-	"github.com/spf13/viper"
 	"gorm.io/gorm"
+	"math"
 
 	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
 	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
 	"gitee.com/wuntsong/chuangxinyi-communicate/form"
-	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/model"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
 	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
@@ -225,51 +218,6 @@ func (s *topicService) OnComment(topicId, lastCommentUserId, lastCommentTime int
 		}
 		return nil
 	})
-}
-
-// rss
-func (s *topicService) GenerateRss() {
-	topics := dao.TopicDao.Find(sqlcnd.NewSqlCnd().Where("status = ?", model.StatusOk).Desc("id").Limit(1000))
-
-	var items []*feeds.Item
-	for _, topic := range topics {
-		topicUrl := urls.TopicUrl(topic.ID)
-		user := cache.UserCache.Get(topic.UserId)
-		if user == nil {
-			continue
-		}
-		item := &feeds.Item{
-			Title:       topic.Title,
-			Link:        &feeds.Link{Href: topicUrl},
-			Description: utils.GetHtmlSummary(topic.Content),
-			Author:      &feeds.Author{Name: utils.GetUserName(user.Uid, user.Username, user.Nickname), Email: user.Email.String},
-			Created:     utils.TimeFromTimestamp(topic.CreateTime),
-		}
-		items = append(items, item)
-	}
-	siteTitle := cache.SettingCache.GetValue(model.SettingSiteTitle)
-	siteDescription := cache.SettingCache.GetValue(model.SettingSiteDescription)
-	feed := &feeds.Feed{
-		Title:       siteTitle,
-		Link:        &feeds.Link{Href: viper.GetString("base.baseUrl")},
-		Description: siteDescription,
-		Author:      &feeds.Author{Name: siteTitle},
-		Created:     time.Now(),
-		Items:       items,
-	}
-	atom, err := feed.ToAtom()
-	if err != nil {
-		logger.Logger.Error(err.Error())
-	} else {
-		_ = utils.WriteString(path.Join(viper.GetString("base.static_path"), "topic_atom.xml"), atom, false)
-	}
-
-	rss, err := feed.ToRss()
-	if err != nil {
-		logger.Logger.Error(err.Error())
-	} else {
-		_ = utils.WriteString(path.Join(viper.GetString("base.static_path"), "topic_rss.xml"), rss, false)
-	}
 }
 
 // 倒序扫描
