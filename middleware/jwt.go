@@ -87,7 +87,7 @@ func JwtAuth(LoginType int) *jwt.GinJWTMiddleware {
 			c.JSON(200, gin.H{
 				"code":    -200,
 				"success": false,
-				"message": "请先登录",
+				"message": "请先登录后再进行操作",
 			})
 		},
 		TokenLookup:   "header:Authorization,query:token",
@@ -120,6 +120,7 @@ func Authenticator(c *gin.Context) (interface{}, errors.WTError) {
 
 	user, err := login.CheckLogin(c, loginDto.LoginToken)
 	if err != nil {
+		logger.Logger.Error("CHECK USER ERROR: %s", err.Error())
 		return nil, errors.WarpQuick(err)
 	}
 
