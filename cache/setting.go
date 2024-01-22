@@ -30,6 +30,10 @@ func (c *settingCache) Get(key string) *model.Setting {
 	}
 
 	val := dao.SettingDao.GetByKey(key)
+	if val == nil {
+		val = new(model.Setting)
+	}
+
 	valString, err := utils.JsonMarshal(val)
 	if err == nil {
 		redis.SetCache(context.Background(), redisKey, string(valString), 0)
@@ -46,6 +50,10 @@ func (c *settingCache) GetValue(key string) string {
 	}
 
 	val := dao.SettingDao.GetByKey(key)
+	if val == nil {
+		return ""
+	}
+
 	return val.Value
 }
 
