@@ -166,13 +166,13 @@ QUERY:
 
 			body = string(newBody)
 			if len(body) > 65000 {
-				body = body[:65000]
+				body = "{}"
 			}
 		} else {
 			if utf8.Valid(bodyByte) {
 				body = string(bodyByte)
 				if len(body) > 65000 {
-					body = body[:65000]
+					body = "{}"
 				}
 			} else {
 				body = fmt.Sprintf("<media type: %s bytes: %d>", utils.GetMediaType(bodyByte), len(bodyByte))
@@ -263,7 +263,7 @@ QUERY:
 		if !strings.HasPrefix(path, "/api/v1/admin/accessrecord") && writer.Header().Get("X-Not-Record") != "True" {
 			body := writer.Body
 			if len(body) > 65000 {
-				body = body[:65000]
+				body = "{}"
 			}
 			access.ResponseBody = &body
 		}
@@ -296,16 +296,20 @@ QUERY:
 
 		var msgByte []byte
 		msgByte, err = utils.JsonMarshal(struct {
-			Msg string `json:"msg"`
+			Msg   string `json:"msg"`
+			Error string `json:"error"`
+			Stack string `json:"stack"`
 		}{
-			Msg: record.Msg,
+			Msg:   record.Msg,
+			Error: fmt.Sprintf("%+V", record.Error),
+			Stack: fmt.Sprintf("%s", string(record.ErrorStack)),
 		})
 		if err != nil {
 			msgByte = []byte("{}")
 		}
 		msg := string(msgByte)
 		if len(msg) > 6000 {
-			msg = msg[:6000]
+			msg = "{}"
 		}
 		access.Message = &msg
 
@@ -396,6 +400,8 @@ type Record struct {
 	RequestsID string
 	User       *model.User
 	UserToken  string
+	ErrorStack []byte
+	Error      any
 	Msg        string
 }
 

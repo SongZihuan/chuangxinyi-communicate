@@ -11,14 +11,11 @@ import (
 )
 
 var jwtAuth *jwt.GinJWTMiddleware
-var jwtOAuth *jwt.GinJWTMiddleware
 
 // Setup setup
 func Setup(e *gin.Engine) {
-	e.Use(
-		gin.Recovery(),
-	)
-
+	// 不使用gin的panic捕获，由access record捕获
+	e.Use(Recovery())
 	e.Any("/", func(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "Community API\n")
 	})
