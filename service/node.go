@@ -50,7 +50,6 @@ func (s *nodeService) Update(dto form.NodeUpdateForm) errors.WTError {
 		"description": dto.Description,
 		"sort_no":     dto.SortNo,
 		"status":      dto.Status,
-		"update_time": utils.NowTimestamp(),
 	})
 
 	return errors.WarpQuick(err)
