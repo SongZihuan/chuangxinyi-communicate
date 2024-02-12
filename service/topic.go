@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
 	errors "github.com/wuntsong-org/wterrors"
 	"gorm.io/gorm"
@@ -54,6 +55,7 @@ func (s *topicService) Delete(id int64) errors.WTError {
 func (s *topicService) Update(dto form.TopicUpdateForm) errors.WTError {
 	ok, err := yundun.CheckText(fmt.Sprintf("标题：%s\n内容：%s\n", dto.Title, dto.Content))
 	if err != nil {
+		logger.Logger.Tag("A", err.Error())
 		return errors.WarpQuick(err)
 	} else if !ok {
 		return errors.Errorf("bad content")
@@ -61,14 +63,14 @@ func (s *topicService) Update(dto form.TopicUpdateForm) errors.WTError {
 
 	node := dao.NodeDao.Get(dto.NodeID)
 	if node == nil || node.Status != model.StatusOk {
+		logger.Logger.Tag("B")
 		return utils.NewErrorMsg("节点不存在")
 	}
 	err = dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
 		err := dao.TopicDao.Updates(dto.ID, map[string]interface{}{
-			"node_id":     dto.NodeID,
-			"title":       dto.Title,
-			"content":     dto.Content,
-			"update_time": utils.NowTimestamp(),
+			"node_id": dto.NodeID,
+			"title":   dto.Title,
+			"content": dto.Content,
 		})
 		if err != nil {
 			return errors.WarpQuick(err)
