@@ -3,6 +3,7 @@ package uploader
 import (
 	"bytes"
 	"fmt"
+	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
 	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
 	errors "github.com/wuntsong-org/wterrors"
 	"path/filepath"
@@ -59,6 +60,7 @@ func (aliyun *aliyunOssUploader) PutImage(data []byte) (string, errors.WTError) 
 
 	ok, err := yundun.CheckBaseLinePic(data, fileType)
 	if err != nil {
+		logger.Logger.Tag("A", err.Error())
 		return "", errors.WarpQuick(err)
 	} else if !ok {
 		return "", errors.Errorf("bad picture")
@@ -67,6 +69,7 @@ func (aliyun *aliyunOssUploader) PutImage(data []byte) (string, errors.WTError) 
 	key := generateImageKey(data)
 	err = aliyun.putObject(fmt.Sprintf("图像文件/%s", key), data)
 	if err != nil {
+		logger.Logger.Tag("B", err.Error())
 		return "", errors.WarpQuick(err)
 	}
 	return key, nil

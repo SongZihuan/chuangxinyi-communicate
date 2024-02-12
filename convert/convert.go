@@ -90,10 +90,7 @@ func ToHtmlContent(htmlContent string) string {
 			src = utils.ParseUrl("/api/img/proxy").AddQuery("url", src).BuildStr()
 			// selection.SetAttr("src", src)
 		}
-
-		// 处理lazyload
 		selection.SetAttr("data-src", src)
-		selection.RemoveAttr("src")
 	})
 
 	html, err := doc.Find("body").Html()

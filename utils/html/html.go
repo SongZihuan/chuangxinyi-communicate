@@ -70,7 +70,6 @@ func (html *SimpleHtml) Run(contentHTML string) *Result {
 	// doc.Find("img").Each(func(i int, ele *goquery.Selection) {
 	// 	src, _ := ele.Attr("src")
 	// 	ele.SetAttr("data-src", src)
-	// 	ele.RemoveAttr("src")
 	// })
 
 	doc.Find("*").Contents().FilterFunction(func(i int, ele *goquery.Selection) bool {
