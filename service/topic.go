@@ -58,7 +58,7 @@ func (s *topicService) Update(dto form.TopicUpdateForm) errors.WTError {
 		logger.Logger.Tag("A", err.Error())
 		return errors.WarpQuick(err)
 	} else if !ok {
-		return errors.Errorf("bad content")
+		return errors.Errorf("内容不合法")
 	}
 
 	node := dao.NodeDao.Get(dto.NodeID)
@@ -100,7 +100,7 @@ func (s *topicService) Create(dto form.TopicCreateForm) (*model.Topic, errors.WT
 	if err != nil {
 		return nil, errors.WarpQuick(err)
 	} else if !ok {
-		return nil, errors.Errorf("bad content")
+		return nil, errors.Errorf("内容不合法")
 	}
 
 	nodeID := dto.NodeID

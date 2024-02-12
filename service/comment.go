@@ -67,7 +67,7 @@ func (s *commentService) Create(dto form.CommentCreateForm) (*model.Comment, err
 	if err != nil {
 		return nil, errors.WarpQuick(err)
 	} else if !ok {
-		return nil, errors.Errorf("bad content")
+		return nil, errors.Errorf("内容不合法")
 	}
 
 	comment := &model.Comment{
@@ -105,7 +105,7 @@ func (s *commentService) Publish(userId int64, createForm *form.CommentCreateFor
 	if err != nil {
 		return nil, errors.WarpQuick(err)
 	} else if !ok {
-		return nil, errors.Errorf("bad content")
+		return nil, errors.Errorf("内容不合法")
 	}
 
 	createForm.Content = strings.TrimSpace(createForm.Content)

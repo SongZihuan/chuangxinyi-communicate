@@ -58,7 +58,7 @@ func (s *articleService) Create(dto form.ArticleCreateForm) (*model.Article, err
 	if err != nil {
 		return nil, errors.WarpQuick(err)
 	} else if !ok {
-		return nil, errors.Errorf("bad content")
+		return nil, errors.Errorf("内容不合法")
 	}
 
 	err = dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {
@@ -79,7 +79,7 @@ func (s *articleService) Update(dto form.ArticleUpdateForm) errors.WTError {
 	if err != nil {
 		return errors.WarpQuick(err)
 	} else if !ok {
-		return errors.Errorf("bad content")
+		return errors.Errorf("内容不合法")
 	}
 
 	err = dao.Tx(dao.DB(), func(tx *gorm.DB) errors.WTError {

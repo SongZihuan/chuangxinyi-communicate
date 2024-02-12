@@ -48,7 +48,7 @@ func (s *tagService) Create(t *model.Tag) errors.WTError {
 	if err != nil {
 		return errors.WarpQuick(err)
 	} else if !ok {
-		return errors.Errorf("bad content")
+		return errors.Errorf("内容不合法")
 	}
 
 	return dao.TagDao.Create(t)
@@ -59,7 +59,7 @@ func (s *tagService) Update(t *model.Tag) errors.WTError {
 	if err != nil {
 		return errors.WarpQuick(err)
 	} else if !ok {
-		return errors.Errorf("bad content")
+		return errors.Errorf("内容不合法")
 	}
 
 	if err := dao.TagDao.Update(t); err != nil {
