@@ -58,7 +58,7 @@ func GetSelfIP() []string {
 
 	ipList := make([]string, 0, 10)
 	for _, face := range interFace {
-		if !strings.HasPrefix(face.Name, "eth") && !strings.HasPrefix(face.Name, "以太网") {
+		if !strings.HasPrefix(face.Name, "eth") && !strings.HasPrefix(face.Name, "以太网") && !strings.HasPrefix(face.Name, "WLAN") {
 			continue
 		}
 

@@ -20,9 +20,7 @@ require (
 	github.com/go-resty/resty/v2 v2.2.0
 	github.com/goburrow/cache v0.1.0
 	github.com/google/uuid v1.5.0
-	github.com/gorilla/feeds v1.1.1
 	github.com/gorilla/websocket v1.4.0
-	github.com/jinzhu/gorm v1.9.12
 	github.com/json-iterator/go v1.1.12
 	github.com/microcosm-cc/bluemonday v1.0.26
 	github.com/patrickmn/go-cache v2.1.0+incompatible
@@ -65,7 +63,6 @@ require (
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
-	github.com/mattn/go-sqlite3 v2.0.1+incompatible // indirect
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
