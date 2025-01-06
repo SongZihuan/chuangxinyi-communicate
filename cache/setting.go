@@ -3,10 +3,10 @@ package cache
 import (
 	"context"
 	"fmt"
-	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/redis"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/dao"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/redis"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 )
 
 type settingCache struct {

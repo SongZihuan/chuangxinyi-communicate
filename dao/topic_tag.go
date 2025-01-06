@@ -1,9 +1,9 @@
 package dao
 
 import (
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils/sqlcnd"
 	errors "github.com/wuntsong-org/wterrors"
 )
 

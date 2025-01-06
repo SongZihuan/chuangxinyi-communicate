@@ -7,8 +7,8 @@ import (
 
 	"github.com/spf13/viper"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/html"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/strtrim"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils/html"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils/strtrim"
 )
 
 // 是否是正式环境

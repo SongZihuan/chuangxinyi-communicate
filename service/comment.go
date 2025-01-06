@@ -2,15 +2,15 @@ package service
 
 import (
 	"fmt"
-	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
+	"github.com/SongZihuan/chuangxinyi-communicate/yundun"
 	errors "github.com/wuntsong-org/wterrors"
 	"strings"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
-	"gitee.com/wuntsong/chuangxinyi-communicate/form"
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	"github.com/SongZihuan/chuangxinyi-communicate/dao"
+	"github.com/SongZihuan/chuangxinyi-communicate/form"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 var CommentService = newCommentService()

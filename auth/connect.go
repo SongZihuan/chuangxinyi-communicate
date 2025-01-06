@@ -3,7 +3,7 @@ package auth
 import (
 	"crypto/rsa"
 	"encoding/base64"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 	"github.com/spf13/viper"
 	errors "github.com/wuntsong-org/wterrors"
 )

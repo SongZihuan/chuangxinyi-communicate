@@ -1,14 +1,14 @@
 package convert
 
 import (
-	"gitee.com/wuntsong/chuangxinyi-communicate/urls"
+	"github.com/SongZihuan/chuangxinyi-communicate/urls"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/service"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 )
 
 func ToFavorites(favorites []model.Favorite) []model.FavoriteResponse {

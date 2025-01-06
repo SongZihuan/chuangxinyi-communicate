@@ -3,8 +3,8 @@ package uploader
 import (
 	"bytes"
 	"fmt"
-	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
-	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
+	"github.com/SongZihuan/chuangxinyi-communicate/logger"
+	"github.com/SongZihuan/chuangxinyi-communicate/yundun"
 	errors "github.com/wuntsong-org/wterrors"
 	"path/filepath"
 	"sync"
@@ -14,7 +14,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/spf13/viper"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 )
 
 var (

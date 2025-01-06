@@ -3,10 +3,10 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
-	"gitee.com/wuntsong/chuangxinyi-communicate/convert"
-	"gitee.com/wuntsong/chuangxinyi-communicate/form"
-	"gitee.com/wuntsong/chuangxinyi-communicate/service"
+	"github.com/SongZihuan/chuangxinyi-communicate/cache"
+	"github.com/SongZihuan/chuangxinyi-communicate/convert"
+	"github.com/SongZihuan/chuangxinyi-communicate/form"
+	"github.com/SongZihuan/chuangxinyi-communicate/service"
 )
 
 type NodeController struct {

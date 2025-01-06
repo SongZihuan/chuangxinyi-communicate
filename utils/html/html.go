@@ -8,7 +8,7 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/vinta/pangu"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/strtrim"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils/strtrim"
 )
 
 type Result struct {

@@ -2,15 +2,15 @@ package service
 
 import (
 	"fmt"
-	"gitee.com/wuntsong/chuangxinyi-communicate/auth/msg"
+	"github.com/SongZihuan/chuangxinyi-communicate/auth/msg"
 	errors "github.com/wuntsong-org/wterrors"
 	"sync"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
-	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
-	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/cache"
+	"github.com/SongZihuan/chuangxinyi-communicate/dao"
+	"github.com/SongZihuan/chuangxinyi-communicate/logger"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 )
 
 type Notification struct {

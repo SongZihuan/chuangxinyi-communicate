@@ -3,8 +3,8 @@ package logger
 import (
 	"bytes"
 	"fmt"
-	"gitee.com/wuntsong/chuangxinyi-communicate/global/peername"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/global/peername"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 	"github.com/spf13/viper"
 	errors "github.com/wuntsong-org/wterrors"
 	"go.uber.org/zap"

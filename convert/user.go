@@ -3,9 +3,9 @@ package convert
 import (
 	"strconv"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/cache"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 )
 
 func ToUserDefaultIfNull(id int64) *model.UserInfo {

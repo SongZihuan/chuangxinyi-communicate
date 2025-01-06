@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gitee.com/wuntsong/chuangxinyi-communicate/accessrecord"
+	"github.com/SongZihuan/chuangxinyi-communicate/accessrecord"
 	"net/http"
 )
 

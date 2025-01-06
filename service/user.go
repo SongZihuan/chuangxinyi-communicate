@@ -1,14 +1,14 @@
 package service
 
 import (
-	"gitee.com/wuntsong/chuangxinyi-communicate/auth/header"
-	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
-	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
-	"gitee.com/wuntsong/chuangxinyi-communicate/form"
-	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	"github.com/SongZihuan/chuangxinyi-communicate/auth/header"
+	"github.com/SongZihuan/chuangxinyi-communicate/cache"
+	"github.com/SongZihuan/chuangxinyi-communicate/dao"
+	"github.com/SongZihuan/chuangxinyi-communicate/form"
+	"github.com/SongZihuan/chuangxinyi-communicate/logger"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils/sqlcnd"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	errors "github.com/wuntsong-org/wterrors"

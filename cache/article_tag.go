@@ -5,7 +5,7 @@ import (
 
 	"github.com/goburrow/cache"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
+	"github.com/SongZihuan/chuangxinyi-communicate/dao"
 )
 
 type articleTagCache struct {

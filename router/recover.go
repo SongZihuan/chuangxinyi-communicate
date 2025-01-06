@@ -7,7 +7,7 @@ package router
 import (
 	"bytes"
 	"fmt"
-	"gitee.com/wuntsong/chuangxinyi-communicate/accessrecord"
+	"github.com/SongZihuan/chuangxinyi-communicate/accessrecord"
 	"github.com/gin-gonic/gin"
 	"io"
 	"log"

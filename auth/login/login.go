@@ -3,10 +3,10 @@ package login
 import (
 	"context"
 	"database/sql"
-	"gitee.com/wuntsong/chuangxinyi-communicate/auth"
-	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/auth"
+	"github.com/SongZihuan/chuangxinyi-communicate/dao"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 	"github.com/spf13/viper"
 	errors "github.com/wuntsong-org/wterrors"
 )

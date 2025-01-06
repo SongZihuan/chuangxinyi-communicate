@@ -3,9 +3,9 @@ package ip
 import (
 	"context"
 	"fmt"
-	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
-	"gitee.com/wuntsong/chuangxinyi-communicate/redis"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/logger"
+	"github.com/SongZihuan/chuangxinyi-communicate/redis"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 	"github.com/spf13/viper"
 	errors "github.com/wuntsong-org/wterrors"
 	"io"

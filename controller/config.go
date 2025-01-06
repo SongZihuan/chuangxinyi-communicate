@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/service"
+	"github.com/SongZihuan/chuangxinyi-communicate/service"
 )
 
 type ConfigController struct {

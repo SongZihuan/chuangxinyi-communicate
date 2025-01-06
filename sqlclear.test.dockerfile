@@ -5,7 +5,7 @@ RUN mkdir -p /tmp/sqlclear
 
 COPY . .
 RUN go mod tidy
-RUN go build -o sqlclear -ldflags="all=-w -s" gitee.com/wuntsong/chuangxinyi-communicate/cmd/sqlclear
+RUN go build -o sqlclear -ldflags="all=-w -s" github.com/SongZihuan/chuangxinyi-communicate/cmd/sqlclear
 
 FROM registry.cn-guangzhou.aliyuncs.com/wuntsong_pub/nubuntu:2023-11-18-16-20-22
 

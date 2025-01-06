@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"gitee.com/wuntsong/chuangxinyi-communicate/rand"
+	"github.com/SongZihuan/chuangxinyi-communicate/rand"
 )
 
 func GenerateRandomInt(min, max int) int64 {

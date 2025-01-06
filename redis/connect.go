@@ -2,7 +2,7 @@ package redis
 
 import (
 	"context"
-	"gitee.com/wuntsong/chuangxinyi-communicate/signalexit"
+	"github.com/SongZihuan/chuangxinyi-communicate/signalexit"
 	"github.com/go-redis/redis/v8"
 	"github.com/patrickmn/go-cache"
 	"github.com/spf13/viper"

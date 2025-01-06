@@ -5,9 +5,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/controller"
-	"gitee.com/wuntsong/chuangxinyi-communicate/controller/admin"
-	"gitee.com/wuntsong/chuangxinyi-communicate/middleware"
+	"github.com/SongZihuan/chuangxinyi-communicate/controller"
+	"github.com/SongZihuan/chuangxinyi-communicate/controller/admin"
+	"github.com/SongZihuan/chuangxinyi-communicate/middleware"
 )
 
 var jwtAuth *jwt.GinJWTMiddleware

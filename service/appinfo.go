@@ -1,7 +1,7 @@
 package service
 
 import (
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
 	"github.com/spf13/viper"
 )
 

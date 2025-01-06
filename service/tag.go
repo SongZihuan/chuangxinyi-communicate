@@ -2,14 +2,14 @@ package service
 
 import (
 	"fmt"
-	"gitee.com/wuntsong/chuangxinyi-communicate/yundun"
+	"github.com/SongZihuan/chuangxinyi-communicate/yundun"
 	errors "github.com/wuntsong-org/wterrors"
 	"strings"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
-	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	"github.com/SongZihuan/chuangxinyi-communicate/cache"
+	"github.com/SongZihuan/chuangxinyi-communicate/dao"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils/sqlcnd"
 )
 
 type ScanTagCallback func(tags []model.Tag) bool

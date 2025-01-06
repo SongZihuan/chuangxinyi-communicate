@@ -2,8 +2,8 @@ package msg
 
 import (
 	"fmt"
-	"gitee.com/wuntsong/chuangxinyi-communicate/auth"
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/auth"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
 	"github.com/spf13/viper"
 	errors "github.com/wuntsong-org/wterrors"
 )

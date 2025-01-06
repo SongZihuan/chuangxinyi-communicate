@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"gitee.com/wuntsong/chuangxinyi-communicate/accessrecord"
-	"gitee.com/wuntsong/chuangxinyi-communicate/auth/login"
-	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/accessrecord"
+	"github.com/SongZihuan/chuangxinyi-communicate/auth/login"
+	"github.com/SongZihuan/chuangxinyi-communicate/dao"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 	errors "github.com/wuntsong-org/wterrors"
 	"net/http"
 	"time"
@@ -13,9 +13,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/form"
-	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/form"
+	"github.com/SongZihuan/chuangxinyi-communicate/logger"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
 )
 
 // login type

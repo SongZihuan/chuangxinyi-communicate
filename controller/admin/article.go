@@ -1,14 +1,14 @@
 package admin
 
 import (
-	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
-	"gitee.com/wuntsong/chuangxinyi-communicate/controller"
-	"gitee.com/wuntsong/chuangxinyi-communicate/convert"
-	"gitee.com/wuntsong/chuangxinyi-communicate/form"
-	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/html"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/sqlcnd"
+	"github.com/SongZihuan/chuangxinyi-communicate/cache"
+	"github.com/SongZihuan/chuangxinyi-communicate/controller"
+	"github.com/SongZihuan/chuangxinyi-communicate/convert"
+	"github.com/SongZihuan/chuangxinyi-communicate/form"
+	"github.com/SongZihuan/chuangxinyi-communicate/service"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils/html"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils/sqlcnd"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )

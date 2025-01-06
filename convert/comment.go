@@ -3,9 +3,9 @@ package convert
 import (
 	"html/template"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils/html"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/service"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils/html"
 )
 
 func ToComments(comments []model.Comment) []model.CommentResponse {

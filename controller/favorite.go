@@ -3,9 +3,9 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/form"
-	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/form"
+	"github.com/SongZihuan/chuangxinyi-communicate/service"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 )
 
 type FavoriteController struct {

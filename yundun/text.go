@@ -1,7 +1,7 @@
 package yundun
 
 import (
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 	green20220302 "github.com/alibabacloud-go/green-20220302/client"
 	util "github.com/alibabacloud-go/tea-utils/v2/service"
 	"github.com/alibabacloud-go/tea/tea"

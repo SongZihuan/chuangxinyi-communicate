@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/cache"
+	"github.com/SongZihuan/chuangxinyi-communicate/cache"
 )
 
 type SiteController struct {

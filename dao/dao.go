@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm/schema"
 	"time"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
 )
 
 var (

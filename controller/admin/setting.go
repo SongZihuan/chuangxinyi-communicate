@@ -3,10 +3,10 @@ package admin
 import (
 	"github.com/gin-gonic/gin"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/controller"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
-	// "gitee.com/wuntsong/chuangxinyi-communicate/form"
-	"gitee.com/wuntsong/chuangxinyi-communicate/service"
+	"github.com/SongZihuan/chuangxinyi-communicate/controller"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
+	// "github.com/SongZihuan/chuangxinyi-communicate/form"
+	"github.com/SongZihuan/chuangxinyi-communicate/service"
 )
 
 // SettingController setting controller

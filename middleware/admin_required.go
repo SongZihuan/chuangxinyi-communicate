@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
-	"gitee.com/wuntsong/chuangxinyi-communicate/service"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/service"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

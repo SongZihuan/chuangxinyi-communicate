@@ -5,7 +5,7 @@ RUN mkdir -p /tmp/backend
 
 COPY . .
 RUN go mod tidy
-RUN go build -o backend -ldflags="all=-w -s" gitee.com/wuntsong/chuangxinyi-communicate/cmd/web
+RUN go build -o backend -ldflags="all=-w -s" github.com/SongZihuan/chuangxinyi-communicate/cmd/web
 
 FROM registry.cn-guangzhou.aliyuncs.com/wuntsong_pub/nubuntu:2023-11-18-16-20-22
 

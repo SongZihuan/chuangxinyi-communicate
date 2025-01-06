@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	initall "gitee.com/wuntsong/chuangxinyi-communicate/init"
-	"gitee.com/wuntsong/chuangxinyi-communicate/sqlclear"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	initall "github.com/SongZihuan/chuangxinyi-communicate/init"
+	"github.com/SongZihuan/chuangxinyi-communicate/sqlclear"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 	"github.com/spf13/viper"
 )
 

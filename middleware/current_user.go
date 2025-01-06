@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/service"
+	"github.com/SongZihuan/chuangxinyi-communicate/service"
 )
 
 func CurrentUser(ctx *gin.Context) {

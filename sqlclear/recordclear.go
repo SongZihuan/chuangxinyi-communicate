@@ -1,8 +1,8 @@
 package sqlclear
 
 import (
-	"gitee.com/wuntsong/chuangxinyi-communicate/dao"
-	"gitee.com/wuntsong/chuangxinyi-communicate/logger"
+	"github.com/SongZihuan/chuangxinyi-communicate/dao"
+	"github.com/SongZihuan/chuangxinyi-communicate/logger"
 	errors "github.com/wuntsong-org/wterrors"
 	"time"
 )

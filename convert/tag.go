@@ -1,7 +1,7 @@
 package convert
 
 import (
-	"gitee.com/wuntsong/chuangxinyi-communicate/model"
+	"github.com/SongZihuan/chuangxinyi-communicate/model"
 )
 
 func ToTag(tag *model.Tag) *model.TagResponse {

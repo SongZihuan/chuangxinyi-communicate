@@ -1,7 +1,7 @@
 package token
 
 import (
-	"gitee.com/wuntsong/chuangxinyi-communicate/auth"
+	"github.com/SongZihuan/chuangxinyi-communicate/auth"
 	"github.com/spf13/viper"
 	errors "github.com/wuntsong-org/wterrors"
 )

@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"gitee.com/wuntsong/chuangxinyi-communicate/service"
+	"github.com/SongZihuan/chuangxinyi-communicate/service"
 	"github.com/gin-gonic/gin"
 )
 

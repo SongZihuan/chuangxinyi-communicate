@@ -6,8 +6,8 @@ import (
 	"runtime"
 	"time"
 
-	"gitee.com/wuntsong/chuangxinyi-communicate/controller"
-	"gitee.com/wuntsong/chuangxinyi-communicate/utils"
+	"github.com/SongZihuan/chuangxinyi-communicate/controller"
+	"github.com/SongZihuan/chuangxinyi-communicate/utils"
 )
 
 // initTime is the time when the application was initialized.

@@ -1,4 +1,4 @@
-module gitee.com/wuntsong/chuangxinyi-communicate
+module github.com/SongZihuan/chuangxinyi-communicate
 
 go 1.21
 
